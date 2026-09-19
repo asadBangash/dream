@@ -1,0 +1,107 @@
+.cta_area {
+    // background-image: url(../img/banner/cta_bg.jpg);
+    background-repeat: no-repeat;
+    background-position: center center;
+    background-size: cover;
+    position: relative;
+    z-index: 1;
+    .section__title {
+        h3 {
+            margin-bottom: 10px;
+        }
+
+        p {
+            margin-bottom: 40px;
+        }
+    }
+}
+
+// package_area 
+.package_area {
+    @include background('../img/banner/backage_bg.jpg', bottom center);
+    background-size: cover;
+    padding-top: 140px;
+    padding-bottom: 292px;
+
+    @media #{$tab} {
+        padding-top: 65px;
+        padding-bottom: 145px;
+    }
+
+    .single_package {
+        text-align: center;
+
+        .icon {
+            img {
+                display: inline-block;
+                width: auto;
+            }
+        }
+
+        h4 {
+            font-size: 22px;
+            font-weight: 700;
+            margin-bottom: 4px;
+            margin-top: 31px;
+        }
+
+        p {
+            font-size: 16px;
+            font-weight: 500;
+            color: $color_1;
+        }
+    }
+}
+
+.quote_box {
+    border-radius: 4px;
+    background: #FFF;
+    padding: 15px;
+    display: flex;
+    grid-gap: 12px;
+
+    .icon {
+        border-radius: 2px;
+        background: #F3F5F7;
+        width: 40px;
+        height: 40px;
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        flex-shrink: 0;
+    }
+
+    .quote_box_body {
+        h5 {
+            color: #13213B;
+            font-size: 16px;
+            font-style: normal;
+            font-weight: 400;
+            line-height: 20px;
+            margin-bottom: 6px;
+        }
+
+        p {
+            color: #3F486A;
+            font-size: 16px;
+            font-style: normal;
+            font-weight: 400;
+            line-height: 20px;
+        }
+    }
+}
+
+
+.quote_boxes {
+    max-width: 378px;
+    display: flex;
+    flex-direction: column;
+    grid-gap: 24px;
+}
+
+.quoteForm {
+    border-radius: 12px;
+    background: #FFF;
+    box-shadow: 0px 4px 21px 0px rgba(0, 0, 0, 0.02);
+    padding: 40px;
+}

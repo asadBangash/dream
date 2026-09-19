@@ -1,0 +1,298 @@
+.academic_banner_area {
+    margin: 45px 0;
+
+    .academic_bannerinfo {
+        display: flex;
+        align-items: center;
+        padding: 28px 0 28px 56px;
+        @media #{$tab2} {
+            flex-wrap: wrap;
+            padding: 20px;
+        }
+        &::before {
+            content: '';
+            position: absolute;
+            left: 0;
+            top: 0;
+            height: 100%;
+            width: 78%;
+            background: $purple_color;
+            z-index: -1;
+            @media #{$tab2} {
+                width: 100%;
+            }
+        }
+
+        &_inner {
+            h2 {
+                font-weight: 700;
+                font-size: 55px;
+                line-height: 150%;
+                letter-spacing: 0.04em;
+                text-transform: capitalize;
+                color: #FFFFFF;
+                max-width: 555px;
+                @media #{$tab2} {
+                    font-size: 30px;
+                    line-height: 150%;
+                }
+                @media #{$lg_device} {
+                    font-size: 35px;
+                    line-height: 1.2;
+                }
+            }
+
+            .description_text {
+                font-weight: 400;
+                font-size: 18px;
+                line-height: 150%;
+                letter-spacing: 0.04em;
+                text-transform: capitalize;
+                color: #FFFFFF;
+                margin: 40px 0 60px 0;
+                max-width: 685px;
+            }
+
+            .academic_banner_text_bottom {
+                @media #{$tab2} {
+                    margin-bottom: 30px;
+                }
+                h4 {
+                    font-weight: 700;
+                    font-size: 22px;
+                    line-height: 150%;
+                    letter-spacing: 0.04em;
+                    text-transform: capitalize;
+                    color: $white;
+                    margin-bottom: 0;
+                }
+
+                p {
+                    font-weight: 500;
+                    font-size: 18px;
+                    line-height: 150%;
+                    letter-spacing: 0.04em;
+                    text-transform: capitalize;
+                    color: $white;
+                }
+            }
+        }
+
+        &_inner_img {
+            max-width: 608px;
+            flex-shrink: 0;
+            border: 5px solid #392C7D;
+            @media #{$tab2} {
+                max-width: 100%;
+            }
+            @media #{$lg_device} {
+                max-width: 458px;
+            }
+            img {}
+        }
+    }
+}
+
+// academic_page_details_info 
+.academic_page_details_info {
+    &_content {
+        max-width: 743px;
+
+        h3 {
+            font-weight: 700;
+            font-size: 48px;
+            line-height: 150%;
+            letter-spacing: 0.04em;
+            text-transform: capitalize;
+            color: #333333;
+            margin-bottom: 30px;
+        }
+
+        .description_text {
+            font-weight: 400;
+            font-size: 18px;
+            line-height: 150%;
+            text-align: justify;
+            letter-spacing: 0.04em;
+            text-transform: capitalize;
+            color: #555555;
+        }
+
+        .description_text2 {
+            font-weight: 700;
+            font-size: 18px;
+            line-height: 150%;
+            text-align: justify;
+            letter-spacing: 0.04em;
+            text-transform: capitalize;
+            color: #FF5170;
+            border-bottom: 4px solid #FF5170;
+            margin: 50px 0 43px 0;
+            padding-bottom: 24px;
+        }
+
+        .description_text3 {
+            font-weight: 400;
+            font-size: 16px;
+            line-height: 150%;
+            text-align: justify;
+            letter-spacing: 0.04em;
+            text-transform: capitalize;
+            color: #555555;
+        }
+
+        .acdemic_info_lists {
+            li {
+                font-weight: 400;
+                font-size: 16px;
+                line-height: 150%;
+                text-align: justify;
+                letter-spacing: 0.04em;
+                text-transform: capitalize;
+                color: #555555;
+                display: flex;
+                position: relative;
+                padding-left: 48px;
+
+                &:not(:last-child) {
+                    margin-bottom: 24px;
+                }
+
+                &::before {
+                    content: "";
+                    position: absolute;
+                    display: inline-block;
+                    background-image: url('../img/academic/square.svg');
+                    width: 24px;
+                    height: 24px;
+                    background-size: cover;
+                    background-position: center center;
+                    left: 0;
+                    top: 50%;
+                    transform: translateY(-50%);
+                }
+            }
+        }
+    }
+
+    &_sidebox {
+        .depertmentDetails_list {
+            h4 {
+                font-weight: 700;
+                font-size: 30px;
+                line-height: 150%;
+                letter-spacing: 0.04em;
+                text-transform: capitalize;
+                color: #333333;
+                background: #F7F7F7;
+                border-bottom: 3px solid #FF5170;
+                padding: 20px 16px;
+            }
+
+            ul {
+                li {
+                    a {
+                        font-weight: 400;
+                        font-size: 24px;
+                        line-height: 150%;
+                        letter-spacing: 0.04em;
+                        text-transform: capitalize;
+                        color: #333333;
+                        border-bottom: 1.5px solid #FF5170;
+                        position: relative;
+                        padding: 36px 0 20px 58px;
+                        display: flex;
+
+                        &:hover {
+                            color: $purple_color;
+                        }
+
+                        &::before {
+                            content: "\f061";
+                            position: absolute;
+                            left: 23px;
+                            top: 57%;
+                            font-size: 14px;
+                            color: $purple_color;
+                            font-weight: 900;
+                            font-family: "Font Awesome 5 Free";
+                            transform: translateY(-50%);
+                        }
+                    }
+
+                }
+            }
+        }
+
+        .depertmentDetails_contactInfo {
+            background: #392C7D;
+            padding: 53px 70px;
+            @media #{$tab2} {
+                padding: 20px;
+            }
+            .depertmentDetails_title {
+                font-weight: 700;
+                font-size: 24px;
+                line-height: 150%;
+                letter-spacing: 0.04em;
+                text-transform: capitalize;
+                color: #FFFFFF;
+            }
+
+            ul {
+                li {
+                    display: flex;
+                    align-items: center;
+                    grid-gap: 16px;
+                    flex-wrap: wrap;
+                    &:not(:last-child) {
+                        margin-bottom: 20px;
+                    }
+
+                    .icon {
+                        width: 36px;
+                        height: 36px;
+                        background: #FFFFFF;
+                        border-radius: 50px;
+                        display: inline-flex;
+                        align-items: center;
+                        justify-content: center;
+                        flex-shrink: 0;
+                    }
+
+                    .contact_info {
+                        h4 {
+                            font-weight: 400;
+                            font-size: 18px;
+                            line-height: 22px;
+                            color: #FFFFFF;
+                            margin: 0;
+                            @media #{$tab2} {
+                                font-size: 14px;
+                            }
+                            &:not(:last-child) {
+                                margin-bottom: 13px;
+                            }
+                        }
+                    }
+                }
+            }
+
+            .social_links {
+                display: flex;
+                flex-wrap: wrap;
+                grid-gap: 30px;
+
+                a {
+                    font-size: 20px;
+                    color: $purple_color;
+                    transition: .3s;
+
+                    &:hover {
+                        color: $white;
+                    }
+                }
+            }
+        }
+    }
+}

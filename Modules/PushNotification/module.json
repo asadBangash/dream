@@ -1,0 +1,11 @@
+{
+    "name": "PushNotification",
+    "alias": "pushnotification",
+    "description": "",
+    "keywords": [],
+    "priority": 0,
+    "providers": [
+        "Modules\\PushNotification\\Providers\\PushNotificationServiceProvider"
+    ],
+    "files": []
+}

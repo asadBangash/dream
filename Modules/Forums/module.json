@@ -1,0 +1,11 @@
+{
+    "name": "Forums",
+    "alias": "forums",
+    "description": "",
+    "keywords": [],
+    "priority": 0,
+    "providers": [
+        "Modules\\Forums\\Providers\\ForumsServiceProvider"
+    ],
+    "files": []
+}

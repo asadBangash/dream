@@ -1,0 +1,277 @@
+.testmonial_area {
+    background: #FFF;
+
+    .single_testmonial {
+        border: 1px solid #EDEDED;
+        border-radius: 6px;
+        background: $white;
+        padding: 60px 43px;
+        border: 1px solid #F3F3F3;
+        position: relative;
+        transition: .3s;
+
+        &::before {
+            background: #FF5170;
+            height: 4px;
+            content: "";
+            left: 0;
+            bottom: 0;
+            width: 100%;
+            position: absolute;
+            border-radius: 0 0 6px 6px;
+            transition: .3s;
+            opacity: 0;
+        }
+
+        @media #{$tab} {
+            padding: 30px;
+
+        }
+
+        .rating {
+            display: flex;
+            align-items: center;
+            grid-gap: 8px;
+
+            i {
+                font-size: 16px;
+                color: #EA580C;
+
+                &.in_active {
+                    color: #D8D7E6;
+                }
+            }
+        }
+
+        .testmonial_header {
+            .thumb {
+                width: 70px;
+                height: 70px;
+                flex: 70px 0 0;
+
+                @media #{$tab} {
+                    width: 50px;
+                    height: 50px;
+                    flex: 50px 0 0;
+                }
+
+                img {
+                    width: 100%;
+                    border-radius: 50%;
+                }
+            }
+
+            .reviewer_name {
+                h4 {
+                    font-size: 20px;
+                    font-weight: 700;
+                    font-family: $font1;
+                    color: #19191B;
+                    margin-bottom: 7px;
+                }
+
+                span {
+                    font-size: 16px;
+                    color: #6A6A80;
+                    font-weight: 400;
+                    display: block;
+                }
+
+            }
+        }
+
+        p {
+            font-size: 16px;
+            line-height: 1.8;
+            font-weight: 400;
+            color: #42425A;
+            margin: 30px 0 32px 0;
+        }
+
+        &:hover {
+            box-shadow: 0px 30px 30px 0px rgba(0, 0, 0, 0.08);
+            background: #fff;
+            border-color: transparent;
+
+            &::before {
+                opacity: 1;
+            }
+        }
+    }
+}
+
+
+.testmonail_active.owl-carousel {
+    .owl-nav div {
+        background: transparent;
+        height: auto;
+        left: -60px;
+        line-height: 60px;
+        // opacity: 0;
+        position: absolute;
+        text-align: center;
+        top: 50%;
+        transform: translateY(-50%);
+        right: 0;
+        -webkit-transition: all 0.3s ease 0s;
+        -o-transition: all 0.3s ease 0s;
+        transition: all 0.3s ease 0s;
+        // visibility: hidden;
+        width: 32px;
+        font-size: 31px;
+        color: #ACB8C2;
+        @include border-radius(50%);
+    }
+
+    .owl-nav {
+        div {
+            &.owl-next {
+                left: auto;
+                right: -60px;
+            }
+
+            &.owl-prev {
+                // i{
+                // 	position: relative;
+                // 	right: 2px;
+                // }
+            }
+        }
+    }
+
+    &:hover {
+        .owl-nav {
+            div {
+                opacity: 1;
+                visibility: visible;
+
+                &:hover {
+                    color: $color_2;
+                }
+            }
+        }
+    }
+}
+
+.more_faq_link {
+    font-size: 20px;
+    font-weight: 700;
+    text-transform: capitalize;
+    color: #392C7D;
+
+    &:hover {
+        color: #392C7D;
+    }
+}
+
+
+//   pricing_widget 
+.pricing_widget {
+    border: 1px solid #ECECEC;
+    padding: 30px 33px;
+    border-radius: 20px;
+
+    .pricing_widget_header {
+        h3 {
+            font-size: 30px;
+            font-style: normal;
+            font-weight: 700;
+            line-height: 46px;
+
+            span {
+                font-size: 17px;
+                font-style: normal;
+                font-weight: 400;
+            }
+        }
+
+        h4 {
+            font-size: 24px;
+            font-style: normal;
+            font-weight: 700;
+            margin: 15px 0 15px 0;
+        }
+
+        p {
+            font-size: 14px;
+            font-style: normal;
+            font-weight: 400;
+            color: #424242;
+            margin-bottom: 27px;
+        }
+    }
+
+    .pricing_widget_body {
+        ul {
+            li {
+                font-size: 14px;
+                font-style: normal;
+                font-weight: 400;
+                color: #424242;
+                display: flex;
+                grid-gap: 12px;
+                align-items: center;
+
+                &:not(:last-child) {
+                    margin-bottom: 15px;
+                }
+
+                span {
+                    width: 20px;
+                    height: 20px;
+                    border-radius: 50%;
+                    display: inline-flex;
+                    align-items: center;
+                    justify-content: center;
+                    color: #242424;
+                    background: rgba(36, 36, 36, .1);
+                    font-size: 12px;
+                }
+            }
+        }
+    }
+
+    &.active_price {
+        box-shadow: 0px 42px 34px 0px rgba(82, 67, 194, 0.30);
+        background: #392C7D;
+
+        .pricing_widget_header {
+            h3 {
+                color: #fff;
+
+                span {
+                    color: #fff;
+                }
+            }
+
+
+            p ,h4{
+                color: #fff;
+            }
+        }
+
+        .pricing_widget_body {
+            ul {
+                li {
+                    color: #fff;
+
+                    span {
+                        background: rgba(255, 255, 255, 1);
+                    }
+                }
+            }
+        }
+    }
+
+    .pricing_tag {
+        background: #FF3156;
+        font-size: 10px;
+        font-style: normal;
+        font-weight: 700;
+        line-height: normal;
+        letter-spacing: 0.833px;
+        border-radius: 30px;
+        color: #fff;
+        padding: 7px 9px;
+    }
+}

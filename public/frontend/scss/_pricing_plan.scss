@@ -1,0 +1,64 @@
+.lms_pricing_wized {
+  border: 1px solid #ebebeb;
+  padding: 45px 40px 40px 40px;
+  @media #{$tab} {
+    padding: 30px;
+  }
+  .lms_pricing_hader {
+    span {
+      font-size: 20px;
+      font-weight: 900;
+      font-family: $font1;
+      display: block;
+    }
+    h3 {
+      font-size: 48px;
+      font-weight: 700;
+      color: $purple_color;
+      font-family: $font1;
+      margin: 18px 0 14px 0;
+      @media #{$tab} {
+        font-size: 35px;
+      }
+    }
+    h5 {
+      font-size: 16px;
+      font-weight: 700;
+      font-family: $font2;
+      margin-bottom: 4px;
+    }
+    p {
+      font-size: 14px;
+      font-weight: 500;
+      line-height: 1.4;
+    }
+  }
+  .lms_pricing_body {
+    margin: 37px 0 35px 0;
+    ul {
+      li {
+        font-size: 16px;
+        font-weight: 500;
+        color: $theme_color;
+        line-height: 26px;
+        position: relative;
+        padding-left: 15px;
+        &:not(:last-child) {
+          margin-bottom: 14px;
+        }
+        &::before {
+          content: "";
+          position: absolute;
+          width: 5px;
+          height: 5px;
+          background: #0b0a24;
+          left: 0;
+          top: 10px;
+          border-radius: 50%;
+        }
+      }
+    }
+  }
+  .lms_pricing_footer {
+  }
+}

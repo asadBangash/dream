@@ -1,0 +1,11 @@
+{
+    "name": "MultiBranch",
+    "alias": "multibranch",
+    "description": "",
+    "keywords": [],
+    "priority": 0,
+    "providers": [
+        "Modules\\MultiBranch\\Providers\\MultiBranchServiceProvider"
+    ],
+    "files": []
+}

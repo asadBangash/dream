@@ -1,0 +1,11 @@
+{
+    "name": "MainApp",
+    "alias": "mainapp",
+    "description": "",
+    "keywords": [],
+    "priority": 0,
+    "providers": [
+        "Modules\\MainApp\\Providers\\MainAppServiceProvider"
+    ],
+    "files": []
+}

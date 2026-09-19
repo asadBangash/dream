@@ -1,0 +1,1 @@
+<p class="certificate_description">{!!$data['description']!!}</p>

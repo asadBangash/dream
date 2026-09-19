@@ -1,0 +1,204 @@
+.event_wrapper {
+  display: flex;
+  @media #{$tab2} {
+    flex-wrap: wrap;
+  }
+  @media #{$lg_device} {
+    flex-wrap: wrap;
+  }
+  .event_wrapper_content {
+    max-width: 57%;
+    flex-shrink: 0;
+    width: 100%;
+    @media #{$tab2} {
+      max-width: 100%;
+    }
+    @media #{$lg_device} {
+      max-width: 100%;
+    }
+  }
+  .event_tabs {
+    max-width: 43%;
+    flex-shrink: 0;
+    width: 100%;
+    @media #{$tab2} {
+      max-width: 100%;
+      margin-top: 20px;
+    }
+    @media #{$lg_device} {
+      max-width: 100%;
+      margin-top: 20px;
+    }
+    .nav-item:nth-child(even) .nav-link{
+        background: #FEFEFE;
+        box-shadow: 0px 0px 250px rgba(0, 0, 0, 0.09);
+    }
+    .nav-item {
+      .nav-link {
+        display: flex;
+        align-items: center;
+        grid-gap: 36px;
+        padding: 0;
+        background: $white;
+        @media #{$tab2} {
+          grid-gap: 20px;
+          align-items: flex-start;
+        }
+        @media #{$tab2} {
+          margin-bottom: 20px;
+        }
+        .icon {
+          background: #ff5170;
+          width: 125px;
+          height: 126px;
+          display: inline-flex;
+          align-items: center;
+          flex-direction: column;
+          justify-content: center;
+          flex-shrink: 0;
+          @media #{$tab2} {
+            width: 80px;
+            height: 80px;
+          }
+          @media #{"(min-width: 1200px) and (max-width: 1470.98px)"} {
+            width: 125px;
+            height: 98px;
+          }
+          h3 {
+            font-weight: 700;
+            font-size: 36px;
+            line-height: 45px;
+            color: $white;
+            margin-bottom: 10px;
+          }
+          h5 {
+            font-weight: 400;
+            font-size: 12px;
+            line-height: 15px;
+            color: $white;
+            margin: 0;
+          }
+        }
+        .event_content {
+          span {
+            font-size: 12px;
+            line-height: 15px;
+            text-align: center;
+            color: #333333;
+            display: flex;
+            align-items: center;
+            grid-gap: 15px;
+            margin-bottom: 13px;
+            i {
+              font-size: 18px;
+              position: relative;
+              top: -1px;
+            }
+          }
+          p {
+            font-weight: 400;
+            font-size: 20px;
+            line-height: 32px;
+            color: #333333;
+          }
+        }
+        &.active {
+          background: #f8f8f8;
+          .icon {
+            background: #ff395c;
+          }
+        }
+      }
+    }
+  }
+}
+
+.eventList_widget {
+  box-shadow: 0px 0px 30px rgba(0, 0, 0, 0.1);
+  .event_thumb {
+    display: block;
+    overflow: hidden;
+  }
+  .eventList_meta {
+    padding: 30px;
+    .eventList_title {
+      h3 {
+        font-size: 20px;
+        font-weight: 400;
+        span{
+          font-size: 38px;
+          font-weight: 700;
+        }
+      }
+      .eventtag {
+        width: 69px;
+        height: 40px;
+        background: #ff5170;
+        font-weight: 400;
+        font-size: 16px;
+        line-height: 24px;
+        text-transform: capitalize;
+        color: #ffffff;
+      }
+    }
+    h4 {
+        margin: 20px 0 15px 0;
+      a {
+        font-weight: 700;
+        font-size: 22px;
+        line-height: 32px;
+        &:hover{
+          color: $purple_color;
+        }
+      }
+    }
+    p {
+      font-weight: 400;
+      font-size: 14px;
+      line-height: 26px;
+      text-transform: capitalize;
+      color: #666666;
+      margin-bottom: 20px;
+    }
+    .event_date_location{
+        li{
+            font-weight: 400;
+            font-size: 16px;
+            line-height: 24px;
+            color: #FF5170;
+            &:not(:last-child){
+                margin-bottom: 10px;
+            }
+            i{
+                margin-right: 15px;
+            }
+        }
+    }
+  }
+}
+
+// portfolio-menu 
+.portfolio-menu{
+  grid-gap: 24px;
+  @media #{$tab} {
+    grid-gap: 10px;
+  }
+  button{
+    font-weight: 400;
+    font-size: 20px;
+    color: #666666;
+    border: 1px solid #666666;
+    border-radius: 6px;
+    padding: 9px 15px;
+    background: #fff;
+    @media #{$tab} {
+      padding: 6px 14px;
+      font-size: 14px;
+    }
+    &.active{
+      background: $purple_color;
+      color: $white;
+      border-color: $purple_color;
+    }
+  }
+}

@@ -1,0 +1,226 @@
+.blog_area {
+  padding-top: 80px;
+  padding-bottom: 10px;
+  @media #{$tab} {
+    padding-top: 70px;
+    padding-bottom: 10px;
+  }
+}
+.blog_widget {
+  margin-bottom: 0px;
+  display: flex;
+  @media #{$tab2} {
+    flex-wrap: wrap;
+  }
+  @media #{$lg_device} {
+    flex-wrap: wrap;
+  }
+  &:hover {
+    .thumb {
+      img {
+        transform: scale(1);
+      }
+    }
+  }
+  .thumb {
+    display: block;
+    overflow: hidden;
+    max-width: 50%;
+    flex-shrink: 0;
+    @media #{$tab2} {
+      max-width: 100%;
+      width: 100%;
+    }
+    @media #{$lg_device} {
+      max-width: 100%;
+      width: 100%;
+    }
+    img {
+      transition: 0.3s;
+      transform: scale(1.1);
+      width: 100% !important;
+      height: 100%;
+    object-fit: cover;
+    }
+  }
+  .blog_meta {
+    padding-right: 20px;
+    background: #392c7d;
+    padding: 30px 22px;
+    @media #{$medium_device} {
+      padding-right: 0;
+    }
+    .brand_text {
+      margin: 0;
+      background: $purple_color;
+      font-weight: 400;
+      font-size: 16px;
+      color: $white;
+      padding: 13px 16px;
+      display: inline-flex;
+      margin-bottom: 20px;
+    }
+    h4 {
+        margin: 0;
+      a {
+        font-weight: 700;
+        font-size: 22px;
+        transition: 0.3s;
+        line-height: 1.5;
+        color: $white;
+        display: -webkit-box;
+        -webkit-line-clamp: 2;
+        -webkit-box-orient: vertical;
+        overflow: hidden;
+        text-overflow: ellipsis;
+        &:hover {
+          color: $purple_color;
+        }
+      }
+      &:hover {
+        color: $purple_color;
+      }
+    }
+    p {
+      font-weight: 400;
+      font-size: 14px;
+      line-height: 26px;
+      color: #c0c0c0;
+      margin: 27px 0 30px 0;
+      display: -webkit-box;
+    -webkit-line-clamp: 5;
+    -webkit-box-orient: vertical;
+    overflow: hidden;
+    text-overflow: ellipsis;
+    }
+    .blog_bottom {
+      .blog_readmore {
+        .blog_readmore_text {
+          font-weight: 400;
+          font-size: 14px;
+          color: $white;
+          transition: .3s;
+          margin-bottom: 0;
+        }
+        i{
+            font-size: 14px;
+            color: $white;
+        }
+        &:hover{
+            .blog_readmore_text, i{
+                color: $purple_color;
+            }
+            
+        }
+      }
+      .blog_post_date{
+        font-weight: 400;
+        font-size: 14px;
+        color: #FFFFFF;
+      }
+    }
+  }
+  &.style2{
+    .blog_meta{
+      background: $purple_color;
+      .brand_text {
+        background: $home_primary;
+        color: $white;
+      }
+      h4 {
+        a {
+          color: $white;
+          &:hover {
+            color: $home_primary;
+          }
+        }
+        &:hover {
+          color: $home_primary;
+        }
+      }
+      p{
+        color: #F8F8F8;
+      }
+      .blog_bottom {
+        .blog_readmore {
+          .blog_readmore_text {
+            color: $white;
+          }
+          i{
+              font-size: 14px;
+              color: $white;
+          }
+          &:hover{
+              .blog_readmore_text, i{
+                  color: $home_primary;
+              }
+              
+          }
+        }
+      }
+    }
+  }
+}
+.blog_grid{
+  display: grid;
+  grid-template-columns: repeat(2,1fr);
+  max-width: 1440px;
+  @media #{$tab} {
+    grid-template-columns: repeat(1,1fr);
+  }
+}
+// blog_page_wrapper
+.blog_page_wrapper {
+  padding: 150px 0 90px 0;
+  @media #{$tab} {
+    padding: 75px 0 35px 0;
+  }
+  .single_blog {
+    margin-bottom: 50px;
+    @media #{$tab} {
+      margin-bottom: 30px;
+    }
+    .thumb {
+      overflow: hidden;
+      margin-bottom: 44px;
+      display: block;
+      @media #{$tab} {
+        margin-bottom: 30px;
+      }
+      img {
+        width: 100%;
+        transition: 0.3s;
+        transform: scale(1);
+      }
+    }
+    .blog_meta {
+      span {
+        font-family: $font2;
+        font-size: 14px;
+        font-weight: 500;
+        color: #373737;
+        display: block;
+        margin-bottom: 16px;
+      }
+      h4 {
+        font-size: 24px;
+        font-weight: 700;
+        line-height: 34px;
+        display: inline-block;
+        @media #{$tab} {
+          font-size: 20px;
+          line-height: 30px;
+        }
+      }
+    }
+    &:hover {
+      .thumb {
+        img {
+          transform: scale(1.1);
+        }
+      }
+    }
+  }
+}
+
+

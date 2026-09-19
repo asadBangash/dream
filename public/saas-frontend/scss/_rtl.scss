@@ -1,0 +1,142 @@
+html[dir="rtl"]{
+    // body{
+    //     overflow-x: hidden;
+    //   }
+    .header_area .header__wrapper .header__left .logo_img {
+        margin-left: 80px;
+        margin-right: 0;
+        @media #{$lg_device} {
+            margin-left: 20px;
+        }
+    }
+    .readMore_btn .btn_icon {
+        transform: rotate(180deg);
+    }
+    .blog_widget .blog_meta .blog_bottom .blog_readmore i {
+        transform: rotate(180deg);
+        position: relative;
+        display: inline-block;
+    }
+    .slicknav_btn {
+        float: left;
+    }
+    .slicknav_btn {
+        right: auto;
+        left: 28px;
+    }
+    .theme_mailChimp2 form {
+        overflow-x: hidden;
+        position: relative;
+    }
+    .blog_widget .blog_meta{
+        @media #{$medium_device} {
+            padding: 20px;
+        }
+    }
+    #back-top {
+        left: 20px;
+        right: auto;
+    }
+    .about_gallery_wrapper .single_about_gallery .single_about_content {
+        padding: 30px 73px 30px 0;
+        @media #{$tab2} {
+            padding: 30px 0;
+        }
+    }
+    .about_gallery_wrapper .single_about_gallery:not(:nth-child(2n + 1)) .single_about_content {
+        padding: 30px 0;
+    }
+    .academic_banner_area .academic_bannerinfo::before {
+        right: 0;
+        left: auto;
+    }
+    .academic_banner_area .academic_bannerinfo {
+        padding: 28px 56px 28px 0;
+        @media #{$tab2} {
+            padding: 20px;
+        }
+    }
+    .academic_page_details_info_sidebox .depertmentDetails_list ul li a::before {
+        transform: translateY(-50%) rotate(180deg);
+        left: auto;
+        right: 23px;
+    }
+    .academic_page_details_info_sidebox .depertmentDetails_list ul li a {
+        padding: 36px 58px 20px 0;
+    }
+    .header_area .header_topbar_area .header_topbar_wrapper .header_topbar_right .login__regiter::before {
+        margin-right: 0;
+        margin-left: 20px;
+    }
+    .event_wrap_location_time ul li::before {
+        left: auto;
+        right: 0;
+    }
+    .event_wrap_location_time ul li {
+        padding-right: 40px;
+        padding-left: 0;
+    }
+    .event_page_lists li::before {
+        left: auto;
+        right: 0;
+    }
+    .event_page_lists li {
+        padding-right: 48px;
+        padding-left: 0;
+    }
+    .eventList_widget .eventList_meta .event_date_location li i {
+        margin-right: 0;
+        margin-left: 15px;
+    }
+    .theme_pagination a.next_pagination i {
+        transform: rotate(180deg);
+    }
+    .news_page_right_sidebar_list ul li a {
+        padding: 31px 58px 20px 0;
+    }
+    .news_page_right_sidebar_list ul li a::before {
+        transform: translateY(-50%) rotate(180deg);
+        left: auto;
+        right: 23px;
+    }
+    .blog_page_widget .blog_page_meta .blog_page_bottom a i {
+        margin-left: 0;
+        transform: rotate(180deg);
+        margin-right: 12px;
+    }
+    .blog_page_widget .blog_page_meta .blog_page_bottom .blog_date i {
+        margin-right: 0;
+        margin-left: 9px;
+    }
+    .nice-select .nice-select-search-box::after {
+        left: auto;
+        right: 50px;
+    }
+    .nice-select .nice-select-search-box input {
+        border: 0 !important;
+        padding-right: 48px;
+    }
+    .search_result_print_view_header_content::before {
+        left: auto;
+        right: 0;
+    }
+    .search_result_print_view_header_content {
+        padding-right: 50px;
+        padding-left: 0;
+        @media #{$tab2} {
+            padding-right: 0;
+        }
+    }
+    .nice-select .option {
+        text-align: right;
+    }
+    .header_area .contact_wrap .contact_btn {
+        margin-left: 0;
+        margin-right: 48px;
+    }
+    .event_wrapper .event_tabs .nav-item .nav-link.active::before {
+        transform: translateY(-50%) rotate(180deg);
+        left: auto;
+        right: -32px;
+    }
+}
