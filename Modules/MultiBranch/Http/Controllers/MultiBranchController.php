@@ -13,6 +13,10 @@ class MultiBranchController extends Controller
     public function switchBranch(Request $request)
     {
         try {
+            if (! isSuperAdmin()) {
+                abort(403, 'Only Super Admin can switch branches.');
+            }
+
             $user = auth()->user();
             $user->branch_id = $request->branch_id;
             $user->save();

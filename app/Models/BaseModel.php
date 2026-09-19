@@ -16,6 +16,14 @@ class BaseModel extends Model
 
         if (hasModule('MultiBranch')) {
             static::addGlobalScope('branch_id', function (Builder $builder) {
+                if (! auth()->check()) {
+                    return;
+                }
+
+                if (isSuperAdmin()) {
+                    return;
+                }
+
                 $table = $builder->getQuery()->from;
                 $branchId = auth()->user()->branch_id ?? null;
 
@@ -25,11 +33,16 @@ class BaseModel extends Model
             });
 
             static::creating(function ($model) {
+                if (! auth()->check() || isSuperAdmin()) {
+                    return;
+                }
+
                 $branchId = auth()->user()->branch_id ?? null;
 
                 if (
                     $branchId &&
-                    Schema::hasColumn($model->getTable(), 'branch_id')
+                    Schema::hasColumn($model->getTable(), 'branch_id') &&
+                    empty($model->branch_id)
                 ) {
                     $model->branch_id = $branchId;
                 }

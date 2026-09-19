@@ -77,77 +77,9 @@ class DatabaseSeeder extends Seeder
         $seeders = [];
 
         if (env('APP_DEMO')) {
-            $seeders = [
-                UploadSeeder::class,
-                RoleSeeder::class,
-                DesignationSeeder::class,
-                UserSeeder::class,
-                PermissionSeeder::class,
-                FlagIconSeeder::class,
-                LanguageSeeder::class,
-                SettingSeeder::class,
-                SearchSeeder::class,
-                GenderSeeder::class,
-                ReligionSeeder::class,
-                BloodGroupSeeder::class,
-                SessionSeeder::class,
-                SubscriptionSeeder::class,
-                // // Staff
-                DepartmentSeeder::class,
-                StaffSeeder::class,
-                // // Academic
-                ClassesSeeder::class,
-                SectionSeeder::class,
-                ShiftSeeder::class,
-                SubjectSeeder::class,
-                ClassSetupSeeder::class,
-                ClassSetupChildrensSeeder::class,
-                ClassRoomSeeder::class,
-                SubjectAssignSeeder::class,
-                TimeScheduleSeeder::class,
-                ClassRoutineSeeder::class,
-                // Student info
-                ParentGuardianSeeder::class,
-                StudentCategorySeeder::class,
-                StudentSeeder::class,
-                // // Fees
-                FeesGroupSeeder::class,
-                FeesTypeSeeder::class,
-                FeesMasterSeeder::class,
-                // // Examication
-                ExamTypeSeeder::class,
-                MarkGradeSeeder::class,
-                ExamRoutineSeeder::class,
-                // // Accounts
-                AccountHeadSeeder::class,
-                IncomeSeeder::class,
-                ExpenseSeeder::class,
-                ExaminationSettingsSeeder::class,
-                ExamAssignSeeder::class,
-                MarkRegisterSeeder::class,
-                // // Frontend
-                PageSectionsSeeder::class,
-                SliderSeeder::class,
-                CounterSeeder::class,
-                NewsSeeder::class,
-                NoticeSeeder::class,
-                EventSeeder::class,
-                GalleryCategorySeeder::class,
-                GallerySeeder::class,
-                ContactInfoSeeder::class,
-                DepartmentContactSeeder::class,
-                AboutSeeder::class,
-                PageSeeder::class,
-                // // Library
-                BookCategorySeeder::class,
-                // // Online Examination
-                QuestionGroupSeeder::class,
-                QuestionBankSeeder::class,
-                OnlineExamSeeder::class,
-                CurrencySeeder::class,
-                LeaveTypeSeeder::class,
-            ];
+            $this->call(DreamTuitionDemoSeeder::class);
 
+            return;
         } else {
             $seeders = [
                 UploadSeeder::class,
