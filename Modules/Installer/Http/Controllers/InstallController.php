@@ -265,7 +265,16 @@ class InstallController extends Controller
             session()->forget('DatabaseSetup');
             session()->forget('AdminSetup');
             session()->forget('Complete');
-            Artisan::call('storage:link');
+
+            if (! env('STORAGE_DIRECT_PUBLIC', false) && function_exists('exec')) {
+                try {
+                    Artisan::call('storage:link');
+                } catch (\Throwable $storageLinkException) {
+                    Log::warning('storage:link skipped during install welcome', [
+                        'message' => $storageLinkException->getMessage(),
+                    ]);
+                }
+            }
 
             return view('installer::install.welcome', compact('data'));
         } catch (\Throwable $th) {
