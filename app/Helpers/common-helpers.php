@@ -735,6 +735,75 @@ if (!function_exists('isSuperAdmin')) {
     }
 }
 
+if (! function_exists('isBranchAdmin')) {
+    function isBranchAdmin(): bool
+    {
+        return auth()->check()
+            && auth()->user()->role_id === \App\Enums\RoleEnum::ADMIN;
+    }
+}
+
+if (! function_exists('superAdminActiveBranchId')) {
+    /** Super Admin session filter: null = all branches. */
+    function superAdminActiveBranchId(): ?int
+    {
+        if (! isSuperAdmin()) {
+            return null;
+        }
+
+        $id = session('active_branch_id');
+
+        if ($id === null || $id === '' || $id === 'all' || (int) $id === 0) {
+            return null;
+        }
+
+        return (int) $id;
+    }
+}
+
+if (! function_exists('effectiveBranchScopeId')) {
+    /** Branch ID applied to queries for the current user. */
+    function effectiveBranchScopeId(): ?int
+    {
+        if (! auth()->check() || ! hasModule('MultiBranch')) {
+            return null;
+        }
+
+        if (isSuperAdmin()) {
+            return superAdminActiveBranchId();
+        }
+
+        $branchId = auth()->user()->branch_id ?? null;
+
+        return $branchId ? (int) $branchId : null;
+    }
+}
+
+if (! function_exists('authorizeBranchId')) {
+    function authorizeBranchId(?int $branchId): void
+    {
+        if (! hasModule('MultiBranch') || ! auth()->check() || $branchId === null) {
+            return;
+        }
+
+        if (isSuperAdmin()) {
+            $active = superAdminActiveBranchId();
+            if ($active === null) {
+                return;
+            }
+            if ((int) $branchId !== $active) {
+                abort(403, 'Unauthorized branch access.');
+            }
+
+            return;
+        }
+
+        if ((int) $branchId !== (int) auth()->user()->branch_id) {
+            abort(403, 'Unauthorized branch access.');
+        }
+    }
+}
+
 
 if (!function_exists('admission_fields')) {
     function admission_fields()

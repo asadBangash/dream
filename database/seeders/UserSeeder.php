@@ -24,7 +24,7 @@ class UserSeeder extends Seeder
         User::create([
             'name'              => 'Super Admin',
             'phone'             => Session::get('admin_phone') ?? '+92 300 1234567',
-            'email'             => Session::get('admin_email') ?? 'superadmin@' . $domain,
+            'email'             => Session::get('admin_email') ?? env('SUPERADMIN_EMAIL', 'superadmin@' . $domain),
             'email_verified_at' => now(),
             'password'          => Hash::make('123456'),
             'remember_token'    => Str::random(10),

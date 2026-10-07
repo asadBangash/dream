@@ -173,9 +173,10 @@
 
             @if(hasModule('MultiBranch') && isSuperAdmin() && !empty($branches))
                 <div class="header-control-item">
-                    <select name="branch_id" id="branchId" class="nice-select niceSelect bordered_style wide no-border">
+                    <select name="branch_id" id="branchId" class="nice-select niceSelect bordered_style wide no-border" title="{{ ___('common.Branch') }}">
+                        <option value="all" {{ superAdminActiveBranchId() === null ? 'selected' : '' }}>{{ ___('common.All Branches') ?? 'All Branches' }}</option>
                         @foreach($branches ?? [] as $id => $branch)
-                            <option value="{{ $id }}" {{ auth()->user()->branch_id == $id ? 'selected' : '' }}>{{ @$branch }}</option>
+                            <option value="{{ $id }}" {{ superAdminActiveBranchId() === (int) $id ? 'selected' : '' }}>{{ @$branch }}</option>
                         @endforeach
                     </select>
                 </div>

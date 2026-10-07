@@ -20,12 +20,8 @@ class BaseModel extends Model
                     return;
                 }
 
-                if (isSuperAdmin()) {
-                    return;
-                }
-
                 $table = $builder->getQuery()->from;
-                $branchId = auth()->user()->branch_id ?? null;
+                $branchId = effectiveBranchScopeId();
 
                 if ($branchId && Schema::hasColumn($table, 'branch_id')) {
                     $builder->where("{$table}.branch_id", $branchId);
@@ -33,11 +29,15 @@ class BaseModel extends Model
             });
 
             static::creating(function ($model) {
-                if (! auth()->check() || isSuperAdmin()) {
+                if (! auth()->check()) {
                     return;
                 }
 
-                $branchId = auth()->user()->branch_id ?? null;
+                if (isSuperAdmin() && superAdminActiveBranchId() === null) {
+                    return;
+                }
+
+                $branchId = effectiveBranchScopeId();
 
                 if (
                     $branchId &&

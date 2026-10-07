@@ -91,22 +91,30 @@ if (!function_exists('gbv')) {
 if (!function_exists('AuthPermitCheck')) {
     function AuthPermitCheck()
     {
+        if (filter_var(env('SKIP_INSTALLER', false), FILTER_VALIDATE_BOOLEAN)) {
+            return true;
+        }
+
         $markerFiles = ['.WelcomeNote', '.CheckEnvironment', '.LicenseVerification', '.DatabaseSetup', '.AdminSetup', '.Complete'];
 
         $allMarkersExist = collect($markerFiles)->every(function ($file) {
             return Storage::disk('local')->exists($file);
         });
 
-        if ($allMarkersExist) {
+        if ($allMarkersExist || Storage::disk('local')->exists('.app_installed')) {
             return true;
         }
 
         try {
-            if (empty(env('DB_DATABASE')) || empty(env('APP_KEY'))) {
+            if (empty(config('database.connections.mysql.database')) || empty(config('app.key'))) {
                 return false;
             }
 
-            return Schema::hasTable('users') && Schema::hasTable('migrations');
+            if (! Schema::hasTable('migrations') || ! Schema::hasTable('users')) {
+                return false;
+            }
+
+            return \App\Models\User::query()->exists();
         } catch (\Throwable $e) {
             return false;
         }

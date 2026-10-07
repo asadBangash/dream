@@ -1,3 +1,4 @@
+@if(isSuperAdmin())
 <li class="sidebar-menu-item {{ set_menu(['branches*']) }}">
     <a href="{{ route('branch.index') }}" class="parent-item-content">
         <i class="las la-code-branch"></i>
@@ -8,3 +9,4 @@
         </span>
     </a>
 </li>
+@endif

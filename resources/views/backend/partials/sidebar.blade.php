@@ -14,7 +14,7 @@
                     </a>
                 </li>
 
-                @if (hasModule('MultiBranch'))
+                @if (hasModule('MultiBranch') && isSuperAdmin())
                     @include('multibranch::layouts.menu')
                 @endif
                 <!-- Admission start -->

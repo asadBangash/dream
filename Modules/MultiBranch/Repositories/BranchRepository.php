@@ -5,6 +5,7 @@ namespace Modules\MultiBranch\Repositories;
 
 
 use App\Enums\RoleEnum;
+use App\Models\Role;
 use App\Models\User;
 use App\Traits\ReturnFormatTrait;
 use Illuminate\Support\Facades\DB;
@@ -50,13 +51,26 @@ class BranchRepository implements BranchInterface
             $branch->country_id = 1;
             $branch->save();
 
-            $user = new $this->userModel;
-            $user->name = $request->user['name'];
-            $user->email = $request->user['email'];
-            $user->role_id = RoleEnum::ADMIN;
-            $user->branch_id = $branch->id;
-            $user->password = Hash::make($request->user['password']);
-            $user->save();
+            $adminPermissions = Role::find(RoleEnum::ADMIN)?->permissions ?? [];
+
+            if ($request->filled('branch_admin_user_id')) {
+                $user = $this->userModel->findOrFail($request->branch_admin_user_id);
+                $user->role_id = RoleEnum::ADMIN;
+                $user->branch_id = $branch->id;
+                $user->permissions = $adminPermissions;
+                $user->email_verified_at = $user->email_verified_at ?? now();
+                $user->save();
+            } elseif (! empty($request->user['email'])) {
+                $user = new $this->userModel;
+                $user->name = $request->user['name'];
+                $user->email = $request->user['email'];
+                $user->role_id = RoleEnum::ADMIN;
+                $user->branch_id = $branch->id;
+                $user->permissions = $adminPermissions;
+                $user->email_verified_at = now();
+                $user->password = Hash::make($request->user['password']);
+                $user->save();
+            }
         });
 
         return true;

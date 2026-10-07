@@ -42,7 +42,11 @@ class VerifyBranchIsolation extends Command
         Auth::logout();
 
         Auth::login($superAdmin);
-        $superVisible = Student::count();
+        session()->forget('active_branch_id');
+        $superVisibleAll = Student::count();
+        session(['active_branch_id' => $boysBranchId]);
+        $superVisibleBoysOnly = Student::count();
+        session()->forget('active_branch_id');
         Auth::logout();
 
         $totalStudents = Student::withoutGlobalScopes()->count();
@@ -50,14 +54,16 @@ class VerifyBranchIsolation extends Command
         $this->table(['Check', 'Result'], [
             ['Boys admin student count', $boysVisible],
             ['Girls admin student count', $girlsVisible],
-            ['Super admin student count', $superVisible],
+            ['Super admin (all branches) student count', $superVisibleAll],
+            ['Super admin (boys filter) student count', $superVisibleBoysOnly],
             ['Total students in DB', $totalStudents],
             ['Boys admin blocked from girls student ID', $crossAccess ? 'FAIL' : 'PASS'],
             ['Girls admin blocked from boys student ID', $crossAccessGirls ? 'FAIL' : 'PASS'],
-            ['Super admin sees all students', $superVisible === $totalStudents ? 'PASS' : 'FAIL'],
+            ['Super admin sees all students', $superVisibleAll === $totalStudents ? 'PASS' : 'FAIL'],
+            ['Super admin branch filter narrows data', $superVisibleBoysOnly < $superVisibleAll ? 'PASS' : 'SKIP/N/A'],
         ]);
 
-        $failed = $crossAccess || $crossAccessGirls || $superVisible !== $totalStudents;
+        $failed = $crossAccess || $crossAccessGirls || $superVisibleAll !== $totalStudents;
 
         return $failed ? self::FAILURE : self::SUCCESS;
     }

@@ -45,6 +45,7 @@ class Kernel extends HttpKernel
             \App\Http\Middleware\CustomThrottleRequests::class,
             \Illuminate\Routing\Middleware\ThrottleRequests::class,
             \App\Http\Middleware\SetAppTimezone::class,
+            \App\Http\Middleware\EnforceBranchScope::class,
         ],
         'api' => [
             \Laravel\Sanctum\Http\Middleware\EnsureFrontendRequestsAreStateful::class,
@@ -87,6 +88,7 @@ class Kernel extends HttpKernel
         'student' => \App\Http\Middleware\StudentMiddleware::class,
         'admin' => \App\Http\Middleware\AdminMiddleware::class,
         'guardian' => \App\Http\Middleware\GuardianMiddleware::class,
+        'superadmin' => \App\Http\Middleware\SuperAdminOnly::class,
         'throttleweb' => \App\Http\Middleware\CustomThrottleRequests::class,
 
 

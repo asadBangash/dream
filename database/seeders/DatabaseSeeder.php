@@ -87,6 +87,7 @@ class DatabaseSeeder extends Seeder
                 DesignationSeeder::class,
                 PermissionSeeder::class,
                 UserSeeder::class,
+                BranchBootstrapSeeder::class,
                 FlagIconSeeder::class,
                 LanguageSeeder::class,
                 SettingSeeder::class,

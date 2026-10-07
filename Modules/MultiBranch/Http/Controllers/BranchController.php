@@ -2,7 +2,9 @@
 
 namespace Modules\MultiBranch\Http\Controllers;
 
+use App\Enums\RoleEnum;
 use App\Http\Controllers\Controller;
+use App\Models\User;
 use Illuminate\Http\RedirectResponse;
 use Illuminate\Http\Request;
 use Illuminate\Http\Response;
@@ -38,6 +40,10 @@ class BranchController extends Controller
     {
         $data['title'] = ___('multibranch.create branch');
         $data['countries'] = [];
+        $data['branchAdminCandidates'] = User::query()
+            ->whereIn('role_id', [RoleEnum::ADMIN, RoleEnum::STAFF, RoleEnum::TEACHER])
+            ->orderBy('name')
+            ->get(['id', 'name', 'email', 'branch_id']);
         return view('multibranch::branch.create')->with($data);
     }
 

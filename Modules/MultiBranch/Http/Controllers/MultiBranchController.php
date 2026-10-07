@@ -17,9 +17,14 @@ class MultiBranchController extends Controller
                 abort(403, 'Only Super Admin can switch branches.');
             }
 
-            $user = auth()->user();
-            $user->branch_id = $request->branch_id;
-            $user->save();
+            $branchId = $request->input('branch_id');
+
+            if ($branchId === null || $branchId === '' || $branchId === 'all' || (int) $branchId === 0) {
+                session()->forget('active_branch_id');
+            } else {
+                session(['active_branch_id' => (int) $branchId]);
+            }
+
             return redirect()->back()->with('success', ___('alert.branch changed successfully'));
         }catch (\Exception $e) {
             Log::error($e->getMessage());

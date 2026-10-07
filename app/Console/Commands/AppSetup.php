@@ -5,6 +5,7 @@ namespace App\Console\Commands;
 use Illuminate\Console\Command;
 use Illuminate\Support\Facades\Artisan;
 use Illuminate\Support\Facades\DB;
+use Illuminate\Support\Facades\Storage;
 
 class AppSetup extends Command
 {
@@ -28,7 +29,20 @@ class AppSetup extends Command
 
         Artisan::call('db:seed', ['--force' => true]);
         $this->line(trim(Artisan::output()));
-        $this->info('Application setup completed.');
+
+        foreach ([
+            '.WelcomeNote'         => 'WelcomeNote',
+            '.CheckEnvironment'    => 'CheckEnvironment',
+            '.LicenseVerification' => 'LicenseVerification',
+            '.DatabaseSetup'       => 'DatabaseSetup',
+            '.AdminSetup'          => 'AdminSetup',
+            '.Complete'            => 'Complete',
+            '.app_installed'       => 'installed',
+        ] as $file => $contents) {
+            Storage::disk('local')->put($file, $contents);
+        }
+
+        $this->info('Application setup completed (installer bypass markers written).');
 
         return self::SUCCESS;
     }
