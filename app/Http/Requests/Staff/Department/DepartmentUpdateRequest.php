@@ -2,30 +2,24 @@
 
 namespace App\Http\Requests\Staff\Department;
 
+use App\Rules\BranchUnique;
 use Illuminate\Foundation\Http\FormRequest;
 
 class DepartmentUpdateRequest extends FormRequest
 {
-    /**
-     * Determine if the user is authorized to make this request.
-     *
-     * @return bool
-     */
     public function authorize()
     {
         return true;
     }
 
-    /**
-     * Get the validation rules that apply to the request.
-     *
-     * @return array<string, mixed>
-     */
     public function rules()
     {
+        $id = (int) $this->route('id');
+
         return [
-            'name'          => 'required|max:255|unique:departments,name,' . Request()->id,
-            'status'        => 'required'
+            'name' => ['required', 'max:255', new BranchUnique('departments', 'name', $id)],
+            'status' => ['required'],
+            'staff_user_id' => ['nullable'],
         ];
     }
 }

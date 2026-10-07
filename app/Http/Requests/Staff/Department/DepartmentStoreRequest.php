@@ -2,30 +2,22 @@
 
 namespace App\Http\Requests\Staff\Department;
 
+use App\Rules\BranchUnique;
 use Illuminate\Foundation\Http\FormRequest;
 
 class DepartmentStoreRequest extends FormRequest
 {
-    /**
-     * Determine if the user is authorized to make this request.
-     *
-     * @return bool
-     */
     public function authorize()
     {
         return true;
     }
 
-    /**
-     * Get the validation rules that apply to the request.
-     *
-     * @return array<string, mixed>
-     */
     public function rules()
     {
-        return [
-            'name'          => 'required|unique:departments',
-            'status'        => 'required'
-        ];
+        return array_merge([
+            'name' => ['required', new BranchUnique('departments', 'name')],
+            'status' => ['required'],
+            'staff_user_id' => ['nullable'],
+        ], branchIdValidationRules());
     }
 }

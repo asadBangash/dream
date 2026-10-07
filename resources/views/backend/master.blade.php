@@ -123,6 +123,29 @@
     @if (hasModule('MultiBranch'))
         <script>
             $(document).ready(function() {
+                const syncFormBranchFromHeader = function() {
+                    const headerBranch = $('#branchId').val();
+                    if (headerBranch && headerBranch !== 'all' && $('#branch_id').length) {
+                        $('#branch_id').val(headerBranch).trigger('change');
+                    }
+                };
+                syncFormBranchFromHeader();
+
+                $(document).on('submit', 'form', function() {
+                    const $form = $(this);
+                    if ($form.find('[name="branch_id"]').length) {
+                        return;
+                    }
+                    const headerBranch = $('#branchId').val();
+                    if (headerBranch && headerBranch !== 'all' && headerBranch !== '') {
+                        $form.append($('<input>', {
+                            type: 'hidden',
+                            name: 'branch_id',
+                            value: headerBranch
+                        }));
+                    }
+                });
+
                 $('#branchId').on('change', function() {
                     let selectedValue = $(this).val();
 

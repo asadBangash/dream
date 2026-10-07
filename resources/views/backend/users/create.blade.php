@@ -24,7 +24,7 @@
                 <form action="{{ route('users.store') }}" enctype="multipart/form-data" method="post" id="visitForm">
                     @csrf
                     <div class="row mb-3">
-
+                        <x-branch-field />
                         <div class="col-lg-3 col-md-6 mb-3">
                             <label for="exampleDataList" class="form-label ">{{ ___('staff.staff_id') }} <span
                                     class="fillable">*</span></label>

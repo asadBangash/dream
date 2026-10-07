@@ -2,26 +2,16 @@
 
 namespace App\Http\Requests\StudentInfo\Student;
 
+use App\Rules\BranchUnique;
 use Illuminate\Foundation\Http\FormRequest;
 
 class StudentStoreRequest extends FormRequest
 {
-    /**
-     * Determine if the user is authorized to make this request.
-     *
-     * @return bool
-     */
     public function authorize()
     {
         return true;
     }
 
-    /**
-     * Get the validation rules that apply to the request.
-     * array:21 [▼ // app\Http\Controllers\StudentInfo\StudentController.php:79
-     *
-     * @return array<string, mixed>
-     */
     public function rules()
     {
         $mobile = '';
@@ -34,10 +24,10 @@ class StudentStoreRequest extends FormRequest
             $email = 'max:255|unique:users,email';
         }
 
-        return [
+        return array_merge([
             'mobile' => $mobile,
             'email' => $email,
-            'admission_no' => 'required|max:255|unique:students,admission_no',
+            'admission_no' => ['required', 'max:255', new BranchUnique('students', 'admission_no')],
             'roll_no' => 'required|max:255',
             'first_name' => 'required|max:255',
             'last_name' => 'required|max:255',
@@ -53,7 +43,7 @@ class StudentStoreRequest extends FormRequest
             'status' => 'required|max:255',
             'siblings_discount' => 'nullable',
             'username' => 'unique:users,username',
-            'password' => 'min:6'
-        ];
+            'password' => 'min:6',
+        ], branchIdValidationRules());
     }
 }

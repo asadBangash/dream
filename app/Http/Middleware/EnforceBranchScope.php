@@ -14,6 +14,13 @@ class EnforceBranchScope
         }
 
         if (isSuperAdmin()) {
+            if (in_array($request->method(), ['POST', 'PUT', 'PATCH'], true)) {
+                $active = superAdminActiveBranchId();
+                if ($active && ! $request->filled('branch_id')) {
+                    $request->merge(['branch_id' => $active]);
+                }
+            }
+
             return $next($request);
         }
 

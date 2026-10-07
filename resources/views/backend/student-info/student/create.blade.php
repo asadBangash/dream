@@ -40,6 +40,7 @@
                     <div class="row mb-3">
                         <div class="col-lg-12">
                             <div class="row">
+                                <x-branch-field />
                                 <div class="col-md-3 mb-3">
                                     <label for="exampleDataList" class="form-label ">{{ ___('student_info.admission_no') }}
                                         <span class="fillable">*</span></label>

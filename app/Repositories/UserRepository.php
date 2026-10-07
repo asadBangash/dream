@@ -102,6 +102,9 @@ class UserRepository implements UserInterface
             $user->upload_id          = $this->UploadImageCreate($request->image, 'backend/uploads/users');
             $user->permissions        = $role->permissions;
             $user->uuid               = Str::uuid();
+            if (hasModule('MultiBranch')) {
+                $user->branch_id = branchIdForPersist($request);
+            }
             $user->save();
 
             $staff                          = new $this->model;

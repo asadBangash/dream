@@ -36,15 +36,17 @@ class AuthenticationController extends Controller
 
     public function login(LoginRequest $request)
     {
-        $email      = $request->safe()->only(['email']);
-        $password   = $request->safe()['password'];
+        $email      = $request->validated('email');
+        $password   = $request->validated('password');
 
         $user       = User::query()->firstWhere('email', $email);
-        
-        if (!$user)
-            $user   = User::query()->firstWhere('phone', $email);
-        if (!$user)
-            $user   = User::query()->firstWhere('username', $email);
+
+        if (!$user) {
+            $user = User::query()->firstWhere('phone', $email);
+        }
+        if (!$user) {
+            $user = User::query()->firstWhere('username', $email);
+        }
         if (!$user) {
             return back()->withErrors([
                 'email' =>  ___('users_roles.the_provided_email_do_not_match_our_records')

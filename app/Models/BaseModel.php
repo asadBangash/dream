@@ -33,18 +33,26 @@ class BaseModel extends Model
                     return;
                 }
 
-                if (isSuperAdmin() && superAdminActiveBranchId() === null) {
+                $table = $model->getTable();
+                if (! Schema::hasColumn($table, 'branch_id')) {
                     return;
                 }
 
-                $branchId = effectiveBranchScopeId();
+                if (empty($model->branch_id)) {
+                    $branchId = request()->input('branch_id') ?: effectiveBranchScopeId();
+                    if ($branchId) {
+                        $model->branch_id = (int) $branchId;
+                    }
+                }
+            });
 
-                if (
-                    $branchId &&
-                    Schema::hasColumn($model->getTable(), 'branch_id') &&
-                    empty($model->branch_id)
-                ) {
-                    $model->branch_id = $branchId;
+            static::saving(function ($model) {
+                if (! auth()->check() || ! Schema::hasColumn($model->getTable(), 'branch_id')) {
+                    return;
+                }
+
+                if ($model->branch_id) {
+                    authorizeBranchId((int) $model->branch_id);
                 }
             });
         }

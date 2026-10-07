@@ -29,6 +29,7 @@
                     <div class="row mb-3">
                         <div class="col-lg-12">
                             <div class="row">
+                                <x-branch-field />
                                 <div class="col-md-4">
                                     <label for="exampleDataList" class="form-label ">{{ ___('common.name') }} <span
                                             class="fillable">*</span></label>

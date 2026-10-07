@@ -787,20 +787,83 @@ if (! function_exists('authorizeBranchId')) {
         }
 
         if (isSuperAdmin()) {
-            $active = superAdminActiveBranchId();
-            if ($active === null) {
+            if (request()->filled('branch_id')) {
                 return;
             }
-            if ((int) $branchId !== $active) {
-                abort(403, 'Unauthorized branch access.');
+            $active = superAdminActiveBranchId();
+            if ($active === null || (int) $branchId === $active) {
+                return;
             }
-
-            return;
+            abort(403, 'Unauthorized branch access.');
         }
 
         if ((int) $branchId !== (int) auth()->user()->branch_id) {
             abort(403, 'Unauthorized branch access.');
         }
+    }
+}
+
+if (! function_exists('resolveBranchIdForValidation')) {
+    /**
+     * Branch context for scoped unique rules and create forms.
+     */
+    function resolveBranchIdForValidation(?int $recordId = null, ?string $table = null): int
+    {
+        if (! hasModule('MultiBranch') || ! auth()->check()) {
+            return 1;
+        }
+
+        if (! isSuperAdmin()) {
+            return (int) auth()->user()->branch_id;
+        }
+
+        if (request()->filled('branch_id')) {
+            return (int) request('branch_id');
+        }
+
+        if ($recordId && $table && \Illuminate\Support\Facades\Schema::hasTable($table)) {
+            $row = \Illuminate\Support\Facades\DB::table($table)->where('id', $recordId)->first(['branch_id']);
+            if ($row && $row->branch_id) {
+                return (int) $row->branch_id;
+            }
+        }
+
+        $active = superAdminActiveBranchId();
+
+        return $active ? (int) $active : 0;
+    }
+}
+
+if (! function_exists('branchIdValidationRules')) {
+    /** Validation rules for branch_id on create forms (Super Admin must pick a branch). */
+    function branchIdValidationRules(bool $forCreate = true): array
+    {
+        if (! $forCreate || ! hasModule('MultiBranch') || ! auth()->check()) {
+            return [];
+        }
+
+        if (isSuperAdmin()) {
+            return [
+                'branch_id' => ['required', 'integer', 'exists:branches,id'],
+            ];
+        }
+
+        return [];
+    }
+}
+
+if (! function_exists('branchIdForPersist')) {
+    function branchIdForPersist($request): int
+    {
+        if (! hasModule('MultiBranch')) {
+            return 1;
+        }
+
+        if (isSuperAdmin()) {
+            return (int) ($request->branch_id ?? superAdminActiveBranchId() ?? 1);
+        }
+
+        return (int) auth()->user()->branch_id;
     }
 }
 

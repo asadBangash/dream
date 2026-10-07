@@ -2,41 +2,33 @@
 
 namespace App\Http\Requests\Academic\Subject;
 
+use App\Rules\BranchUnique;
 use Illuminate\Foundation\Http\FormRequest;
 
 class SubjectStoreRequest extends FormRequest
 {
-    /**
-     * Determine if the user is authorized to make this request.
-     *
-     * @return bool
-     */
     public function authorize()
     {
         return true;
     }
 
-    /**
-     * Get the validation rules that apply to the request.
-     *
-     * @return array<string, mixed>
-     */
     public function rules()
     {
-
-        return [
-            'name' => 'required|unique:subjects,name,NULL,id,type,'.$this->type,
-            'type' => 'required',
-            'status' => 'required|max:10',
-            'code'   => 'required|max:50',
-        ];
-
+        return array_merge([
+            'name' => [
+                'required',
+                new BranchUnique('subjects', 'name', null, null, ['type' => $this->input('type')]),
+            ],
+            'type' => ['required'],
+            'status' => ['required', 'max:10'],
+            'code' => ['required', 'max:50'],
+        ], branchIdValidationRules());
     }
 
     public function messages()
     {
         return [
-            'name.unique' => 'The combination of name and type must be unique.',
+            'name.unique' => 'The combination of name and type must be unique within this branch.',
         ];
     }
 }

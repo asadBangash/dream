@@ -37,6 +37,7 @@ class SectionRepository implements SectionInterface
             $sectionStore              = new $this->section;
             $sectionStore->name        = $request->name;
             $sectionStore->status      = $request->status;
+            $sectionStore->branch_id   = branchIdForPersist($request);
             $sectionStore->save();
             return $this->responseWithSuccess(___('alert.created_successfully'), []);
         } catch (\Throwable $th) {
