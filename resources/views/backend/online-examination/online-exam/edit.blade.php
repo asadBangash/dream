@@ -269,7 +269,7 @@
                                         @foreach ($data['students'] as $item)
                                             <tr>
                                                 <td>
-                                                    <input class="form-check-input student" type="checkbox" name="student_ids[]" value="{{$item->id}}"
+                                                    <input class="form-check-input student" type="checkbox" name="student_ids[]" value="{{ $item->student_id }}"
                                                     {{ in_array($item->student->id, old('student_ids',@$data['online_exam']->examStudents->pluck('student_id')->toArray())) ? 'checked' : '' }}>
                                                 </td>
                                                 <td>{{ @$item->student->admission_no }}</td>

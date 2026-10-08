@@ -30,6 +30,7 @@
                         <div class="col-lg-12">
                             {{-- father --}}
                             <div class="row">
+                                <x-branch-field />
                                 <div class="col-md-3 mb-3">
                                     <label for="exampleDataList" class="form-label ">{{ ___('student_info.father_name') }} <span
                                             class="fillable"></span></label>

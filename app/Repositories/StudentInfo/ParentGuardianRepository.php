@@ -61,6 +61,11 @@ class ParentGuardianRepository implements ParentGuardianInterface
         DB::beginTransaction();
         try {
             $role                     = Role::find(7); // Guardian role id 7
+            if (! $role) {
+                return $this->responseWithError(___('alert.something_went_wrong_please_try_again'), []);
+            }
+
+            $branchId = hasModule('MultiBranch') ? branchIdForPersist($request) : 1;
 
             $user                    = new User();
             $user->name              = $request->guardian_name;
@@ -73,6 +78,9 @@ class ParentGuardianRepository implements ParentGuardianInterface
             $user->username          = $request->username;
             $user->upload_id         = $this->UploadImageCreate($request->guardian_image, 'backend/uploads/users');
             $user->uuid              = Str::uuid();
+            if (hasModule('MultiBranch')) {
+                $user->branch_id = $branchId;
+            }
             $user->save();
 
             $row                      = new $this->model;
@@ -98,6 +106,9 @@ class ParentGuardianRepository implements ParentGuardianInterface
             $row->mother_id           = $request->mother_id;
             $row->guardian_place_of_work = $request->guardian_place_of_work;
             $row->guardian_position      = $request->guardian_position;
+            if (hasModule('MultiBranch')) {
+                $row->branch_id = $branchId;
+            }
 
             $row->save();
 
@@ -105,6 +116,7 @@ class ParentGuardianRepository implements ParentGuardianInterface
             return $this->responseWithSuccess(___('alert.created_successfully'), []);
         } catch (\Throwable $th) {
             DB::rollback();
+            report($th);
             return $this->responseWithError(___('alert.something_went_wrong_please_try_again'), []);
 
         }

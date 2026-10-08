@@ -29,6 +29,7 @@
                     <div class="row mb-3">
                         <div class="col-lg-12">
                             <div class="row">
+                                    <x-branch-field />
                                     <div class="col-md-6 mb-3">
                                         <label for="validationServer04" class="form-label">{{ ___('academic.class') }} <span class="fillable">*</span></label>
                                         <select class="nice-select niceSelect bordered_style wide @error('classes') is-invalid @enderror"
@@ -87,6 +88,7 @@
                                 </div>
                         </div>
                     </div>
+                </form>
             </div>
         </div>
     </div>

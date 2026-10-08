@@ -10,6 +10,11 @@ use Illuminate\Database\Eloquent\Builder;
 
 class BaseModel extends Model
 {
+    /** System tables: shared across branches (roles default branch_id = 1). */
+    protected static array $branchScopeExcludedTables = [
+        'roles',
+    ];
+
     protected static function boot()
     {
         parent::boot();
@@ -21,6 +26,10 @@ class BaseModel extends Model
                 }
 
                 $table = $builder->getQuery()->from;
+                if (in_array($table, static::$branchScopeExcludedTables, true)) {
+                    return;
+                }
+
                 $branchId = effectiveBranchScopeId();
 
                 if (! $branchId || ! Schema::hasColumn($table, 'branch_id')) {
@@ -48,7 +57,8 @@ class BaseModel extends Model
                 }
 
                 $table = $model->getTable();
-                if (! Schema::hasColumn($table, 'branch_id')) {
+                if (in_array($table, static::$branchScopeExcludedTables, true)
+                    || ! Schema::hasColumn($table, 'branch_id')) {
                     return;
                 }
 
@@ -61,7 +71,10 @@ class BaseModel extends Model
             });
 
             static::saving(function ($model) {
-                if (! auth()->check() || ! Schema::hasColumn($model->getTable(), 'branch_id')) {
+                $table = $model->getTable();
+                if (! auth()->check()
+                    || in_array($table, static::$branchScopeExcludedTables, true)
+                    || ! Schema::hasColumn($table, 'branch_id')) {
                     return;
                 }
 

@@ -171,18 +171,21 @@ class FeesAssignRepository implements FeesAssignInterface
 
     public function getFeesAssignStudents($request)
     {
-        $students = SessionClassStudent::query();
-        $students = $students->where('session_id', setting('session'))->where('classes_id', $request->class)->where('section_id', $request->section);
+        $students = SessionClassStudent::query()
+            ->forStudentListing()
+            ->where('session_id', setting('session'))
+            ->where('classes_id', $request->class)
+            ->where('section_id', $request->section);
 
-        if($request->gender != "") {
+        if ($request->gender != '') {
             $students = $students->whereHas('student', function ($query) use ($request) {
-                return $query->where('gender_id', $request->gender);
+                $query->withoutGlobalScopes()->where('gender_id', $request->gender);
             });
         }
 
-        if($request->category != "") {
+        if ($request->category != '') {
             $students = $students->whereHas('student', function ($query) use ($request) {
-                return $query->where('student_category_id', $request->category);
+                $query->withoutGlobalScopes()->where('student_category_id', $request->category);
             });
         }
 

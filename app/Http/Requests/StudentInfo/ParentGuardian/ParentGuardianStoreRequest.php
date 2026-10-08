@@ -2,6 +2,7 @@
 
 namespace App\Http\Requests\StudentInfo\ParentGuardian;
 
+use App\Rules\BranchUnique;
 use Illuminate\Foundation\Http\FormRequest;
 
 class ParentGuardianStoreRequest extends FormRequest
@@ -23,8 +24,8 @@ class ParentGuardianStoreRequest extends FormRequest
      */
     public function rules()
     {
-        return [
-            'guardian_mobile'        => 'required|max:255|unique:users,phone',
+        return array_merge(branchIdValidationRules(), [
+            'guardian_mobile'        => ['required', 'max:255', new BranchUnique('users', 'phone')],
             'guardian_name'          => 'required|max:255',
             'status'                 => 'required|max:255',
             'father_name'            => 'max:255',
@@ -37,8 +38,8 @@ class ParentGuardianStoreRequest extends FormRequest
             'guardian_email'         => 'max:255',
             'guardian_address'       => 'max:255',
             'guardian_relation'      => 'max:255',
-            'username'       => 'unique:users,username',
-            'password'       => 'min:6'
-        ];
+            'username'       => ['nullable', new BranchUnique('users', 'username')],
+            'password'       => 'min:6',
+        ]);
     }
 }

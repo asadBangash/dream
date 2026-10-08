@@ -37,14 +37,14 @@ class StudentRepository implements StudentInterface
 
     public function getStudents($request)
     {
-        return  SessionClassStudent::query()
+        return SessionClassStudent::query()
+            ->forStudentListing()
             ->where('session_id', setting('session'))
             ->where('classes_id', $request->class)
             ->where('section_id', $request->section)
-            ->when(request()->filled('gender'), function ($q) use ($request) {
-                $q->whereHas('student', fn($q) => $q->where('gender_id', $request->gender));
+            ->when($request->filled('gender'), function ($q) use ($request) {
+                $q->whereHas('student', fn ($q) => $q->withoutGlobalScopes()->where('gender_id', $request->gender));
             })
-            ->with('student')
             ->get();
     }
 

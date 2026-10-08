@@ -48,28 +48,42 @@ class ClassSetupRepository implements ClassSetupInterface
 
     public function store($request)
     {
-        // dd('sfdsf');
         DB::beginTransaction();
         try {
+            $branchId = hasModule('MultiBranch') ? branchIdForPersist($request) : 1;
 
-            if($this->model::where('session_id', setting('session'))->where('classes_id', $request->classes)->first()) {
+            $duplicate = $this->model::query()
+                ->where('session_id', setting('session'))
+                ->where('classes_id', $request->classes)
+                ->when(hasModule('MultiBranch'), fn ($q) => $q->where('branch_id', $branchId))
+                ->first();
+
+            if ($duplicate) {
                 return $this->responseWithError(___('alert.there_is_already_a_class_for_this_session'), []);
             }
 
             $setup              = new $this->model;
             $setup->session_id  = setting('session');
-            $setup->classes_id    = $request->classes;
+            $setup->classes_id  = $request->classes;
+            $setup->status      = $request->status;
+            if (hasModule('MultiBranch')) {
+                $setup->branch_id = $branchId;
+            }
             $setup->save();
             foreach ($request->sections ?? [] as $key => $item) {
                 $row = new ClassSetupChildren();
                 $row->class_setup_id = $setup->id;
                 $row->section_id     = $item;
+                if (hasModule('MultiBranch')) {
+                    $row->branch_id = $branchId;
+                }
                 $row->save();
             }
             DB::commit();
             return $this->responseWithSuccess(___('alert.created_successfully'), []);
         } catch (\Throwable $th) {
             DB::rollback();
+            report($th);
             return $this->responseWithError(___('alert.something_went_wrong_please_try_again'), []);
         }
     }
@@ -84,13 +98,24 @@ class ClassSetupRepository implements ClassSetupInterface
         DB::beginTransaction();
         try {
 
-            if($this->model::where('session_id', setting('session'))->where('classes_id', $request->classes)->where('id', '!=', $id)->first()) {
+            $branchId = hasModule('MultiBranch')
+                ? (int) ($this->model->findOrFail($id)->branch_id ?: branchIdForPersist($request))
+                : 1;
+
+            $duplicate = $this->model::query()
+                ->where('session_id', setting('session'))
+                ->where('classes_id', $request->classes)
+                ->where('id', '!=', $id)
+                ->when(hasModule('MultiBranch'), fn ($q) => $q->where('branch_id', $branchId))
+                ->first();
+
+            if ($duplicate) {
                 return $this->responseWithError(___('alert.there_is_already_a_class_for_this_session'), []);
             }
 
-
             $setup              = $this->model->findOrfail($id);
-            $setup->classes_id    = $request->classes;
+            $setup->classes_id  = $request->classes;
+            $setup->status      = $request->status;
             $setup->save();
 
             ClassSetupChildren::where('class_setup_id', $setup->id)->delete();
@@ -99,6 +124,9 @@ class ClassSetupRepository implements ClassSetupInterface
                 $row = new ClassSetupChildren();
                 $row->class_setup_id = $setup->id;
                 $row->section_id     = $item;
+                if (hasModule('MultiBranch')) {
+                    $row->branch_id = $branchId;
+                }
                 $row->save();
             }
             DB::commit();

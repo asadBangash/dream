@@ -173,8 +173,8 @@
                                                     <tr id="document-file">
                                                         <td>
                                                             <input class="form-check-input student" type="checkbox"
-                                                            {{ in_array($item->id, $data['fees_assign']->feesAssignChilds->pluck('student_id')->toArray()) ? 'checked' : '' }}
-                                                            name="student_ids[]" value="{{$item->id}}">
+                                                            {{ in_array($item->student_id, $data['fees_assign']->feesAssignChilds->pluck('student_id')->toArray()) ? 'checked' : '' }}
+                                                            name="student_ids[]" value="{{ $item->student_id }}">
                                                         </td>
                                                         <td>{{ @$item->student->admission_no }}</td>
                                                         <td>{{ @$item->student->first_name }} {{ @$item->student->last_name }}</td>
