@@ -262,6 +262,22 @@ if (!function_exists('globalAsset')) {
     }
 }
 
+if (! function_exists('publicAssetVersion')) {
+    /** Public file URL with ?v=filemtime so CSS/JS refresh after deploy (not Laravel view cache). */
+    function publicAssetVersion(string $path): string
+    {
+        $path = ltrim(str_replace('\\', '/', $path), '/');
+        $absolute = public_path($path);
+        $url = url($path);
+
+        if (is_file($absolute)) {
+            return $url.'?v='.filemtime($absolute);
+        }
+
+        return $url;
+    }
+}
+
 
 // Permission check
 if (!function_exists('hasPermission')) {

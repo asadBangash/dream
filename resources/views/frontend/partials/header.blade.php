@@ -26,8 +26,8 @@
     <link rel="stylesheet" href="{{global_asset('frontend')}}/css/nice-select.css">
     <link rel="stylesheet" href="{{global_asset('frontend')}}/css/animate.min.css">
     <link rel="stylesheet" href="{{global_asset('frontend')}}/css/slicknav.css">
-    <link rel="stylesheet" href="{{global_asset('frontend')}}/css/style.css">
-    <link rel="stylesheet" href="{{global_asset('frontend')}}/css/custom.css">
+    <link rel="stylesheet" href="{{ publicAssetVersion('frontend/css/style.css') }}">
+    <link rel="stylesheet" href="{{ publicAssetVersion('frontend/css/custom.css') }}">
     <link rel="stylesheet" href="{{global_asset('frontend')}}/css/sweetalert2.min.css">
 
     @stack('css')

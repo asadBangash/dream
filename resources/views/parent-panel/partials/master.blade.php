@@ -32,9 +32,9 @@
     <!-- All Plugin  -->
     <link rel="stylesheet" href="{{ global_asset('backend') }}/assets/css/plugin.css">
     <!-- Custom CSS  start -->
-    <link rel="stylesheet" href="{{ global_asset('backend') }}/assets/css/style.css">
-    <link rel="stylesheet" href="{{ global_asset('backend') }}/assets/css/style2.css">
-    <link rel="stylesheet" href="{{ global_asset('backend') }}/assets/css/custom.css">
+    <link rel="stylesheet" href="{{ publicAssetVersion('backend/assets/css/style.css') }}">
+    <link rel="stylesheet" href="{{ publicAssetVersion('backend/assets/css/style2.css') }}">
+    <link rel="stylesheet" href="{{ publicAssetVersion('backend/assets/css/custom.css') }}">
     @stack('css')
 </head>
 
