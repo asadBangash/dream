@@ -14,9 +14,6 @@ class BranchIsolationTestSeeder extends Seeder
 {
     public function run(): void
     {
-        $this->call([
-            BranchDemoSeeder::class,
-            DemoUserSeeder::class,
-        ]);
+        $this->call(TwoBranchCrossCheckSeeder::class);
     }
 }

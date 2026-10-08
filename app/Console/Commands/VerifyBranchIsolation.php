@@ -60,12 +60,12 @@ class VerifyBranchIsolation extends Command
 
         $sectionName = 'BranchIsoTest_' . time();
         if ($boysAdmin && $girlsAdmin) {
-            Section::withoutGlobalScopes()->create([
+            Section::withoutGlobalScopes()->forceCreate([
                 'name' => $sectionName,
                 'status' => 1,
                 'branch_id' => $boysAdmin->branch_id,
             ]);
-            Section::withoutGlobalScopes()->create([
+            Section::withoutGlobalScopes()->forceCreate([
                 'name' => $sectionName,
                 'status' => 1,
                 'branch_id' => $girlsAdmin->branch_id,

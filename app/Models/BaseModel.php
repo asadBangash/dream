@@ -23,9 +23,20 @@ class BaseModel extends Model
                 $table = $builder->getQuery()->from;
                 $branchId = effectiveBranchScopeId();
 
-                if ($branchId && Schema::hasColumn($table, 'branch_id')) {
-                    $builder->where("{$table}.branch_id", $branchId);
+                if (! $branchId || ! Schema::hasColumn($table, 'branch_id')) {
+                    return;
                 }
+
+                // Student list uses session_class_students; filter by the student's branch.
+                if ($table === 'session_class_students') {
+                    $builder->whereHas('student', function (Builder $query) use ($branchId) {
+                        $query->withoutGlobalScopes()->where('branch_id', $branchId);
+                    });
+
+                    return;
+                }
+
+                $builder->where("{$table}.branch_id", $branchId);
             });
 
             static::creating(function ($model) {

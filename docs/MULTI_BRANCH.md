@@ -53,8 +53,13 @@ Add `<x-branch-field />` after `@csrf` on create views for Super Admin.
 
 ```bash
 php artisan demo:verify-branch-isolation
+php artisan branch:sync-students          # fix live rows after branch filter issues
 php artisan migrate --path=database/migrations/tenant/2026_10_07_120000_add_branch_composite_unique_indexes.php
 ```
+
+### Super Admin sees students on “All Branches” but not when filtering
+
+The student list reads `session_class_students`. Run `php artisan branch:sync-students` on the server after deploying the latest code so `students` and `session_class_students` `branch_id` values match the student user’s branch.
 
 ## Extending to more modules
 

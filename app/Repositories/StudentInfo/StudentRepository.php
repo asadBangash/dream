@@ -106,8 +106,9 @@ class StudentRepository implements StudentInterface
             $user->username          = $request->username;
             $user->upload_id         = $this->UploadImageCreate($request->image, 'backend/uploads/students');
             $user->uuid              = Str::uuid();
+            $branchId = hasModule('MultiBranch') ? branchIdForPersist($request) : 1;
             if (hasModule('MultiBranch')) {
-                $user->branch_id = branchIdForPersist($request);
+                $user->branch_id = $branchId;
             }
             $user->save();
 
@@ -151,6 +152,9 @@ class StudentRepository implements StudentInterface
             $row->spoken_lang_at_home = $request->spoken_lang_at_home;
             $row->residance_address = $request->residance_address;
             $row->department_id = $request->department_id;
+            if (hasModule('MultiBranch')) {
+                $row->branch_id = $branchId;
+            }
             $row->save();
 
             $session_class                      = new SessionClassStudent();
@@ -160,6 +164,9 @@ class StudentRepository implements StudentInterface
             $session_class->shift_id            = $request->shift != "" ? $request->shift :  NULL;
             $session_class->student_id          = $row->id;
             $session_class->roll                = $request->roll_no;
+            if (hasModule('MultiBranch')) {
+                $session_class->branch_id = $branchId;
+            }
             $session_class->save();
 
             DB::commit();
@@ -237,6 +244,9 @@ class StudentRepository implements StudentInterface
             $session_class->shift_id            = $request->shift != "" ? $request->shift :  NULL;
             $session_class->student_id          = $row->id;
             $session_class->roll                = $request->roll_no;
+            if (hasModule('MultiBranch') && $row->branch_id) {
+                $session_class->branch_id = $row->branch_id;
+            }
             $session_class->save();
 
             DB::commit();
