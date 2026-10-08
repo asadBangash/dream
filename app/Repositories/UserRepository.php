@@ -102,8 +102,9 @@ class UserRepository implements UserInterface
             $user->upload_id          = $this->UploadImageCreate($request->image, 'backend/uploads/users');
             $user->permissions        = $role->permissions;
             $user->uuid               = Str::uuid();
+            $branchId = hasModule('MultiBranch') ? branchIdForPersist($request) : 1;
             if (hasModule('MultiBranch')) {
-                $user->branch_id = branchIdForPersist($request);
+                $user->branch_id = $branchId;
             }
             $user->save();
 
@@ -132,6 +133,7 @@ class UserRepository implements UserInterface
 
             $staff->upload_documents        = $this->uploadDocuments($request);
 
+            applyBranchIdToModel($staff, $branchId);
             $staff->save();
             DB::commit();
             return 1;
@@ -167,6 +169,10 @@ class UserRepository implements UserInterface
             }
 
             $user->permissions        = $role->permissions;
+            $branchId = hasModule('MultiBranch') ? branchIdForPersist($request) : 1;
+            if (hasModule('MultiBranch')) {
+                $user->branch_id = $branchId;
+            }
             $user->save();
 
             $staff->user_id                 = $user->id;
@@ -193,13 +199,13 @@ class UserRepository implements UserInterface
 
             $staff->upload_documents        = $this->uploadDocuments($request, $staff->upload_documents);
 
+            applyBranchIdToModel($staff, $branchId);
             $staff->save();
             DB::commit();
             return true;
         } catch (\Throwable $th) {
-
-            dd($th);
             DB::rollback();
+            report($th);
             return false;
         }
     }

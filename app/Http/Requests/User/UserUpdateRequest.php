@@ -2,6 +2,7 @@
 
 namespace App\Http\Requests\User;
 
+use App\Rules\BranchUnique;
 use Illuminate\Support\Facades\Request;
 use Illuminate\Foundation\Http\FormRequest;
 
@@ -25,8 +26,8 @@ class UserUpdateRequest extends FormRequest
     public function rules()
     { 
         // dd(Request()->user_id);
-        return [
-            'staff_id'     => 'required|unique:staff,staff_id,'.$this->id,
+        return array_merge([
+            'staff_id'     => ['required', new BranchUnique('staff', 'staff_id', (int) $this->route('id'))],
             'role'         => 'required',
             'designation'  => 'required',
             'department'   => 'required',
@@ -37,6 +38,6 @@ class UserUpdateRequest extends FormRequest
             'phone'        => 'required|regex:/^([0-9\s\-\+\(\)]*)$/|max:11',
             'status'       => 'required',
             'image'        => 'max:2048',
-        ];
+        ], branchIdValidationRules());
     }
 }

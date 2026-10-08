@@ -31,6 +31,7 @@
                     @method('PUT')
                     <input type="hidden" name="user_id" value="{{@$data['user']->user_id}}">
                     <div class="row mb-3">
+                        <x-branch-field :record-branch-id="(int) ($data['user']->branch_id ?? 0)" />
 
                         <div class="col-lg-3 col-md-6 mb-3">
                             <label for="exampleDataList" class="form-label ">{{ ___('staff.staff_id') }} <span
