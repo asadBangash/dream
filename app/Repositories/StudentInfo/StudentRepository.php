@@ -51,7 +51,11 @@ class StudentRepository implements StudentInterface
 
     public function getPaginateAll()
     {
-        return SessionClassStudent::whereHas('student')->where('session_id', setting('session'))->latest()->with('student')->paginate(Settings::PAGINATE);
+        return SessionClassStudent::query()
+            ->forStudentListing()
+            ->where('session_id', setting('session'))
+            ->latest()
+            ->paginate(Settings::PAGINATE);
     }
     public function getSessionStudent($id)
     {
@@ -61,8 +65,9 @@ class StudentRepository implements StudentInterface
 
     public function searchStudents($request)
     {
-        $students = SessionClassStudent::query();
-        $students = $students->where('session_id', setting('session'));
+        $students = SessionClassStudent::query()
+            ->forStudentListing()
+            ->where('session_id', setting('session'));
 
         if ($request->class != "") {
             $students = $students->where('classes_id', $request->class);
@@ -72,11 +77,14 @@ class StudentRepository implements StudentInterface
         }
         if ($request->keyword != "") {
             $students = $students->whereHas('student', function ($query) use ($request) {
-                $query->where('admission_no', 'LIKE', "%{$request->keyword}%")
-                    ->orWhere('first_name', 'LIKE', "%{$request->keyword}%")
-                    ->orWhere('last_name', 'LIKE', "%{$request->keyword}%")
-                    ->orWhere('roll_no', 'LIKE', "%{$request->keyword}%")
-                    ->orWhere('dob', 'LIKE', "%{$request->keyword}%");
+                $query->withoutGlobalScopes()
+                    ->where(function ($q) use ($request) {
+                        $q->where('admission_no', 'LIKE', "%{$request->keyword}%")
+                            ->orWhere('first_name', 'LIKE', "%{$request->keyword}%")
+                            ->orWhere('last_name', 'LIKE', "%{$request->keyword}%")
+                            ->orWhere('roll_no', 'LIKE', "%{$request->keyword}%")
+                            ->orWhere('dob', 'LIKE', "%{$request->keyword}%");
+                    });
             });
         }
 

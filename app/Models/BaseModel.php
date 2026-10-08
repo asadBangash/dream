@@ -27,7 +27,6 @@ class BaseModel extends Model
                     return;
                 }
 
-                // Student list uses session_class_students; filter by the student's branch.
                 if ($table === 'session_class_students') {
                     $builder->where(function (Builder $outer) use ($branchId) {
                         $outer->whereHas('student', function (Builder $query) use ($branchId) {
