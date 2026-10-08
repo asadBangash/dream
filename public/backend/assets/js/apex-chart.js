@@ -1748,7 +1748,7 @@ function getFeesCollection() {
                 "Nov",
                 "Dec"
             ],
-            colors: ['#392C7D'],
+            colors: ['#004533'],
             dataLabels: {
               enabled: false
             },

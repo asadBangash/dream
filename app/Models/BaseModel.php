@@ -10,10 +10,12 @@ use Illuminate\Database\Eloquent\Builder;
 
 class BaseModel extends Model
 {
-    /** System tables: shared across branches (roles default branch_id = 1). */
+    /** System / lookup tables: shared across branches (not filtered by branch_id). */
     protected static array $branchScopeExcludedTables = [
         'roles',
         'settings',
+        'genders',
+        'gender_translates',
     ];
 
     protected static function boot()

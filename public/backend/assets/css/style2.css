@@ -19,12 +19,13 @@
   --bg-btn-tinorange: #fff9e9;
   --bg-btn-tinred: #ffe7ea;
 
-  /* saiful */
-  --theme-bg: #edfbff;
-  /* --primary-color: #468dff; */
-  --primary-color: #392C7D;
-  --border-color: #6CD6FD;
-  --scroll-color-one: #a0daf163;
+  /* Dream Tuition Academy — logo greens */
+  --theme-bg: #f0faf2;
+  --primary-color: #004533;
+  --accent-color: #5cb82a;
+  --primary-gradient: linear-gradient(130.57deg, #004533 -0.48%, #006b52 71.79%);
+  --border-color: #b8dfc4;
+  --scroll-color-one: #5cb82a63;
   --scroll-color-two: #f3f3f3;
 
 }
@@ -144,7 +145,7 @@ code {
 }
 
 .profile-table-content .table .dropdown-action .btn-dropdown {
-  background: linear-gradient(130.57deg, #392C7D -0.48%, #314CAD 71.79%);
+  background: linear-gradient(130.57deg, #004533 -0.48%, #006b52 71.79%);
   box-shadow: 1px 1px 8px rgba(16, 108, 255, 0.12);
   color: #ffffff;
 }
@@ -2635,7 +2636,7 @@ input.daterange-table-filter,
 /* ---------- Custom-code ------------*/
 
 .ot-pagination .active>.page-link {
-  background: linear-gradient(130.57deg, #392C7D -0.48%, #314CAD 71.79%);
+  background: linear-gradient(130.57deg, #004533 -0.48%, #006b52 71.79%);
   color: #ffffff !important;
   border: 0 !important;
   height: 34px;
@@ -2843,7 +2844,7 @@ button.profile-expand-item {
 }
 
 /* .table-content.table-basic .table .dropdown-action .btn-dropdown {
-    background: linear-gradient(130.57deg, #392C7D -0.48%, #314CAD 71.79%);
+    background: linear-gradient(130.57deg, #004533 -0.48%, #006b52 71.79%);
      box-shadow: 1px 1px 8px rgba(16, 108, 255, .12);
      color: #ffffff;
  } */
@@ -2867,7 +2868,7 @@ button.profile-expand-item {
 }
 
 .table-content.table-basic .table .dropdown-action .btn-dropdown {
-  background: linear-gradient(130.57deg, #392C7D -0.48%, #314CAD 71.79%);
+  background: linear-gradient(130.57deg, #004533 -0.48%, #006b52 71.79%);
   color: #fff;
   border: none;
   box-shadow: none;
@@ -3143,7 +3144,7 @@ body.rtl .half-expand-toggle .sidebar-toggle img {
 /* -------------  saiful ---------------- */
 
 .header .header-search .search-icon {
-  background: linear-gradient(130.57deg, #392C7D -0.48%, #314CAD 71.79%);
+  background: linear-gradient(130.57deg, #004533 -0.48%, #006b52 71.79%);
   height: 36px;
   color: #fff;
   border-radius: 5px;
@@ -3170,7 +3171,7 @@ body.rtl .half-expand-toggle .sidebar-toggle img {
 .ot-btn-danger,
 .ot-btn-warning,
 .ot-btn-info {
-  background: linear-gradient(130.57deg, #392C7D -0.48%, #314CAD 71.79%) !important;
+  background: linear-gradient(130.57deg, #004533 -0.48%, #006b52 71.79%) !important;
 }
 
 button:focus:not(:focus-visible) {
@@ -3628,7 +3629,7 @@ button:focus:not(:focus-visible) {
 .table-content .table-toolbar .dropdown-action .btn-dropdown {
   color: var(--primary-color);
   font-size: 16px;
-  background: linear-gradient(130.57deg, #392C7D -0.48%, #314CAD 71.79%);
+  background: linear-gradient(130.57deg, #004533 -0.48%, #006b52 71.79%);
 }
 
 .table-content .table-toolbar .btn-daterange,
@@ -3681,7 +3682,7 @@ button:focus:not(:focus-visible) {
 }
 
 .table-content .table-toolbar .dropdown-action .btn-dropdown {
-  background: linear-gradient(130.57deg, #392C7D -0.48%, #314CAD 71.79%);
+  background: linear-gradient(130.57deg, #004533 -0.48%, #006b52 71.79%);
   color: #fff;
 }
 
@@ -4494,7 +4495,7 @@ bg-primary {
 }
 
 .timeline-marker::before {
-  background: linear-gradient(130.57deg, #392C7D -0.48%, #314CAD 71.79%) !important;
+  background: linear-gradient(130.57deg, #004533 -0.48%, #006b52 71.79%) !important;
   border-radius: 3px;
   border: 0;
 }
@@ -5823,7 +5824,7 @@ hr {
   display: flex;
   align-items: center;
   justify-content: center;
-  background: linear-gradient(130.57deg, #392C7D -0.48%, #314CAD 71.79%) !important;
+  background: linear-gradient(130.57deg, #004533 -0.48%, #006b52 71.79%) !important;
 }
 
 .ot__datePicker .datepicker--day-name {
@@ -5866,7 +5867,7 @@ hr {
   color: #fff;
   border-color: #0F6AFF;
   background-color: #0F6AFF;
-  background: linear-gradient(130.57deg, #392C7D -0.48%, #314CAD 71.79%) !important;
+  background: linear-gradient(130.57deg, #004533 -0.48%, #006b52 71.79%) !important;
 }
 
 .ot__datePicker .datepicker--cell.-selected-.-focus- {
@@ -6125,7 +6126,7 @@ hr {
 .nice-select .option:hover,
 .nice-select .option.focus,
 .nice-select .option.selected.focus {
-  background: linear-gradient(130.57deg, #392C7D -0.48%, #314CAD 71.79%);
+  background: linear-gradient(130.57deg, #004533 -0.48%, #006b52 71.79%);
   color: #fff;
 }
 
@@ -6633,7 +6634,7 @@ span.select2-selection.select2-selection--multiple {
 
 .small_add_btn {
   padding: 11px 12px !important;
-  background: linear-gradient(130.57deg, #392C7D -0.48%, #314CAD 71.79%) !important;
+  background: linear-gradient(130.57deg, #004533 -0.48%, #006b52 71.79%) !important;
 }
 
 .table_border_hide tr td {
@@ -6676,7 +6677,7 @@ span.select2-selection.select2-selection--multiple {
 
 .pagination_wrapper .pagination_list li a span,
 .pagination_wrapper .pagination_list li a i {
-  background: linear-gradient(130.57deg, #392C7D -0.48%, #314CAD 71.79%);
+  background: linear-gradient(130.57deg, #004533 -0.48%, #006b52 71.79%);
   -webkit-background-clip: text;
   -webkit-text-fill-color: transparent;
   background-clip: text;
@@ -6690,7 +6691,7 @@ span.select2-selection.select2-selection--multiple {
 
 .pagination_wrapper .pagination_list li a:hover,
 .pagination_wrapper .pagination_list li a.active {
-  background: linear-gradient(130.57deg, #392C7D -0.48%, #314CAD 71.79%);
+  background: linear-gradient(130.57deg, #004533 -0.48%, #006b52 71.79%);
 }
 
 .pagination_wrapper .pagination_list li a:hover i,
@@ -6879,7 +6880,7 @@ span.select2-selection.select2-selection--multiple {
 }
 
 .header .header-search .search-icon i {
-  background: linear-gradient(130.57deg, #8E2DE2 -0.48%, #392C7D 71.79%);
+  background: linear-gradient(130.57deg, #5cb82a -0.48%, #004533 71.79%);
   -webkit-background-clip: text;
   -webkit-text-fill-color: transparent;
 }
@@ -6894,7 +6895,7 @@ span.select2-selection.select2-selection--multiple {
 }
 
 .sidebar .sidebar-menu .sidebar-menu-section .mm-active>a {
-  background: linear-gradient(130.57deg, #392C7D -0.48%, #314CAD 71.79%);
+  background: linear-gradient(130.57deg, #004533 -0.48%, #006b52 71.79%);
   -webkit-background-clip: text;
   -webkit-text-fill-color: transparent;
   background-clip: text;
@@ -6903,7 +6904,7 @@ span.select2-selection.select2-selection--multiple {
 
 .breadcrumb-item:first-child a {
   color: var(--primary-color);
-  background: linear-gradient(130.57deg, #392C7D -0.48%, #314CAD 71.79%);
+  background: linear-gradient(130.57deg, #004533 -0.48%, #006b52 71.79%);
   -webkit-background-clip: text;
   -webkit-text-fill-color: transparent;
   background-clip: text;
@@ -6927,11 +6928,11 @@ span.select2-selection.select2-selection--multiple {
 }
 
 .sidebar .sidebar-menu .sidebar-menu-section .sidebar-menu-item.mm-active .parent-item-content {
-  background: linear-gradient(130.57deg, #392C7D -0.48%, #314CAD 71.79%);
+  background: linear-gradient(130.57deg, #004533 -0.48%, #006b52 71.79%);
 }
 
 .sidebar .sidebar-menu .sidebar-menu-section .sidebar-menu-item a:hover {
-  background: linear-gradient(130.57deg, #392C7D -0.48%, #314CAD 71.79%);
+  background: linear-gradient(130.57deg, #004533 -0.48%, #006b52 71.79%);
   -webkit-background-clip: text;
   -webkit-text-fill-color: transparent;
   background-clip: text;
@@ -6945,12 +6946,12 @@ span.select2-selection.select2-selection--multiple {
 
 .profile-content .profile-menu-body .nav-link.active,
 .profile-content .profile-menu-body .nav-link:hover {
-  color: #392C7D !important;
-  border-color: 2px solid #392C7D !important;
+  color: #004533 !important;
+  border-color: 2px solid #004533 !important;
 }
 
 .profile-content .profile-menu-body .nav-link::before {
-  background: #392C7D !important;
+  background: #004533 !important;
 }
 
 .rtl .half-expand .sidebar-header {
@@ -6958,7 +6959,7 @@ span.select2-selection.select2-selection--multiple {
 }
 
 .table-content.table-basic .table .dropdown-action .dropdown-item .icon {
-  color: #392C7D;
+  color: #004533;
 }
 
 .rtl .table-content.table-basic .table .tbody tr td {
@@ -7062,7 +7063,7 @@ span.select2-selection.select2-selection--multiple {
   font-weight: 700;
   font-size: 14px;
   line-height: 1;
-  color: #392C7D;
+  color: #004533;
   margin: 0;
 }
 
@@ -7070,7 +7071,7 @@ span.select2-selection.select2-selection--multiple {
   font-weight: 700;
   font-size: 10px;
   line-height: 12px;
-  color: #392C7D;
+  color: #004533;
   margin: 0;
 }
 
@@ -7086,7 +7087,7 @@ span.select2-selection.select2-selection--multiple {
 }
 
 .event_upcoming_list .event_content_info h4 a:hover {
-  color: #392C7D;
+  color: #004533;
 }
 
 .event_upcoming_list .event_content_info p {
@@ -7288,7 +7289,7 @@ span.select2-selection.select2-selection--multiple {
 }
 
 .theme_dropdown .theme_list.active {
-  color: #392C7D;
+  color: #004533;
 }
 
 .theme_dropdown .theme_list i {
@@ -7296,7 +7297,7 @@ span.select2-selection.select2-selection--multiple {
 }
 
 .theme_dropdown .theme_list:hover {
-  color: #392C7D !important;
+  color: #004533 !important;
 }
 
 .theme_dropdown li.sidebar-menu-item {
@@ -7378,8 +7379,8 @@ span.select2-selection.select2-selection--multiple {
 }
 
 .toggle-checkbox:checked~.slider-btn:before {
-  background-color: #392C7D;
-  border-color: #392C7D;
+  background-color: #004533;
+  border-color: #004533;
 }
 
 .toggle-checkbox:checked~.slider-btn:after {
@@ -7746,7 +7747,7 @@ span.select2-selection.select2-selection--multiple {
 }
 
 .certificate_info h3 {
-  color: #392C7D;
+  color: #004533;
   font-family: Lexend;
   font-size: 32.61px;
   font-style: normal;
@@ -7757,7 +7758,7 @@ span.select2-selection.select2-selection--multiple {
 }
 
 .certificate_info .subtext {
-  color: #392C7D;
+  color: #004533;
 
   font-family: Lexend;
   font-size: 10.91px;
@@ -7803,7 +7804,7 @@ span.select2-selection.select2-selection--multiple {
   content: "";
   position: absolute;
   bottom: 0;
-  border-bottom: 1px solid #392C7D;
+  border-bottom: 1px solid #004533;
   left: 20%;
   right: 20%;
 }
@@ -7857,7 +7858,7 @@ span.select2-selection.select2-selection--multiple {
 
 .signature_imgs .border_1px {
   width: 92.48px;
-  border-bottom: 1px solid #392C7D;
+  border-bottom: 1px solid #004533;
 }
 
 .certificate_wrapper .large_logo {
@@ -7901,6 +7902,6 @@ span.select2-selection.select2-selection--multiple {
 }
 
 .theme_tabs .nav-link.active {
-  background: linear-gradient(130.57deg, #392C7D -0.48%, #314CAD 71.79%);
+  background: linear-gradient(130.57deg, #004533 -0.48%, #006b52 71.79%);
   color: var(--ot-bg-secondary);
 }

@@ -7,7 +7,7 @@ body {
 }
 
 .subscribe_message {
-    background: #FF5170;
+    background: #004533;
     padding: 10px;
     -webkit-border-radius: 4px;
     -moz-border-radius: 4px;
@@ -27,7 +27,7 @@ body {
 
 .single_instractor .instractor_info .instractor_social p {
     color: #fff;
-    background: #FF5170;
+    background: #004533;
     padding: 5px;
     border-radius: 3px;
     transition: .3s;
@@ -130,5 +130,78 @@ footer.home_three_footer .copyright_area .footer_border {
 
 .ck-ditor-img ol li {
     list-style: block;
+}
+
+/* Dream Tuition Academy — logo palette (dark #004533, accent #5cb82a) */
+:root {
+    --dream-green-dark: #004533;
+    --dream-green-accent: #5cb82a;
+    --dream-green-mid: #006b52;
+}
+
+/* Nav: active / hover use accent green (default link text stays dark green) */
+.header_area .main_menu ul li a:hover,
+.header_area .main_menu ul li a.active,
+.header_area .main_menu ul li.submenu_active > a {
+    color: var(--dream-green-accent) !important;
+}
+
+.header_area .main_menu ul li a:hover::before,
+.header_area .main_menu ul li a.active::before {
+    background: var(--dream-green-accent) !important;
+}
+
+/* Primary CTA buttons */
+.theme_btn {
+    background-color: var(--dream-green-dark) !important;
+    border-color: var(--dream-green-dark) !important;
+}
+
+.theme_btn:hover,
+.theme_btn_lite:hover {
+    color: var(--dream-green-dark) !important;
+    border-color: var(--dream-green-accent) !important;
+    background: transparent !important;
+}
+
+.theme_btn:hover svg path {
+    stroke: var(--dream-green-accent) !important;
+}
+
+.theme_line_btn:hover {
+    background-color: var(--dream-green-dark) !important;
+    border-color: var(--dream-green-dark) !important;
+}
+
+/* Hero slider dots */
+.owl-dots .owl-dot.active span {
+    background: var(--dream-green-accent) !important;
+}
+
+.owl-dots .owl-dot.active span::before {
+    border-color: var(--dream-green-accent) !important;
+}
+
+/* Counter / stats strip (replaces pink counter_bg.png) */
+.counter_area::before {
+    background-image: none !important;
+    background-color: var(--dream-green-dark) !important;
+}
+
+#back-top,
+.back-top {
+    background-color: var(--dream-green-dark) !important;
+}
+
+#back-top:hover,
+.back-top:hover {
+    background-color: var(--dream-green-accent) !important;
+}
+
+.theme_pagination a.active,
+.theme_pagination a:hover {
+    background: var(--dream-green-dark) !important;
+    border-color: var(--dream-green-dark) !important;
+    color: #fff !important;
 }
 

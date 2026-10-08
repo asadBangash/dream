@@ -391,3 +391,27 @@ input.form-check-input:checked {
 .sidebar_full_logo {
     max-height: 50px !important;
 }
+
+/* Dream Tuition Academy — brand overrides (logo: dark #004533, accent #5cb82a) */
+.default-theme {
+    --ot-bg-badge-primary: #004533;
+    --ot-text-badge-light-primary: #004533;
+    --ot-bg-badge-light-primary: #e8f5e9;
+}
+
+.notification_wrapper .notification_items .notification_header {
+    background-color: #004533;
+}
+
+.notification_wrapper .notification_items .notification_body .notification_item .icon {
+    background-color: #5cb82a;
+}
+
+.ot-btn-primary:hover,
+.ot-btn-primary:focus {
+    filter: brightness(1.05);
+}
+
+a:hover {
+    color: #5cb82a;
+}
