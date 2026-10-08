@@ -84,14 +84,18 @@ class SessionController extends Controller
 
     public function changeSession(Request $request)
     {
-        $setting = Setting::where('name', 'session')->update(
-            ['value' => $request->id]
-        );
-        if($setting){
-            return 1;
+        if (! $request->filled('id')) {
+            return 0;
         }
-        return 0;
 
+        $branchId = resolveActiveSessionSettingBranchId();
+
+        Setting::query()->updateOrCreate(
+            ['name' => 'session', 'branch_id' => $branchId],
+            ['value' => (string) $request->id]
+        );
+
+        return 1;
     }
 
     public function translate($id)

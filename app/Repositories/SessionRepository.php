@@ -41,6 +41,9 @@ class SessionRepository implements SessionInterface
             $sessionStore->start_date  = $request->start_date;
             $sessionStore->end_date    = $request->end_date;
             $sessionStore->status      = $request->status;
+            if (hasModule('MultiBranch')) {
+                applyBranchIdToModel($sessionStore, branchIdForPersist($request));
+            }
             $sessionStore->save();
 
             $exam_settings = ExaminationSettings::where('session_id', setting('session'))->get();

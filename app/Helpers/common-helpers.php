@@ -30,12 +30,45 @@ function getPagination($ITEM)
 }
 
 
+function resolveActiveSessionSettingBranchId(): int
+{
+    if (! hasModule('MultiBranch') || ! auth()->check()) {
+        return 1;
+    }
+
+    if (isSuperAdmin()) {
+        $active = superAdminActiveBranchId();
+
+        return $active ? (int) $active : (int) (\Illuminate\Support\Facades\DB::table('branches')->min('id') ?: 1);
+    }
+
+    return (int) (auth()->user()->branch_id ?: 1);
+}
+
 function setting($name)
 {
     try {
         if ($name == 'currency_symbol') {
-            $currencyCode = Setting::where('name', 'currency_code')->first()?->value;
+            $currencyCode = setting('currency_code');
             return Currency::where('code', $currencyCode)->first()?->symbol;
+        }
+
+        if ($name === 'session' && hasModule('MultiBranch')) {
+            $branchId = resolveActiveSessionSettingBranchId();
+            $setting_data = Setting::query()
+                ->where('name', 'session')
+                ->where('branch_id', $branchId)
+                ->first();
+
+            if (! $setting_data) {
+                $setting_data = Setting::query()->where('name', 'session')->orderBy('id')->first();
+            }
+
+            if ($setting_data) {
+                return $setting_data->value;
+            }
+
+            return null;
         }
 
         $setting_data = Setting::where('name', $name)->first();

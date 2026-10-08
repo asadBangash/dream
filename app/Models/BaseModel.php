@@ -13,6 +13,7 @@ class BaseModel extends Model
     /** System tables: shared across branches (roles default branch_id = 1). */
     protected static array $branchScopeExcludedTables = [
         'roles',
+        'settings',
     ];
 
     protected static function boot()

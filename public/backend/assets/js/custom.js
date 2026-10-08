@@ -854,9 +854,8 @@ $(document).ready(function () {
 
                     Toast.fire({
                         icon: 'error',
-                        title: 'Language terms not generate yet!'
+                        title: 'Could not change session. Please try again.'
                     })
-                    location.reload();
                 }
             },
             error: function (data) {
