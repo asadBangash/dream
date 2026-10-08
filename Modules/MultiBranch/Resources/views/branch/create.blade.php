@@ -116,62 +116,7 @@
                             @enderror
                         </div>
 
-                        <div class="col-lg-12 mb-3">
-                            <h4>Branch Administrator</h4>
-                            <p class="text-muted mb-0">Assign an existing staff/admin user, or create a new branch admin below.</p>
-                        </div>
-
-                        <div class="col-lg-12 col-md-12 mb-3">
-                            <label for="branch_admin_user_id" class="form-label">{{ ___('branch.Assign existing user') ?? 'Assign existing staff/admin' }}</label>
-                            <select class="form-control ot-input @error('branch_admin_user_id') is-invalid @enderror"
-                                    name="branch_admin_user_id" id="branch_admin_user_id">
-                                <option value="">{{ ___('branch.Create new user instead') ?? '— Create new user instead —' }}</option>
-                                @foreach ($branchAdminCandidates ?? [] as $candidate)
-                                    <option value="{{ $candidate->id }}" {{ old('branch_admin_user_id') == $candidate->id ? 'selected' : '' }}>
-                                        {{ $candidate->name }} ({{ $candidate->email }})@if($candidate->branch_id) — branch #{{ $candidate->branch_id }}@endif
-                                    </option>
-                                @endforeach
-                            </select>
-                            @error('branch_admin_user_id')
-                            <div class="invalid-feedback">{{ $message }}</div>
-                            @enderror
-                        </div>
-
-                        <div class="col-lg-12 mb-3">
-                            <h5 class="mb-0">{{ ___('branch.New branch admin') ?? 'Or create new branch admin' }}</h5>
-                        </div>
-                        <!-- User name -->
-                        <div class="col-lg-4 col-md-6 mb-3">
-                            <label for="user_name" class="form-label">{{ ___('branch.Name') }}</label>
-                            <input class="form-control ot-input @error('user.name') is-invalid @enderror"
-                                   name="user[name]"
-                                   value="{{ old('user.name') }}" id="user_name" type="text"
-                                   placeholder="{{ ___('branch.Enter name') }}">
-                            @error('user.name')
-                            <div class="invalid-feedback">{{ $message }}</div>
-                            @enderror
-                        </div>
-                        <div class="col-lg-4 col-md-6 mb-3">
-                            <label for="user_name" class="form-label">{{ ___('branch.Email') }}</label>
-                            <input class="form-control ot-input @error('user.email') is-invalid @enderror"
-                                   name="user[email]"
-                                   value="{{ old('user.email') }}" id="user_email" type="email"
-                                   placeholder="{{ ___('branch.Enter email') }}">
-                            @error('user.email')
-                            <div class="invalid-feedback">{{ $message }}</div>
-                            @enderror
-                        </div>
-
-                        <div class="col-lg-4 col-md-6 mb-3">
-                            <label for="user_password" class="form-label">{{ ___('branch.Password') }}</label>
-                            <input class="form-control ot-input @error('user.password') is-invalid @enderror"
-                                   name="user[password]"
-                                   value="{{ old('user.password') }}" id="user_password" type="text"
-                                   placeholder="{{ ___('branch.Enter password') }}">
-                            @error('user.password')
-                            <div class="invalid-feedback">{{ $message }}</div>
-                            @enderror
-                        </div>
+                        @include('multibranch::branch._branch-admin', ['branch' => null])
 
                         <div class="col-md-12 mt-24">
                             <div class="text-end">

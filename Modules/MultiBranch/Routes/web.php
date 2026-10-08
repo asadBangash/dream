@@ -29,6 +29,7 @@ Route::middleware(saasMiddleware())->group(function () {
                 Route::get('{id}/edit', 'edit')->name('edit');
                 Route::put('{id}/update', 'update')->name('update');
                 Route::delete('delete/{id}', 'destroy')->name('destroy');
+                Route::post('bulk-delete', 'bulkDestroy')->name('bulk-destroy');
             });
     });
 
