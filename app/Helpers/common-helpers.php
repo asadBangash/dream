@@ -867,6 +867,39 @@ if (! function_exists('branchIdForPersist')) {
     }
 }
 
+if (! function_exists('branchIdForStudentPersist')) {
+    /**
+     * Prefer the enrolled class branch (most reliable for branch admins).
+     */
+    function branchIdForStudentPersist($request): int
+    {
+        if (! hasModule('MultiBranch')) {
+            return 1;
+        }
+
+        $branchId = branchIdForPersist($request);
+
+        if ($request->filled('class') && \Illuminate\Support\Facades\Schema::hasTable('classes')) {
+            $classBranch = (int) (\App\Models\Academic\Classes::withoutGlobalScopes()
+                ->where('id', $request->class)
+                ->value('branch_id') ?? 0);
+
+            if ($classBranch > 0) {
+                if (! isSuperAdmin() && (int) auth()->user()->branch_id !== $classBranch) {
+                    abort(403, 'Selected class does not belong to your branch.');
+                }
+                $branchId = $classBranch;
+            }
+        }
+
+        if ($branchId < 1) {
+            $branchId = (int) (auth()->user()->branch_id ?? 1);
+        }
+
+        return $branchId;
+    }
+}
+
 
 if (!function_exists('admission_fields')) {
     function admission_fields()

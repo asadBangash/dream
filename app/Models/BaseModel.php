@@ -29,8 +29,12 @@ class BaseModel extends Model
 
                 // Student list uses session_class_students; filter by the student's branch.
                 if ($table === 'session_class_students') {
-                    $builder->whereHas('student', function (Builder $query) use ($branchId) {
-                        $query->withoutGlobalScopes()->where('branch_id', $branchId);
+                    $builder->where(function (Builder $outer) use ($branchId) {
+                        $outer->whereHas('student', function (Builder $query) use ($branchId) {
+                            $query->withoutGlobalScopes()->where('branch_id', $branchId);
+                        })->orWhereHas('class', function (Builder $query) use ($branchId) {
+                            $query->withoutGlobalScopes()->where('branch_id', $branchId);
+                        });
                     });
 
                     return;

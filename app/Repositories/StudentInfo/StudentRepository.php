@@ -106,7 +106,7 @@ class StudentRepository implements StudentInterface
             $user->username          = $request->username;
             $user->upload_id         = $this->UploadImageCreate($request->image, 'backend/uploads/students');
             $user->uuid              = Str::uuid();
-            $branchId = hasModule('MultiBranch') ? branchIdForPersist($request) : 1;
+            $branchId = hasModule('MultiBranch') ? branchIdForStudentPersist($request) : 1;
             if (hasModule('MultiBranch')) {
                 $user->branch_id = $branchId;
             }
