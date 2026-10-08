@@ -867,6 +867,20 @@ if (! function_exists('branchIdForPersist')) {
     }
 }
 
+if (! function_exists('applyBranchIdToModel')) {
+    /** Assign branch_id when the table has the column (safe if migrations lag on live). */
+    function applyBranchIdToModel(\Illuminate\Database\Eloquent\Model $model, int $branchId): void
+    {
+        if (! hasModule('MultiBranch') || $branchId < 1) {
+            return;
+        }
+
+        if (\Illuminate\Support\Facades\Schema::hasColumn($model->getTable(), 'branch_id')) {
+            $model->branch_id = $branchId;
+        }
+    }
+}
+
 if (! function_exists('branchIdForStudentPersist')) {
     /**
      * Prefer the enrolled class branch (most reliable for branch admins).
