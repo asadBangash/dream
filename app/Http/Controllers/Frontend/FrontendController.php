@@ -61,6 +61,7 @@ class FrontendController extends Controller
         $data['gallery']          = $this->repo->gallery();
         $data['latestNews']       = $this->repo->latestNews();
         $data['comingEvents']     = $this->repo->comingEvents();
+        $data['teachers']         = $this->repo->teachers(4);
 
         return view('frontend.home', compact('data'));
     }
@@ -119,6 +120,13 @@ class FrontendController extends Controller
         $data = $this->repo->abouts();
 
         return view('frontend.about', compact('data'));
+    }
+
+    public function teachers()
+    {
+        $data['teachers'] = $this->repo->teachers();
+
+        return view('frontend.teachers', compact('data'));
     }
 
     // Blog

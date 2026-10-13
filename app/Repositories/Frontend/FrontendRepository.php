@@ -55,11 +55,26 @@ class FrontendRepository implements FrontendInterface
         return OnlineAdmissionSetting::where('field','admission_payment')->first();
     }
 
+    public function teachers(?int $limit = null)
+    {
+        $query = Staff::with(['upload', 'designation'])
+            ->where('status', Status::ACTIVE)
+            ->where('role_id', 5)
+            ->orderBy('id');
+
+        if ($limit !== null) {
+            return $query->take($limit)->get();
+        }
+
+        return $query->get();
+    }
+
     // Abouts
     public function abouts()
     {
         $data['abouts']   = About::where('status', Status::ACTIVE)->orderBy('serial')->get();
-        $data['teachers'] = Staff::where('status', Status::ACTIVE)->where('role_id', 5)->take(8)->get();
+        $data['teachers'] = $this->teachers(8);
+
         return $data;
     }
 

@@ -221,6 +221,13 @@
     </div>
     <!-- TEACHING_AREA::END  -->
 
+    @if ($data['teachers']->isNotEmpty())
+        @include('frontend.partials.our-teachers', [
+            'teachers' => $data['teachers'],
+            'showViewAll' => true,
+        ])
+    @endif
+
     <!-- EVENT_AREA::START  -->
     <div class="event_area section_padding">
         <div class="container">

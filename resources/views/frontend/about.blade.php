@@ -148,41 +148,8 @@
     </div>
     <!-- about_gallery_wrapper::end  -->
 
-    <!-- instractors_wrapper::start  -->
-    <div class="instractors_wrapper gray_bg">
-        <div class="container">
-            <div class="row">
-                <div class="col-lg-12">
-                    <div class="section__title mb_76 text-center">
-                        <h3 class="text-capitalize">{{ @$sections['our_teachers']->defaultTranslate->name }}</span></h3>
-                    </div>
-                </div>
-            </div>
-            <div class="row">
-
-
-                @foreach ($data['teachers'] as $item)
-                    <div class="col-md-6 col-lg-4 col-xl-3">
-                        <div class="single_instractor mb_30 position-relative">
-                            <a href="#" class="thumb">
-                                <img src="{{ @globalAsset(@$item->upload->path, '340X340.webp') }}" alt="Image">
-                            </a>
-                            <div class="instractor_info text-center">
-                                <div class="instractor_info_content">
-                                    <h4>{{ @$item->first_name }} {{ @$item->last_name }}</h4>
-                                    <div class="instractor_social">
-                                        <p>{{ @$item->designation->name }}</p>
-                                    </div>
-                                </div>
-
-                            </div>
-                        </div>
-                    </div>
-                @endforeach
-
-
-            </div>
-        </div>
-    </div>
-    <!-- instractors_wrapper::end  -->
+    @include('frontend.partials.our-teachers', [
+        'teachers' => $data['teachers'],
+        'showViewAll' => false,
+    ])
 @endsection
