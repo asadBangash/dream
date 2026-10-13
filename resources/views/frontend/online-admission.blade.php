@@ -96,7 +96,11 @@
 
                 <div class="col-xl-10">
                     <div class="search_result_box mb_30">
-                        @if (session('message'))
+                        @if (session('error'))
+                            <div class="section__title mb_50">
+                                <h5 class="mb-0 text-danger text-center">{{ session('error') }}</h5>
+                            </div>
+                        @elseif (session('message'))
                             <div class="section__title mb_50">
                                 <h5 class="mb-0 text-success text-center">{{ session('message') }} </h5>
                             </div>

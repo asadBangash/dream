@@ -5,11 +5,11 @@ namespace App\Models\WebsiteSetup;
 use App\Models\Upload;
 use App\Models\Academic\Classes;
 use App\Models\Academic\Section;
-use Illuminate\Database\Eloquent\Model;
+use App\Models\BaseModel;
 use App\Models\StudentInfo\OnlineAdmissionFeesAssign;
 use Illuminate\Database\Eloquent\Factories\HasFactory;
 
-class OnlineAdmission extends Model
+class OnlineAdmission extends BaseModel
 {
     use HasFactory;
 

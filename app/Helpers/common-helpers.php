@@ -930,6 +930,28 @@ if (! function_exists('applyBranchIdToModel')) {
     }
 }
 
+if (! function_exists('branchIdFromClassRequest')) {
+    /** Branch for public forms (no logged-in user): derive from selected class. */
+    function branchIdFromClassRequest($request): int
+    {
+        if (! hasModule('MultiBranch')) {
+            return 1;
+        }
+
+        if ($request->filled('class') && \Illuminate\Support\Facades\Schema::hasTable('classes')) {
+            $classBranch = (int) (\App\Models\Academic\Classes::withoutGlobalScopes()
+                ->where('id', $request->class)
+                ->value('branch_id') ?? 0);
+
+            if ($classBranch > 0) {
+                return $classBranch;
+            }
+        }
+
+        return 1;
+    }
+}
+
 if (! function_exists('branchIdForStudentPersist')) {
     /**
      * Prefer the enrolled class branch (most reliable for branch admins).

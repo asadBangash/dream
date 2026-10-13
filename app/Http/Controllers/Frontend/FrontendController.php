@@ -205,13 +205,22 @@ class FrontendController extends Controller
     public function storeOnlineAdmission(Request $request) {
 
         $admission = $this->repo->onlineAdmission($request);
-        $fees = $this->repo->onlineAdmissionFees($admission->session_id, $admission->classes_id , $admission->section_id);
+
+        if (! $admission instanceof \App\Models\WebsiteSetup\OnlineAdmission) {
+            return redirect()->back()
+                ->withInput()
+                ->with('error', ___('frontend.something_went_wrong'));
+        }
+
+        $fees = $this->repo->onlineAdmissionFees($admission->session_id, $admission->classes_id, $admission->section_id);
         $payment_setting = $this->admission_setting_repo->getOneByFied('admission_payment');
 
-        if($admission && $fees && $payment_setting->is_show == 1){
-            return redirect()->route('frontend.online-admission-fees',[$admission->reference_no , $admission->id])->with('message' , 'Admission Inform submitted successfully , Please wait for school approval');
+        if ($fees && $payment_setting && (int) $payment_setting->is_show === 1) {
+            return redirect()->route('frontend.online-admission-fees', [$admission->reference_no, $admission->id])
+                ->with('message', 'Admission Inform submitted successfully , Please wait for school approval');
         }
-        return redirect()->back()->with('message' , 'Admission Inform submitted successfully, Please wait for school approval');
+
+        return redirect()->back()->with('message', 'Admission Inform submitted successfully, Please wait for school approval');
 
     }
 

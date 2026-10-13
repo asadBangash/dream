@@ -28,6 +28,7 @@ use App\Models\WebsiteSetup\Subscribe;
 use App\Models\WebsiteSetup\ContactInfo;
 use App\Models\Examination\MarksRegister;
 use App\Models\Academic\ClassSetupChildren;
+use Illuminate\Support\Facades\Log;
 use App\Models\WebsiteSetup\OnlineAdmission;
 use App\Interfaces\Frontend\FrontendInterface;
 use App\Models\WebsiteSetup\DepartmentContact;
@@ -214,9 +215,10 @@ class FrontendRepository implements FrontendInterface
             $row->phone          = $request->phone;
             $row->email          = $request->email;
             $row->session_id     = $request->session;
-            $row->shift_id       = $request->shift;
+            $row->shift_id       = $request->filled('shift') ? $request->shift : null;
             $row->classes_id     = $request->class;
-            $row->section_id     = $request->section;
+            $row->section_id     = $request->filled('section') ? $request->section : null;
+            applyBranchIdToModel($row, branchIdFromClassRequest($request));
             $row->dob            = $request->dob;
             $row->gender_id      = $request->gender;
             $row->religion_id    = $request->religion;
@@ -241,7 +243,7 @@ class FrontendRepository implements FrontendInterface
             $row->mother_phone = $request->mother_phone;
             $row->mother_profession = $request->mother_profession;
             $row->mother_image_id = $this->UploadImageCreate($request->mother_image, 'backend/uploads/students');
-            $row->payment_status = ($setting->is_show == 1) ? 2 : 0 ;
+            $row->payment_status = ($setting && (int) $setting->is_show === 1) ? 2 : 0;
 
 
             $row->place_of_birth = $request->place_of_birth;
@@ -267,7 +269,13 @@ class FrontendRepository implements FrontendInterface
 
             return $row;
         } catch (\Throwable $th) {
-            return response()->json([___('frontend.Error'), ___('frontend.something_went_wrong'), 'error', ___('frontend.OK')]);
+            Log::error('Online admission submit failed', [
+                'message' => $th->getMessage(),
+                'class' => $request->class ?? null,
+                'section' => $request->section ?? null,
+            ]);
+
+            return null;
         }
     }
 
