@@ -205,3 +205,25 @@ footer.home_three_footer .copyright_area .footer_border {
     color: #fff !important;
 }
 
+/* Teacher cards — designation & qualification (always visible on overlay) */
+.single_instractor .teacher_card_meta {
+    text-align: center;
+}
+.single_instractor .teacher_card_meta p {
+    color: #fff;
+    font-size: 14px;
+    line-height: 1.45;
+    margin: 0 0 8px;
+    padding: 0;
+    background: transparent;
+    opacity: 1;
+    transform: none;
+}
+.single_instractor .teacher_card_meta p span {
+    font-weight: 600;
+    opacity: 0.92;
+}
+.single_instractor .teacher_designation {
+    font-weight: 600;
+}
+

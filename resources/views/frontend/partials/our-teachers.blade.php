@@ -40,8 +40,19 @@
                                 @else
                                     <h4>{{ @$item->first_name }} {{ @$item->last_name }}</h4>
                                 @endif
-                                <div class="instractor_social">
-                                    <p>{{ @$item->designation->name }}</p>
+                                <div class="teacher_card_meta">
+                                    @if (@$item->designation?->name)
+                                        <p class="teacher_designation">
+                                            <span>{{ ___('common.designation') }}:</span>
+                                            {{ $item->designation->name }}
+                                        </p>
+                                    @endif
+                                    @if (filled($item->qualification))
+                                        <p class="teacher_qualification">
+                                            <span>{{ ___('staff.qualification') }}:</span>
+                                            {{ $item->qualification }}
+                                        </p>
+                                    @endif
                                 </div>
                             </div>
                         </div>

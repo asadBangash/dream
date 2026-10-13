@@ -92,6 +92,17 @@
                             @enderror
                         </div>
                         <div class="col-lg-3 col-md-6 mb-3">
+                            <label for="qualification" class="form-label">{{ ___('staff.qualification') }}</label>
+                            <input class="form-control ot-input @error('qualification') is-invalid @enderror"
+                                name="qualification" id="qualification" value="{{ old('qualification') }}"
+                                placeholder="{{ ___('staff.enter_qualification') }}">
+                            @error('qualification')
+                                <div id="validationServer04Feedback" class="invalid-feedback">
+                                    {{ $message }}
+                                </div>
+                            @enderror
+                        </div>
+                        <div class="col-lg-3 col-md-6 mb-3">
                             <label for="exampleDataList" class="form-label ">{{ ___('staff.first_name') }} <span
                                     class="fillable">*</span></label>
                             <input class="form-control ot-input @error('first_name') is-invalid @enderror" name="first_name" value="{{ old('first_name') }}"

@@ -26,6 +26,7 @@ class UserStoreRequest extends FormRequest
             'phone' => 'required|regex:/^([0-9\s\-\+\(\)]*)$/|max:11',
             'status' => 'required',
             'image' => 'max:2048',
+            'qualification' => 'nullable|max:255',
         ], branchIdValidationRules());
     }
 }
