@@ -91,6 +91,7 @@
                                         <li><a href="{{ route('frontend.result') }}">{{ ___('frontend.Result') }}</a></li>
                                         <li><a href="{{ route('frontend.contact') }}">{{ ___('frontend.contact_us') }}</a></li>
                                         <li class="d-lg-none"><a href="{{ route('frontend.online-admission') }}">{{ ___('frontend.online_admission') }}</a></li>
+                                        <li class="d-lg-none"><a href="{{ route('frontend.talent-test') }}">{{ ___('frontend.talent_test') }}</a></li>
                                         @foreach ($header_pages as $header)
                                             <li><a href="{{ route('frontend.page',$header->slug) }}">{{ @$header->defaultTranslate->name }}</a></li>
                                         @endforeach
@@ -103,6 +104,7 @@
                             <div class="header__right">
                                 <div class="contact_wrap d-flex align-items-center">
                                     <div class="contact_btn d-none d-lg-flex gap_15 align-items-center">
+                                        <a href="{{ route('frontend.talent-test') }}" class="theme_line_btn small_btn3 min_windth_150 text-center">{{ ___('frontend.talent_test') }}</a>
                                         <a href="{{ route('frontend.online-admission') }}" class="theme_btn small_btn3 min_windth_150 text-center">{{ ___('frontend.online_admission') }}</a>
                                     </div>
 

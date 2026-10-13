@@ -10,6 +10,7 @@ use App\Http\Controllers\StudentInfo\DisabledStudentController;
 use App\Http\Controllers\StudentInfo\OnlineAdmissionController;
 use App\Http\Controllers\StudentInfo\StudentCategoryController;
 use App\Http\Controllers\StudentInfo\OnlineAdmissionSettingController;
+use App\Http\Controllers\TalentTest\TalentTestApplicationController;
 
 
 Route::middleware(saasMiddleware())->group(function () {
@@ -73,6 +74,18 @@ Route::middleware(saasMiddleware())->group(function () {
                     Route::PUT('update/{id}',       'update')->name('parent.update')->middleware('PermissionCheck:parent_update', 'DemoCheck');
                     Route::delete('/delete/{id}',   'delete')->name('parent.delete')->middleware('PermissionCheck:parent_delete', 'DemoCheck');
                     Route::get('/get-parent',       'getParent');
+                });
+            });
+        });
+
+        Route::group(['middleware' => ['lang', 'CheckSubscription']], function () {
+            Route::group(['middleware' => ['auth.routes', 'AdminPanel']], function () {
+                Route::controller(TalentTestApplicationController::class)->prefix('talent-test-applications')->group(function () {
+                    Route::get('/', 'index')->name('talent-test-applications.index')->middleware('PermissionCheck:admission_read');
+                    Route::any('/search', 'search')->name('talent-test-applications.search')->middleware('PermissionCheck:admission_read');
+                    Route::get('/show/{id}', 'show')->name('talent-test-applications.show')->middleware('PermissionCheck:admission_read');
+                    Route::post('/status/{id}', 'updateStatus')->name('talent-test-applications.update-status')->middleware('PermissionCheck:admission_update', 'DemoCheck');
+                    Route::delete('/delete/{id}', 'delete')->name('talent-test-applications.delete')->middleware('PermissionCheck:admission_delete', 'DemoCheck');
                 });
             });
         });

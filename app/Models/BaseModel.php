@@ -16,6 +16,7 @@ class BaseModel extends Model
         'settings',
         'genders',
         'gender_translates',
+        'talent_test_applications',
     ];
 
     protected static function boot()

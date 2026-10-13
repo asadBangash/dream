@@ -32,6 +32,9 @@ Route::middleware(saasMiddleware())->group(function () {
                 Route::get('/notice-detail/{id}','noticeDetail')->name('frontend.notice-detail');
 
                 Route::get('/contact',          'contact')->name('frontend.contact');
+                Route::get('/talent-test', 'talentTest')->name('frontend.talent-test');
+                Route::post('/talent-test', 'storeTalentTest')->name('frontend.talent-test.store');
+
                 Route::get('/online-admission', 'onlineAdmission')->name('frontend.online-admission');
                 Route::get('/online-admission-fees/{id}/{ref}', 'onlineAdmissionFees')->name('frontend.online-admission-fees');
 

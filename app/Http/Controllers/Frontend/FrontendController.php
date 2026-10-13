@@ -17,6 +17,8 @@ use App\Http\Requests\Frontend\SearchResultRequest;
 use App\Repositories\Academic\ShiftRepository;
 use App\Repositories\StudentInfo\StudentRepository;
 use App\Repositories\StudentInfo\OnlineAdmissionSettingRepository;
+use App\Repositories\TalentTestApplicationRepository;
+use App\Http\Requests\TalentTest\TalentTestApplicationStoreRequest;
 
 class FrontendController extends Controller
 {
@@ -28,6 +30,7 @@ class FrontendController extends Controller
     private $pageRepo;
     private $admission_setting_repo;
     private $shift_repo;
+    private $talentTestRepo;
 
     function __construct(
         FrontendRepository $repo,
@@ -38,6 +41,7 @@ class FrontendController extends Controller
         PageRepository      $pageRepo,
         OnlineAdmissionSettingRepository      $admission_setting_repo,
         ShiftRepository      $shift_repo,
+        TalentTestApplicationRepository $talentTestRepo,
     )
     {
         if (!Schema::hasTable('settings') && !Schema::hasTable('users'))
@@ -50,6 +54,7 @@ class FrontendController extends Controller
         $this->pageRepo        = $pageRepo;
         $this->admission_setting_repo        = $admission_setting_repo;
         $this->shift_repo        = $shift_repo;
+        $this->talentTestRepo    = $talentTestRepo;
     }
 
     public function index()
@@ -247,6 +252,24 @@ class FrontendController extends Controller
         if($admission){
             return redirect()->route('frontend.online-admission')->with('message' , 'Admission Inform submitted successfully , Please complete payment for successfully admission');
         }
+    }
+
+    public function talentTest()
+    {
+        $data['config'] = config('talent_test');
+
+        return view('frontend.talent-test', compact('data'));
+    }
+
+    public function storeTalentTest(TalentTestApplicationStoreRequest $request)
+    {
+        $application = $this->talentTestRepo->storeFromFrontend($request);
+
+        if (! $application) {
+            return redirect()->back()->withInput()->with('error', ___('frontend.something_went_wrong'));
+        }
+
+        return redirect()->back()->with('message', ___('frontend.talent_test_submitted_successfully').' ('.$application->reference_no.')');
     }
 
     public function storeContact(Request $request)

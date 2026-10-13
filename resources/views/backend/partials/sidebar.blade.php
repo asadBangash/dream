@@ -46,6 +46,15 @@
                         </ul>
                     </li>
                 @endif
+
+                @if (hasPermission('admission_read'))
+                    <li class="sidebar-menu-item {{ set_menu(['talent-test-applications*']) }}">
+                        <a href="{{ route('talent-test-applications.index') }}" class="parent-item-content">
+                            <i class="las la-clipboard-list"></i>
+                            <span class="on-half-expanded">{{ ___('settings.talent_test_applications') }}</span>
+                        </a>
+                    </li>
+                @endif
                 <!-- Admission end -->
 
 

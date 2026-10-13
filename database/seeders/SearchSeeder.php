@@ -34,6 +34,7 @@ class SearchSeeder extends Seeder
             ['route_name' => 'disabled_students.index',             'title' => 'Disabled Student'],
             ['route_name' => 'parent.index',                        'title' =>  'Parent'],
             ['route_name' => 'online-admissions.index',             'title' => 'Online Admissions'],
+            ['route_name' => 'talent-test-applications.index',      'title' => 'Talent Test Applications'],
             ['route_name' => 'book-category.index',                 'title' => 'Book Category'],
             ['route_name' => 'book.index',                          'title' => 'Book'],
             ['route_name' => 'member.index',                        'title' => 'Member'],
