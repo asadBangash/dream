@@ -13,6 +13,10 @@ return new class extends Migration
      */
     public function up()
     {
+        if (Schema::hasTable('subscribes')) {
+            return;
+        }
+
         Schema::create('subscribes', function (Blueprint $table) {
             $table->id();
             $table->string('email')->unique();
