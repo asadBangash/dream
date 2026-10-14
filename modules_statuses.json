@@ -6,6 +6,6 @@
     "VehicleTracker": false,
     "MultiBranch": true,
     "LiveTracking": false,
-    "PushNotification": true,
+    "PushNotification": false,
     "StudyMaterial": false
 }

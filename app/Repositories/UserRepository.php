@@ -18,6 +18,8 @@ use App\Http\Requests\User\UserUpdateRequest;
 use App\Http\Requests\Profile\ProfileUpdateRequest;
 use App\Http\Requests\Profile\PasswordUpdateRequest;
 use App\Traits\ApiReturnFormatTrait;
+use Illuminate\Support\Facades\Log;
+use Illuminate\Support\Facades\Schema;
 
 class UserRepository implements UserInterface
 {
@@ -90,7 +92,12 @@ class UserRepository implements UserInterface
             if(User::whereNotIn('role_id', [6,7])->count() >= activeSubscriptionStaffLimit() && env('APP_SAAS'))
                 return 2;
 
-            $role                     = Role::find($request->role);
+            $role = Role::find($request->role);
+            if (! $role) {
+                Log::error('Staff create failed: role not found', ['role_id' => $request->role]);
+
+                return false;
+            }
 
             $user                     = new User();
             $user->name               = $request->first_name;
@@ -100,7 +107,7 @@ class UserRepository implements UserInterface
             $user->email_verified_at  = now();
             $user->role_id            = $request->role;
             $user->upload_id          = $this->UploadImageCreate($request->image, 'backend/uploads/users');
-            $user->permissions        = $role->permissions;
+            $user->permissions        = $role->permissions ?? [];
             $user->uuid               = Str::uuid();
             $branchId = hasModule('MultiBranch') ? branchIdForPersist($request) : 1;
             if (hasModule('MultiBranch')) {
@@ -114,7 +121,9 @@ class UserRepository implements UserInterface
             $staff->role_id                 = $request->role;
             $staff->designation_id          = $request->designation;
             $staff->department_id           = $request->department;
-            $staff->qualification           = $request->qualification;
+            if (Schema::hasColumn('staff', 'qualification')) {
+                $staff->qualification = $request->qualification;
+            }
             $staff->first_name              = $request->first_name;
             $staff->last_name               = $request->last_name;
             $staff->father_name             = $request->father_name;
@@ -140,6 +149,12 @@ class UserRepository implements UserInterface
             return 1;
         } catch (\Throwable $th) {
             DB::rollback();
+            Log::error('Staff create failed', [
+                'message' => $th->getMessage(),
+                'file' => $th->getFile(),
+                'line' => $th->getLine(),
+            ]);
+
             return false;
         }
     }
@@ -169,7 +184,7 @@ class UserRepository implements UserInterface
                 $user->upload_id          = $this->UploadImageCreate($request->image, 'backend/uploads/users');
             }
 
-            $user->permissions        = $role->permissions;
+            $user->permissions        = $role->permissions ?? [];
             $branchId = hasModule('MultiBranch') ? branchIdForPersist($request) : 1;
             if (hasModule('MultiBranch')) {
                 $user->branch_id = $branchId;
@@ -181,7 +196,9 @@ class UserRepository implements UserInterface
             $staff->role_id                 = $request->role;
             $staff->designation_id          = $request->designation;
             $staff->department_id           = $request->department;
-            $staff->qualification           = $request->qualification;
+            if (Schema::hasColumn('staff', 'qualification')) {
+                $staff->qualification = $request->qualification;
+            }
             $staff->first_name              = $request->first_name;
             $staff->last_name               = $request->last_name;
             $staff->father_name             = $request->father_name;

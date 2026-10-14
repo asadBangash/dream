@@ -909,10 +909,15 @@ if (! function_exists('branchIdForPersist')) {
         }
 
         if (isSuperAdmin()) {
-            return (int) ($request->branch_id ?? superAdminActiveBranchId() ?? 1);
+            if ($request->filled('branch_id')) {
+                return (int) $request->branch_id;
+            }
+            $active = superAdminActiveBranchId();
+
+            return $active ? (int) $active : 1;
         }
 
-        return (int) auth()->user()->branch_id;
+        return (int) (auth()->user()->branch_id ?: 1);
     }
 }
 

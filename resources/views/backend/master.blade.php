@@ -118,7 +118,9 @@
     {{-- delete method --}}
     @stack('script')
 
-    @include('pushnotification::script')
+    @if (hasModule('PushNotification') && filled(config('firebase.web.project_id')))
+        @include('pushnotification::script')
+    @endif
 
     @if (hasModule('MultiBranch'))
         <script>
