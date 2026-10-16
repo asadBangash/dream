@@ -982,6 +982,46 @@ if (! function_exists('branchIdValidationRules')) {
     }
 }
 
+if (! function_exists('defaultOperationalBranchId')) {
+    /** First active branch — used for staff, students, and other branch-scoped records (never 0). */
+    function defaultOperationalBranchId(): int
+    {
+        if (! hasModule('MultiBranch')) {
+            return 1;
+        }
+
+        if (\Illuminate\Support\Facades\Schema::hasTable('branches')) {
+            $id = (int) \Illuminate\Support\Facades\DB::table('branches')
+                ->where('status', \App\Enums\Status::ACTIVE)
+                ->orderBy('id')
+                ->value('id');
+            if ($id > 0) {
+                return $id;
+            }
+        }
+
+        return 1;
+    }
+}
+
+if (! function_exists('staffBranchIdForPersist')) {
+    /** Staff/users must belong to one branch; shared (0) is invalid for login and branch middleware. */
+    function staffBranchIdForPersist($request, ?int $existingBranchId = null): int
+    {
+        $branchId = branchIdForPersist($request);
+
+        if ($branchId > 0) {
+            return $branchId;
+        }
+
+        if ($existingBranchId !== null && $existingBranchId > 0) {
+            return $existingBranchId;
+        }
+
+        return defaultOperationalBranchId();
+    }
+}
+
 if (! function_exists('branchIdForPersist')) {
     function branchIdForPersist($request): int
     {

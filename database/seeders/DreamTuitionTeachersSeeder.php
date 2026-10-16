@@ -39,14 +39,24 @@ class DreamTuitionTeachersSeeder extends Seeder
         $permissions = Role::find(RoleEnum::TEACHER)?->permissions ?? [];
 
         $staffId = 3001;
+        $operationalBranchId = defaultOperationalBranchId();
 
         foreach ($this->teachers as [$first, $last]) {
             $display = trim($first . ' ' . $last);
             $slug = Str::slug($display ?: $first);
             $email = $slug . '@dream.test';
 
-            if (User::withoutGlobalScopes()->where('email', $email)->exists()) {
-                $this->command?->warn("Skip existing: {$email}");
+            $existingUser = User::withoutGlobalScopes()->where('email', $email)->first();
+            if ($existingUser) {
+                if ((int) $existingUser->branch_id < 1) {
+                    $existingUser->branch_id = $operationalBranchId;
+                    $existingUser->save();
+                    Staff::withoutGlobalScopes()->where('user_id', $existingUser->id)
+                        ->update(['branch_id' => $operationalBranchId]);
+                    $this->command?->line("Fixed branch for: {$email}");
+                } else {
+                    $this->command?->warn("Skip existing: {$email}");
+                }
                 $staffId++;
 
                 continue;
@@ -61,7 +71,7 @@ class DreamTuitionTeachersSeeder extends Seeder
             $user->role_id = RoleEnum::TEACHER;
             $user->permissions = $permissions;
             $user->uuid = (string) Str::uuid();
-            $user->branch_id = self::SHARED_BRANCH;
+            $user->branch_id = $operationalBranchId;
             $user->save();
 
             $staff = new Staff();
@@ -78,7 +88,7 @@ class DreamTuitionTeachersSeeder extends Seeder
             $staff->joining_date = now()->format('Y-m-d');
             $staff->phone = $user->phone;
             $staff->status = Status::ACTIVE;
-            $staff->branch_id = self::SHARED_BRANCH;
+            $staff->branch_id = $operationalBranchId;
             $staff->upload_documents = [];
             $staff->save();
 

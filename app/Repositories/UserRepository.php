@@ -109,7 +109,7 @@ class UserRepository implements UserInterface
             $user->upload_id          = $this->UploadImageCreate($request->image, 'backend/uploads/users');
             $user->permissions        = $role->permissions ?? [];
             $user->uuid               = Str::uuid();
-            $branchId = hasModule('MultiBranch') ? branchIdForPersist($request) : 1;
+            $branchId = hasModule('MultiBranch') ? staffBranchIdForPersist($request) : 1;
             if (hasModule('MultiBranch')) {
                 $user->branch_id = $branchId;
             }
@@ -171,10 +171,16 @@ class UserRepository implements UserInterface
         DB::beginTransaction();
         try {
             $role                     = Role::find($request->role);
+            if (! $role) {
+                return false;
+            }
 
             $staff                    = $this->model->findOrfail($id);
 
             $user                     = User::find($staff->user_id);
+            if (! $user) {
+                return false;
+            }
             $user->name               = $request->first_name;
             $user->email              = $request->email;
             $user->phone              = $request->phone;
@@ -185,7 +191,9 @@ class UserRepository implements UserInterface
             }
 
             $user->permissions        = $role->permissions ?? [];
-            $branchId = hasModule('MultiBranch') ? branchIdForPersist($request) : 1;
+            $branchId = hasModule('MultiBranch')
+                ? staffBranchIdForPersist($request, (int) ($staff->branch_id ?? 0))
+                : 1;
             if (hasModule('MultiBranch')) {
                 $user->branch_id = $branchId;
             }
