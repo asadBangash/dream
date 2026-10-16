@@ -112,7 +112,7 @@
                                         <th class="purchase">{{ ___('common.gender') }}</th>
                                         <th class="purchase">{{ ___('student_info.mobile_number') }}</th>
                                         <th class="purchase">{{ ___('common.status') }}</th>
-                                        @if (hasPermission('student_update') || hasPermission('student_delete'))
+                                        @if (hasPermission('student_read') || hasPermission('student_update') || hasPermission('student_delete'))
                                             <th class="action">{{ ___('common.action') }}</th>
                                         @endif
                                     </tr>
@@ -155,34 +155,31 @@
                                                         class="badge-basic-danger-text">{{ ___('common.inactive') }}</span>
                                                 @endif
                                             </td>
-                                            @if (hasPermission('student_update') || hasPermission('student_delete'))
+                                            @if (hasPermission('student_read') || hasPermission('student_update') || hasPermission('student_delete'))
                                                 <td class="action">
-                                                    <div class="dropdown dropdown-action">
-                                                        <button type="button" class="btn-dropdown"
-                                                            data-bs-toggle="dropdown" aria-expanded="false">
-                                                            <i class="fa-solid fa-ellipsis"></i>
-                                                        </button>
-                                                        <ul class="dropdown-menu dropdown-menu-end ">
-                                                            @if (hasPermission('student_update'))
-                                                                <li>
-                                                                    <a class="dropdown-item"
-                                                                        href="{{ route('student.edit', @$row->id) }}"><span
-                                                                            class="icon mr-8"><i
-                                                                                class="fa-solid fa-pen-to-square"></i></span>
-                                                                        {{ ___('common.edit') }}</a>
-                                                                </li>
-                                                            @endif
-                                                            @if (hasPermission('student_delete'))
-                                                                <li>
-                                                                    <a class="dropdown-item" href="javascript:void(0);"
-                                                                        onclick="delete_row('student/delete', {{ @$row->student_id }})">
-                                                                        <span class="icon mr-8"><i
-                                                                                class="fa-solid fa-trash-can"></i></span>
-                                                                        <span>{{ ___('common.delete') }}</span>
-                                                                    </a>
-                                                                </li>
-                                                            @endif
-                                                        </ul>
+                                                    <div class="d-flex align-items-center gap-2 flex-nowrap">
+                                                        @if (hasPermission('student_read'))
+                                                            <a href="{{ route('student.show', @$row->student->id) }}"
+                                                                class="btn btn-sm ot-btn-primary"
+                                                                title="{{ ___('common.view') }}">
+                                                                <i class="fa-solid fa-eye"></i>
+                                                            </a>
+                                                        @endif
+                                                        @if (hasPermission('student_update'))
+                                                            <a href="{{ route('student.edit', @$row->id) }}"
+                                                                class="btn btn-sm ot-btn-primary"
+                                                                title="{{ ___('common.edit') }}">
+                                                                <i class="fa-solid fa-pen-to-square"></i>
+                                                            </a>
+                                                        @endif
+                                                        @if (hasPermission('student_delete'))
+                                                            <button type="button"
+                                                                class="btn btn-sm btn-outline-danger border"
+                                                                title="{{ ___('common.delete') }}"
+                                                                onclick="delete_row('student/delete', {{ @$row->student_id }})">
+                                                                <i class="fa-solid fa-trash-can"></i>
+                                                            </button>
+                                                        @endif
                                                     </div>
                                                 </td>
                                             @endif
