@@ -11,8 +11,26 @@
                     <div id="quickParentFormErrors" class="alert alert-danger d-none"></div>
                     <form id="quickParentForm" enctype="multipart/form-data">
                         @csrf
-                        <input type="hidden" name="branch_id" id="quickParentBranchId" value="">
                         <input type="hidden" name="password_type" value="default">
+                        @if (hasModule('MultiBranch') && isSuperAdmin())
+                            <div class="row mb-3">
+                                <div class="col-md-4">
+                                    <label for="quickParentBranchSelect" class="form-label">{{ ___('branch.branch') }}
+                                        <span class="fillable">*</span></label>
+                                    <select name="branch_id" id="quickParentBranchSelect"
+                                        class="nice-select niceSelect bordered_style wide">
+                                        <option value="">{{ ___('branch.select_branch') }}</option>
+                                        @foreach (\Modules\MultiBranch\Entities\Branch::query()->where('status', \App\Enums\Status::ACTIVE)->orderBy('name')->pluck('name', 'id') as $id => $name)
+                                            <option value="{{ $id }}">{{ $name }}</option>
+                                        @endforeach
+                                    </select>
+                                    <small class="text-muted">{{ ___('branch.select_branch') }} (required for parent login)</small>
+                                </div>
+                            </div>
+                        @else
+                            <input type="hidden" name="branch_id" id="quickParentBranchId"
+                                value="{{ auth()->user()->branch_id ?? 1 }}">
+                        @endif
                         @include('backend.student-info.parent.partials.form-fields', ['fieldPrefix' => 'modal_parent_'])
                     </form>
                 </div>
@@ -31,23 +49,49 @@
             (function() {
                 const parentSelectSelector = 'select.parent[name="parent"]';
 
+                function studentFormBranchId() {
+                    const $studentBranch = $('#visitForm select[name="branch_id"]').first();
+                    const val = $studentBranch.val() || $('#visitForm input[name="branch_id"]').val() || '';
+                    return val === 'all' ? '' : val;
+                }
+
                 $('#addParentModal').on('show.bs.modal', function() {
-                    const branchVal = $('select[name="branch_id"]').val() || $('input[name="branch_id"]').val() || '';
-                    $('#quickParentBranchId').val(branchVal);
                     $('#quickParentFormErrors').addClass('d-none').empty();
+                    const fromStudent = studentFormBranchId();
+                    const $modalBranch = $('#quickParentBranchSelect');
+                    if ($modalBranch.length && fromStudent) {
+                        $modalBranch.val(fromStudent);
+                    }
                     $('#quickParentForm select.nice-select').each(function() {
                         if (!$(this).next('.nice-select').length && typeof $(this).niceSelect === 'function') {
                             $(this).niceSelect();
+                        } else if ($(this).next('.nice-select').length && typeof $(this).niceSelect === 'function') {
+                            $(this).niceSelect('update');
                         }
                     });
                 });
 
                 $('#saveQuickParentBtn').on('click', function() {
                     const form = document.getElementById('quickParentForm');
+                    const $form = $(form);
+
+                    if (!$form.find('[name=guardian_name]').val() && $form.find('[name=father_name]').val()) {
+                        $form.find('[name=guardian_name]').val($form.find('[name=father_name]').val());
+                    }
+                    if (!$form.find('[name=guardian_mobile]').val() && $form.find('[name=father_mobile]').val()) {
+                        $form.find('[name=guardian_mobile]').val($form.find('[name=father_mobile]').val());
+                    }
+
                     const fd = new FormData(form);
-                    const branchVal = $('select[name="branch_id"]').val() || $('input[name="branch_id"]').val();
-                    if (branchVal) {
+                    let branchVal = $form.find('[name=branch_id]').val();
+                    if ((!branchVal || branchVal === 'all') && studentFormBranchId()) {
+                        branchVal = studentFormBranchId();
                         fd.set('branch_id', branchVal);
+                    }
+                    if (!branchVal || branchVal === 'all') {
+                        $('#quickParentFormErrors').removeClass('d-none').html(
+                            '<div>{{ ___('branch.select_branch') }}</div>');
+                        return;
                     }
 
                     const $btn = $(this);

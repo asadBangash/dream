@@ -17,6 +17,32 @@ class ParentGuardianStoreRequest extends FormRequest
         return true;
     }
 
+    protected function prepareForValidation(): void
+    {
+        $branchId = $this->input('branch_id');
+
+        if (hasModule('MultiBranch') && branchIdMeansAllBranches($branchId)) {
+            $resolved = superAdminActiveBranchId();
+            if ($resolved) {
+                $this->merge(['branch_id' => (string) $resolved]);
+            } else {
+                $this->merge(['branch_id' => '']);
+            }
+        }
+
+        if (! $this->filled('guardian_name') && $this->filled('father_name')) {
+            $this->merge(['guardian_name' => $this->input('father_name')]);
+        }
+
+        if (! $this->filled('guardian_mobile') && $this->filled('father_mobile')) {
+            $this->merge(['guardian_mobile' => $this->input('father_mobile')]);
+        }
+
+        if ($this->filled('guardian_name') && ! $this->filled('guardian_profession') && $this->filled('father_profession')) {
+            $this->merge(['guardian_profession' => $this->input('father_profession')]);
+        }
+    }
+
     /**
      * Get the validation rules that apply to the request.
      *
