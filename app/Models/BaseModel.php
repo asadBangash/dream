@@ -30,6 +30,8 @@ class BaseModel extends Model
         'subjects',
         'class_setups',
         'class_setup_childrens',
+        'subject_assigns',
+        'subject_assign_childrens',
         'time_schedules',
         'class_rooms',
     ];

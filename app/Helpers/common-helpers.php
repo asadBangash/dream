@@ -625,9 +625,11 @@ function loadPayPalCredentials()
 
 function teacherSubjects()
 {
+    $staffId = authStaffId();
+
     return SubjectAssignChildren::with('subject')
-        ->when(Auth::user()->role_id == 5, function ($query) {
-            return $query->where('staff_id', Auth::user()->staff->id);
+        ->when(Auth::user()->role_id == 5 && $staffId, function ($query) use ($staffId) {
+            return $query->where('staff_id', $staffId);
         })
         ->pluck('subject_id')
         ->toArray();
@@ -809,9 +811,27 @@ if (! function_exists('centralAcademicTables')) {
             'subjects',
             'class_setups',
             'class_setup_childrens',
+            'subject_assigns',
+            'subject_assign_childrens',
             'time_schedules',
             'class_rooms',
         ];
+    }
+}
+
+if (! function_exists('authStaffId')) {
+    /** Staff row id for the logged-in user (ignores branch scope on staff). */
+    function authStaffId(): ?int
+    {
+        if (! auth()->check()) {
+            return null;
+        }
+
+        $id = \App\Models\Staff\Staff::withoutGlobalScopes()
+            ->where('user_id', auth()->id())
+            ->value('id');
+
+        return $id ? (int) $id : null;
     }
 }
 

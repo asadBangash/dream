@@ -11,6 +11,7 @@ use App\Models\Examination\ExamAssign;
 use App\Models\Examination\MarksRegister;
 use App\Models\Academic\SubjectAssignChildren;
 use App\Interfaces\Academic\SubjectAssignInterface;
+use App\Enums\RoleEnum;
 
 class SubjectAssignRepository implements SubjectAssignInterface
 {
@@ -50,12 +51,14 @@ class SubjectAssignRepository implements SubjectAssignInterface
             $setup->classes_id  = $request->class;
             $setup->section_id  = $request->section;
             $setup->status      = $request->status;
+            applyBranchIdToModel($setup, isCentralAcademicTable('subject_assigns') ? 0 : branchIdForPersist($request));
             $setup->save();
             foreach ($request->subjects ?? [] as $key => $item) {
                 $row = new SubjectAssignChildren();
                 $row->subject_assign_id   = $setup->id;
                 $row->subject_id          = $item;
                 $row->staff_id            = $request->teachers[$key];
+                applyBranchIdToModel($row, isCentralAcademicTable('subject_assign_childrens') ? 0 : branchIdForPersist($request));
                 $row->save();
             }
             DB::commit();
@@ -70,13 +73,19 @@ class SubjectAssignRepository implements SubjectAssignInterface
     {
         $result = $this->model->active()->where('session_id', setting('session'))->where('classes_id', $request->classes_id)->where('section_id', $request->section_id)->first();
 
+        if (! $result) {
+            return collect();
+        }
+
+        $staffId = authStaffId();
+
         return SubjectAssignChildren::with('subject')
-                                        ->where('subject_assign_id', @$result->id)
-                                        ->when(Auth::user()->role_id == 5, function ($query) {
-                                            return $query->where('staff_id', Auth::user()->staff->id);
-                                        })
-                                        ->select('subject_id')
-                                        ->get();
+            ->where('subject_assign_id', $result->id)
+            ->when(Auth::user()->role_id == RoleEnum::TEACHER && $staffId, function ($query) use ($staffId) {
+                return $query->where('staff_id', $staffId);
+            })
+            ->select('subject_id')
+            ->get();
     }
 
     public function show($id)
@@ -120,6 +129,7 @@ class SubjectAssignRepository implements SubjectAssignInterface
             $setup->classes_id  = $request->class;
             $setup->section_id  = $request->section;
             $setup->status      = $request->status;
+            applyBranchIdToModel($setup, isCentralAcademicTable('subject_assigns') ? 0 : branchIdForPersist($request));
             $setup->save();
 
             SubjectAssignChildren::where('subject_assign_id', $setup->id)->delete();
@@ -129,6 +139,7 @@ class SubjectAssignRepository implements SubjectAssignInterface
                 $row->subject_assign_id   = $setup->id;
                 $row->subject_id          = $item;
                 $row->staff_id            = $request->teachers[$key];
+                applyBranchIdToModel($row, isCentralAcademicTable('subject_assign_childrens') ? 0 : branchIdForPersist($request));
                 $row->save();
             }
 

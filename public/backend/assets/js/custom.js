@@ -567,7 +567,7 @@ $("#getSubjects").on('change', function (e) {
     }
     $.ajax({
         type: "GET",
-        dataType: 'html',
+        dataType: 'json',
         data: formData,
         headers: {
             'X-CSRF-TOKEN': $('meta[name="csrf-token"]').attr('content')
@@ -576,8 +576,9 @@ $("#getSubjects").on('change', function (e) {
         success: function (data) {
             var subject_options = '';
             var subject_li = '';
+            var subjects = Array.isArray(data) ? data : [];
 
-            $.each(JSON.parse(data), function (i, item) {
+            $.each(subjects, function (i, item) {
                 subject_options += "<option value=" + item.subject.id + ">" + item.subject.name + "</option>";
                 subject_li += "<li data-value=" + item.subject.id + " class='option'>" + item.subject.name + "</li>";
             });
