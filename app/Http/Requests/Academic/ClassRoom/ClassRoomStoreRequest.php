@@ -23,10 +23,10 @@ class ClassRoomStoreRequest extends FormRequest
      */
     public function rules()
     {
-        return [
+        return array_merge([
             'room_no'   => 'required|max:10|unique:class_rooms',
             'capacity'  => 'required|max:10',
-            'status'    => 'required'
-        ];
+            'status'    => 'required',
+        ], branchIdValidationRules(true, true));
     }
 }

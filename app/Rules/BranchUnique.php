@@ -23,6 +23,24 @@ class BranchUnique implements ValidationRule
             return;
         }
 
+        if (isCentralAcademicTable($this->table)) {
+            $query = DB::table($this->table)->where($this->column, $value);
+
+            foreach ($this->where as $col => $val) {
+                $query->where($col, $val);
+            }
+
+            if ($this->ignoreId) {
+                $query->where('id', '!=', $this->ignoreId);
+            }
+
+            if ($query->exists()) {
+                $fail(__('validation.unique'));
+            }
+
+            return;
+        }
+
         if (! Schema::hasColumn($this->table, 'branch_id')) {
             $exists = DB::table($this->table)
                 ->where($this->column, $value)
@@ -39,7 +57,23 @@ class BranchUnique implements ValidationRule
         $branchId = $this->branchId ?? resolveBranchIdForValidation($this->ignoreId, $this->table);
 
         if ($branchId < 1) {
-            $fail(___('branch.select_branch'));
+            $query = DB::table($this->table)->where($this->column, $value);
+
+            foreach ($this->where as $col => $val) {
+                $query->where($col, $val);
+            }
+
+            if ($this->ignoreId) {
+                $query->where('id', '!=', $this->ignoreId);
+            }
+
+            $query->where(function ($q) {
+                $q->whereNull('branch_id')->orWhere('branch_id', 0);
+            });
+
+            if ($query->exists()) {
+                $fail(__('validation.unique'));
+            }
 
             return;
         }

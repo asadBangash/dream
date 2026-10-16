@@ -18,6 +18,6 @@ class DepartmentStoreRequest extends FormRequest
             'name' => ['required', new BranchUnique('departments', 'name')],
             'status' => ['required'],
             'staff_user_id' => ['nullable'],
-        ], branchIdValidationRules());
+        ], branchIdValidationRules(true, true));
     }
 }

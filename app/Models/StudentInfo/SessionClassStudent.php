@@ -28,10 +28,7 @@ class SessionClassStudent extends BaseModel
 
         $branchId = effectiveBranchScopeId();
         if (hasModule('MultiBranch') && $branchId) {
-            $query->where(function (Builder $outer) use ($branchId) {
-                $outer->whereHas('student', fn (Builder $q) => $q->withoutGlobalScopes()->where('branch_id', $branchId))
-                    ->orWhereHas('class', fn (Builder $q) => $q->withoutGlobalScopes()->where('branch_id', $branchId));
-            });
+            $query->whereHas('student', fn (Builder $q) => $q->withoutGlobalScopes()->where('branch_id', $branchId));
         }
 
         return $query->with([

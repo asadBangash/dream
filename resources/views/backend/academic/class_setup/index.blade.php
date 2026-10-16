@@ -24,7 +24,7 @@
             <div class="card">
                 <div class="card-header d-flex justify-content-between align-items-center">
                     <h4 class="mb-0">{{ $data['title'] }}</h4>
-                    @if (hasPermission('class_setup_create'))
+                    @if (hasPermission('class_setup_create') && canManageCentralAcademicSetup())
                         <a href="{{ route('class-setup.create') }}" class="btn btn-lg ot-btn-primary">
                             <span><i class="fa-solid fa-plus"></i> </span>
                             <span class="">{{ ___('common.add') }}</span>
@@ -32,6 +32,7 @@
                     @endif
                 </div>
                 <div class="card-body">
+                    @include('backend.partials.central-academic-readonly-alert')
                     <div class="table-responsive">
                         <table class="table table-bordered role-table">
                             <thead class="thead">
@@ -40,7 +41,7 @@
                                     <th class="purchase">{{ ___('academic.class') }}</th>
                                     <th class="purchase">{{ ___('academic.sections') }}</th>
                                     <th class="purchase">{{ ___('common.status') }}</th>
-                                    @if (hasPermission('class_setup_update') || hasPermission('class_setup_delete'))
+                                    @if ((hasPermission('class_setup_update') || hasPermission('class_setup_delete')) && canManageCentralAcademicSetup())
                                         <th class="action">{{ ___('common.action') }}</th>
                                     @endif
                                 </tr>
@@ -62,7 +63,7 @@
                                             <span class="badge-basic-danger-text">{{ ___('common.inactive') }}</span>
                                         @endif
                                     </td>
-                                    @if (hasPermission('class_setup_update') || hasPermission('class_setup_delete'))
+                                    @if ((hasPermission('class_setup_update') || hasPermission('class_setup_delete')) && canManageCentralAcademicSetup())
                                         <td class="action">
                                             <div class="dropdown dropdown-action">
                                                 <button type="button" class="btn-dropdown" data-bs-toggle="dropdown"

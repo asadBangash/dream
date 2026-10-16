@@ -23,7 +23,7 @@ class ClassSetupStoreRequest extends FormRequest
      */
     public function rules()
     {
-        return array_merge(branchIdValidationRules(), [
+        return array_merge(branchIdValidationRules(true, true), [
             'classes'      => 'required',
             'sections'     => 'required',
             'sections.*'   => 'min:1',

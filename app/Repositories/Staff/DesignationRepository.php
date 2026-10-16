@@ -30,12 +30,16 @@ class DesignationRepository implements DesignationInterface
     public function store($request)
     {
         try {
-            $row                = new $this->model;
-            $row->name          = $request->name;
-            $row->status        = $request->status;
+            $row         = new $this->model;
+            $row->name   = $request->name;
+            $row->status = $request->status;
+            applyRequestBranchToModel($row);
             $row->save();
+
             return $this->responseWithSuccess(___('alert.created_successfully'), []);
         } catch (\Throwable $th) {
+            report($th);
+
             return $this->responseWithError(___('alert.something_went_wrong_please_try_again'), []);
 
         }
@@ -49,12 +53,16 @@ class DesignationRepository implements DesignationInterface
     public function update($request, $id)
     {
         try {
-            $row                = $this->model->findOrfail($id);
-            $row->name          = $request->name;
-            $row->status        = $request->status;
+            $row         = $this->model->findOrfail($id);
+            $row->name   = $request->name;
+            $row->status = $request->status;
+            applyRequestBranchToModel($row);
             $row->save();
+
             return $this->responseWithSuccess(___('alert.updated_successfully'), []);
         } catch (\Throwable $th) {
+            report($th);
+
             return $this->responseWithError(___('alert.something_went_wrong_please_try_again'), []);
         }
     }

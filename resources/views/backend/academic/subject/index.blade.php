@@ -24,7 +24,7 @@
             <div class="card">
                 <div class="card-header d-flex justify-content-between align-items-center">
                     <h4 class="mb-0">{{ $data['title'] }}</h4>
-                    @if (hasPermission('subject_create'))
+                    @if (hasPermission('subject_create') && canManageCentralAcademicSetup())
                         <a href="{{ route('subject.create') }}" class="btn btn-lg ot-btn-primary">
                             <span><i class="fa-solid fa-plus"></i> </span>
                             <span class="">{{ ___('common.add') }}</span>
@@ -32,6 +32,7 @@
                     @endif
                 </div>
                 <div class="card-body">
+                    @include('backend.partials.central-academic-readonly-alert')
                     <div class="table-responsive">
                         <table class="table table-bordered class-table">
                             <thead class="thead">
@@ -41,7 +42,7 @@
                                     <th class="purchase">{{ ___('academic.code') }}</th>
                                     <th class="purchase">{{ ___('academic.type') }}</th>
                                     <th class="purchase">{{ ___('common.status') }}</th>
-                                    @if (hasPermission('subject_update') || hasPermission('subject_delete'))
+                                    @if ((hasPermission('subject_update') || hasPermission('subject_delete')) && canManageCentralAcademicSetup())
                                         <th class="action">{{ ___('common.action') }}</th>
                                     @endif
                                 </tr>
@@ -66,7 +67,7 @@
                                             <span class="badge-basic-danger-text">{{ ___('common.inactive') }}</span>
                                         @endif
                                     </td>
-                                    @if (hasPermission('subject_update') || hasPermission('subject_delete'))
+                                    @if ((hasPermission('subject_update') || hasPermission('subject_delete')) && canManageCentralAcademicSetup())
                                         <td class="action">
                                             <div class="dropdown dropdown-action">
                                                 <button type="button" class="btn-dropdown" data-bs-toggle="dropdown"

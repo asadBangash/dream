@@ -16,6 +16,6 @@ class ExamTypeStoreRequest extends FormRequest
     {
         return array_merge([
             'name' => ['required', 'max:255', new BranchUnique('exam_types', 'name')],
-        ], branchIdValidationRules());
+        ], branchIdValidationRules(true, true));
     }
 }

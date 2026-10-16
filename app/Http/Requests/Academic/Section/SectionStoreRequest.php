@@ -17,6 +17,6 @@ class SectionStoreRequest extends FormRequest
         return array_merge([
             'name' => ['required', 'max:255', new BranchUnique('sections', 'name')],
             'status' => ['required'],
-        ], branchIdValidationRules());
+        ], branchIdValidationRules(true, true));
     }
 }

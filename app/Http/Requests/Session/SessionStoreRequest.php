@@ -23,11 +23,11 @@ class SessionStoreRequest extends FormRequest
      */
     public function rules()
     {
-        return [
+        return array_merge([
             'name'         => 'required|max:255|unique:sessions',
             'start_date'   => 'required|max:255',
             'end_date'     => 'required|max:255',
-            'status'       => 'required'
-        ];
+            'status'       => 'required',
+        ], branchIdValidationRules(true, true));
     }
 }

@@ -23,12 +23,11 @@ class TimeScheduleStoreRequest extends FormRequest
      */
     public function rules()
     {
-        return [
-            // 'name'   => 'required|max:255|unique:time_schedules',
+        return array_merge([
             'type'       => 'required',
             'status'     => 'required',
             'start_time' => 'required',
             'end_time'   => 'required',
-        ];
+        ], branchIdValidationRules(true, true));
     }
 }

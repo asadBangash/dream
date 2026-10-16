@@ -17,6 +17,6 @@ class DesignationStoreRequest extends FormRequest
         return array_merge([
             'name' => ['required', 'max:255', new BranchUnique('designations', 'name')],
             'status' => ['required'],
-        ], branchIdValidationRules());
+        ], branchIdValidationRules(true, true));
     }
 }

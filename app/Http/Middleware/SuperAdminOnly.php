@@ -9,6 +9,10 @@ class SuperAdminOnly
 {
     public function handle(Request $request, Closure $next)
     {
+        if (! hasModule('MultiBranch')) {
+            return $next($request);
+        }
+
         if (! auth()->check() || ! isSuperAdmin()) {
             abort(403, 'Super Admin access required.');
         }

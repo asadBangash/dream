@@ -22,7 +22,7 @@ class SubjectStoreRequest extends FormRequest
             'type' => ['required'],
             'status' => ['required', 'max:10'],
             'code' => ['required', 'max:50'],
-        ], branchIdValidationRules());
+        ], branchIdValidationRules(true, true));
     }
 
     public function messages()

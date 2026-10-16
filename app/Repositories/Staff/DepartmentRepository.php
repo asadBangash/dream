@@ -41,13 +41,25 @@ class DepartmentRepository implements DepartmentInterface
     public function store($request)
     {
         try {
-            $row                = new $this->model;
-            $row->name          = $request->name;
-            $row->staff_user_id = blank($request->staff_user_id) ? null : $request->staff_user;
-            $row->status        = $request->status;
+            $row         = new $this->model;
+            $row->name   = $request->name;
+            $row->status = $request->status;
+
+            if (blank($request->staff_user_id)) {
+                $row->staff_user_id = null;
+            } else {
+                $row->staff_user_id = \App\Models\Staff\Staff::query()
+                    ->where('id', $request->staff_user_id)
+                    ->value('user_id');
+            }
+
+            applyRequestBranchToModel($row);
             $row->save();
+
             return $this->responseWithSuccess(___('alert.created_successfully'), []);
         } catch (\Throwable $th) {
+            report($th);
+
             return $this->responseWithError(___('alert.something_went_wrong_please_try_again'), []);
         }
     }
@@ -62,11 +74,21 @@ class DepartmentRepository implements DepartmentInterface
         try {
             $row                = $this->model->findOrfail($id);
             $row->name          = $request->name;
-            $row->staff_user_id = blank($request->staff_user_id) ? null : $request->staff_user;
-            $row->status        = $request->status;
+            if (blank($request->staff_user_id)) {
+                $row->staff_user_id = null;
+            } else {
+                $row->staff_user_id = \App\Models\Staff\Staff::query()
+                    ->where('id', $request->staff_user_id)
+                    ->value('user_id');
+            }
+            $row->status = $request->status;
+            applyRequestBranchToModel($row);
             $row->save();
+
             return $this->responseWithSuccess(___('alert.updated_successfully'), []);
         } catch (\Throwable $th) {
+            report($th);
+
             return $this->responseWithError(___('alert.something_went_wrong_please_try_again'), []);
         }
     }

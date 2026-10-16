@@ -17,6 +17,21 @@ class BaseModel extends Model
         'genders',
         'gender_translates',
         'talent_test_applications',
+        'online_admissions',
+        'sessions',
+        'session_translates',
+        'classes',
+        'class_translates',
+        'sections',
+        'section_translates',
+        'class_section_translates',
+        'shifts',
+        'shift_translates',
+        'subjects',
+        'class_setups',
+        'class_setup_childrens',
+        'time_schedules',
+        'class_rooms',
     ];
 
     protected static function boot()
@@ -41,18 +56,18 @@ class BaseModel extends Model
                 }
 
                 if ($table === 'session_class_students') {
-                    $builder->where(function (Builder $outer) use ($branchId) {
-                        $outer->whereHas('student', function (Builder $query) use ($branchId) {
-                            $query->withoutGlobalScopes()->where('branch_id', $branchId);
-                        })->orWhereHas('class', function (Builder $query) use ($branchId) {
-                            $query->withoutGlobalScopes()->where('branch_id', $branchId);
-                        });
+                    $builder->whereHas('student', function (Builder $query) use ($branchId) {
+                        $query->withoutGlobalScopes()->where('branch_id', $branchId);
                     });
 
                     return;
                 }
 
-                $builder->where("{$table}.branch_id", $branchId);
+                $builder->where(function (Builder $scoped) use ($table, $branchId) {
+                    $scoped->where("{$table}.branch_id", $branchId)
+                        ->orWhereNull("{$table}.branch_id")
+                        ->orWhere("{$table}.branch_id", 0);
+                });
             });
 
             static::creating(function ($model) {
@@ -66,11 +81,8 @@ class BaseModel extends Model
                     return;
                 }
 
-                if (empty($model->branch_id)) {
-                    $branchId = request()->input('branch_id') ?: effectiveBranchScopeId();
-                    if ($branchId) {
-                        $model->branch_id = (int) $branchId;
-                    }
+                if ($model->branch_id === null || $model->branch_id === '') {
+                    applyRequestBranchToModel($model);
                 }
             });
 

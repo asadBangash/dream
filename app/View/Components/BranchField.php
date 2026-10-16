@@ -8,8 +8,11 @@ use Modules\MultiBranch\Entities\Branch;
 
 class BranchField extends Component
 {
-    /** Existing record branch (edit forms). */
-    public function __construct(public ?int $recordBranchId = null) {}
+    /** Existing record branch (edit forms); null/0 = all branches. */
+    public function __construct(
+        public ?int $recordBranchId = null,
+        public bool $allowAllBranches = false,
+    ) {}
 
     public function render(): View
     {
@@ -26,7 +29,17 @@ class BranchField extends Component
             $lockedBranch = Branch::query()->find((int) auth()->user()->branch_id);
         }
 
-        $selected = old('branch_id', $this->recordBranchId ?? superAdminActiveBranchId());
+        $selected = old('branch_id');
+
+        if ($selected === null) {
+            if ($this->recordBranchId !== null && $this->recordBranchId > 0) {
+                $selected = $this->recordBranchId;
+            } elseif ($this->allowAllBranches && ($this->recordBranchId === null || $this->recordBranchId === 0)) {
+                $selected = superAdminActiveBranchId() ?? 'all';
+            } else {
+                $selected = superAdminActiveBranchId() ?? ($this->allowAllBranches ? 'all' : null);
+            }
+        }
 
         return view('components.branch-field', [
             'branches' => $branches,
@@ -34,6 +47,7 @@ class BranchField extends Component
             'showLocked' => $showLocked && $lockedBranch,
             'lockedBranch' => $lockedBranch,
             'selected' => $selected,
+            'allowAllBranches' => $this->allowAllBranches,
         ]);
     }
 }

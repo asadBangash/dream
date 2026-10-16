@@ -212,13 +212,13 @@ Route::middleware(saasMiddleware())->group(function () {
 
                     Route::controller(SessionController::class)->prefix('sessions')->group(function () {
                         Route::get('/',                 'index')->name('sessions.index')->middleware('PermissionCheck:session_read');
-                        Route::get('/create',           'create')->name('sessions.create')->middleware('PermissionCheck:session_create');
-                        Route::post('/store',           'store')->name('sessions.store')->middleware('PermissionCheck:session_create', 'DemoCheck');
-                        Route::get('/edit/{id}',        'edit')->name('sessions.edit')->middleware('PermissionCheck:session_update');
-                        Route::get('/translate/{id}',        'translate')->name('sessions.translate')->middleware('PermissionCheck:session_update');
-                        Route::post('/translateUpdate/{id}',        'translateUpdate')->name('sessions.translateUpdate')->middleware('PermissionCheck:session_update');
-                        Route::put('/update/{id}',      'update')->name('sessions.update')->middleware('PermissionCheck:session_update', 'DemoCheck');
-                        Route::delete('/delete/{id}',   'delete')->name('sessions.delete')->middleware('PermissionCheck:session_delete', 'DemoCheck');
+                        Route::get('/create',           'create')->name('sessions.create')->middleware('PermissionCheck:session_create', 'superadmin');
+                        Route::post('/store',           'store')->name('sessions.store')->middleware('PermissionCheck:session_create', 'superadmin', 'DemoCheck');
+                        Route::get('/edit/{id}',        'edit')->name('sessions.edit')->middleware('PermissionCheck:session_update', 'superadmin');
+                        Route::get('/translate/{id}',        'translate')->name('sessions.translate')->middleware('PermissionCheck:session_update', 'superadmin');
+                        Route::post('/translateUpdate/{id}',        'translateUpdate')->name('sessions.translateUpdate')->middleware('PermissionCheck:session_update', 'superadmin');
+                        Route::put('/update/{id}',      'update')->name('sessions.update')->middleware('PermissionCheck:session_update', 'superadmin', 'DemoCheck');
+                        Route::delete('/delete/{id}',   'delete')->name('sessions.delete')->middleware('PermissionCheck:session_delete', 'superadmin', 'DemoCheck');
 
                         Route::get('/change',           'changeSession')->name('sessions.change');
                     });

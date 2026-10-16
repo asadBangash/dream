@@ -2,13 +2,10 @@
 
 namespace App\Repositories\Academic;
 
-use App\Enums\ApiStatus;
 use App\Traits\ReturnFormatTrait;
 use App\Models\Academic\ClassSetup;
 use App\Interfaces\Academic\ClassSetupInterface;
 use App\Models\Academic\ClassSetupChildren;
-use App\Models\Academic\Classes;
-use App\Models\Academic\Section;
 use Illuminate\Support\Facades\DB;
 use Symfony\Component\HttpKernel\Exception\HttpExceptionInterface;
 
@@ -58,34 +55,9 @@ class ClassSetupRepository implements ClassSetupInterface
                 return $this->responseWithError(___('student_info.select_session'), []);
             }
 
-            $branchId = hasModule('MultiBranch') ? branchIdForPersist($request) : 1;
-
-            if (hasModule('MultiBranch') && ! isSuperAdmin() && $branchId < 1) {
-                return $this->responseWithError(___('branch.select_branch'), []);
-            }
-
-            if (hasModule('MultiBranch') && $branchId > 0) {
-                $class = Classes::withoutGlobalScopes()->find($request->classes);
-                if (! $class || (int) $class->branch_id !== $branchId) {
-                    return $this->responseWithError(___('branch.select_branch'), []);
-                }
-
-                $sectionIds = array_filter($request->sections ?? []);
-                if ($sectionIds !== []) {
-                    $validCount = Section::withoutGlobalScopes()
-                        ->whereIn('id', $sectionIds)
-                        ->where('branch_id', $branchId)
-                        ->count();
-                    if ($validCount !== count($sectionIds)) {
-                        return $this->responseWithError(___('branch.select_branch'), []);
-                    }
-                }
-            }
-
             $duplicate = $this->model::query()
                 ->where('session_id', $sessionId)
                 ->where('classes_id', $request->classes)
-                ->when(hasModule('MultiBranch') && $branchId > 0, fn ($q) => $q->where('branch_id', $branchId))
                 ->first();
 
             if ($duplicate) {
@@ -96,7 +68,6 @@ class ClassSetupRepository implements ClassSetupInterface
             $setup->session_id = $sessionId;
             $setup->classes_id = $request->classes;
             $setup->status     = $request->status;
-            applyBranchIdToModel($setup, $branchId);
             $setup->save();
 
             foreach ($request->sections ?? [] as $item) {
@@ -104,7 +75,6 @@ class ClassSetupRepository implements ClassSetupInterface
                 $row->class_setup_id = $setup->id;
                 $row->section_id     = $item;
                 $row->status         = $request->status;
-                applyBranchIdToModel($row, $branchId);
                 $row->save();
             }
             DB::commit();
@@ -129,15 +99,10 @@ class ClassSetupRepository implements ClassSetupInterface
         DB::beginTransaction();
         try {
 
-            $branchId = hasModule('MultiBranch')
-                ? (int) ($this->model->findOrFail($id)->branch_id ?: branchIdForPersist($request))
-                : 1;
-
             $duplicate = $this->model::query()
                 ->where('session_id', setting('session'))
                 ->where('classes_id', $request->classes)
                 ->where('id', '!=', $id)
-                ->when(hasModule('MultiBranch'), fn ($q) => $q->where('branch_id', $branchId))
                 ->first();
 
             if ($duplicate) {
@@ -156,7 +121,6 @@ class ClassSetupRepository implements ClassSetupInterface
                 $row->class_setup_id = $setup->id;
                 $row->section_id     = $item;
                 $row->status         = $request->status;
-                applyBranchIdToModel($row, $branchId);
                 $row->save();
             }
             DB::commit();

@@ -792,6 +792,66 @@ if (! function_exists('isBranchAdmin')) {
     }
 }
 
+if (! function_exists('centralAcademicTables')) {
+    /** Tables whose academic configuration is shared across all branches. */
+    function centralAcademicTables(): array
+    {
+        return [
+            'sessions',
+            'session_translates',
+            'classes',
+            'class_translates',
+            'sections',
+            'section_translates',
+            'class_section_translates',
+            'shifts',
+            'shift_translates',
+            'subjects',
+            'class_setups',
+            'class_setup_childrens',
+            'time_schedules',
+            'class_rooms',
+        ];
+    }
+}
+
+if (! function_exists('isCentralAcademicTable')) {
+    function isCentralAcademicTable(string $table): bool
+    {
+        return in_array($table, centralAcademicTables(), true);
+    }
+}
+
+if (! function_exists('canManageCentralAcademicSetup')) {
+    /** Super Admin owns global academic setup when MultiBranch is enabled. */
+    function canManageCentralAcademicSetup(): bool
+    {
+        if (! hasModule('MultiBranch')) {
+            return true;
+        }
+
+        return isSuperAdmin();
+    }
+}
+
+if (! function_exists('branchIdMeansAllBranches')) {
+    function branchIdMeansAllBranches(mixed $value): bool
+    {
+        if ($value === null || $value === '') {
+            return false;
+        }
+
+        return in_array((string) $value, ['all', '0'], true);
+    }
+}
+
+if (! function_exists('allBranchesLabel')) {
+    function allBranchesLabel(): string
+    {
+        return ___('common.All Branches') ?: 'All Branches';
+    }
+}
+
 if (! function_exists('superAdminActiveBranchId')) {
     /** Super Admin session filter: null = all branches. */
     function superAdminActiveBranchId(): ?int
@@ -866,6 +926,10 @@ if (! function_exists('resolveBranchIdForValidation')) {
             return (int) auth()->user()->branch_id;
         }
 
+        if (request()->has('branch_id') && branchIdMeansAllBranches(request('branch_id'))) {
+            return 0;
+        }
+
         if (request()->filled('branch_id')) {
             return (int) request('branch_id');
         }
@@ -884,14 +948,31 @@ if (! function_exists('resolveBranchIdForValidation')) {
 }
 
 if (! function_exists('branchIdValidationRules')) {
-    /** Validation rules for branch_id on create forms (Super Admin must pick a branch). */
-    function branchIdValidationRules(bool $forCreate = true): array
+    /** Validation rules for branch_id on create forms (Super Admin must pick a branch or all). */
+    function branchIdValidationRules(bool $forCreate = true, bool $allowAllBranches = false): array
     {
         if (! $forCreate || ! hasModule('MultiBranch') || ! auth()->check()) {
             return [];
         }
 
         if (isSuperAdmin()) {
+            if ($allowAllBranches) {
+                return [
+                    'branch_id' => [
+                        'required',
+                        function (string $attribute, mixed $value, \Closure $fail): void {
+                            if (branchIdMeansAllBranches($value)) {
+                                return;
+                            }
+                            if (! \Illuminate\Support\Facades\Schema::hasTable('branches')
+                                || ! \Illuminate\Support\Facades\DB::table('branches')->where('id', (int) $value)->exists()) {
+                                $fail(___('branch.select_branch'));
+                            }
+                        },
+                    ],
+                ];
+            }
+
             return [
                 'branch_id' => ['required', 'integer', 'exists:branches,id'],
             ];
@@ -909,12 +990,15 @@ if (! function_exists('branchIdForPersist')) {
         }
 
         if (isSuperAdmin()) {
+            if ($request->has('branch_id') && branchIdMeansAllBranches($request->input('branch_id'))) {
+                return 0;
+            }
             if ($request->filled('branch_id')) {
                 return (int) $request->branch_id;
             }
             $active = superAdminActiveBranchId();
 
-            return $active ? (int) $active : 1;
+            return $active ? (int) $active : 0;
         }
 
         return (int) (auth()->user()->branch_id ?: 1);
@@ -925,12 +1009,40 @@ if (! function_exists('applyBranchIdToModel')) {
     /** Assign branch_id when the table has the column (safe if migrations lag on live). */
     function applyBranchIdToModel(\Illuminate\Database\Eloquent\Model $model, int $branchId): void
     {
-        if (! hasModule('MultiBranch') || $branchId < 1) {
+        if (! hasModule('MultiBranch')) {
             return;
         }
 
-        if (\Illuminate\Support\Facades\Schema::hasColumn($model->getTable(), 'branch_id')) {
-            $model->branch_id = $branchId;
+        if (! \Illuminate\Support\Facades\Schema::hasColumn($model->getTable(), 'branch_id')) {
+            return;
+        }
+
+        // 0 = all branches (column is NOT NULL on most tenant tables).
+        $model->branch_id = $branchId > 0 ? $branchId : 0;
+    }
+}
+
+if (! function_exists('applyRequestBranchToModel')) {
+    /** Set branch_id from the current request (Super Admin: branch or all branches). */
+    function applyRequestBranchToModel(\Illuminate\Database\Eloquent\Model $model): void
+    {
+        if (! hasModule('MultiBranch')
+            || ! auth()->check()
+            || ! \Illuminate\Support\Facades\Schema::hasColumn($model->getTable(), 'branch_id')) {
+            return;
+        }
+
+        if (request()->has('branch_id')) {
+            applyBranchIdToModel($model, branchIdForPersist(request()));
+
+            return;
+        }
+
+        if (empty($model->branch_id)) {
+            $branchId = effectiveBranchScopeId();
+            if ($branchId) {
+                $model->branch_id = (int) $branchId;
+            }
         }
     }
 }
@@ -940,6 +1052,14 @@ if (! function_exists('branchIdFromClassRequest')) {
     function branchIdFromClassRequest($request): int
     {
         if (! hasModule('MultiBranch')) {
+            return 1;
+        }
+
+        if (isCentralAcademicTable('classes')) {
+            if ($request->filled('branch_id')) {
+                return (int) $request->branch_id;
+            }
+
             return 1;
         }
 
@@ -969,7 +1089,9 @@ if (! function_exists('branchIdForStudentPersist')) {
 
         $branchId = branchIdForPersist($request);
 
-        if ($request->filled('class') && \Illuminate\Support\Facades\Schema::hasTable('classes')) {
+        if (! isCentralAcademicTable('classes')
+            && $request->filled('class')
+            && \Illuminate\Support\Facades\Schema::hasTable('classes')) {
             $classBranch = (int) (\App\Models\Academic\Classes::withoutGlobalScopes()
                 ->where('id', $request->class)
                 ->value('branch_id') ?? 0);
