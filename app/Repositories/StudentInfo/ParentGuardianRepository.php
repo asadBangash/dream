@@ -71,7 +71,10 @@ class ParentGuardianRepository implements ParentGuardianInterface
             $user->name              = $request->guardian_name;
             $user->email             = $request->guardian_email;
             $user->phone             = $request->guardian_mobile;
-            $user->password          = $request->password_type == 'default'? Hash::make('123456') : Hash::make($request->password);
+            $passwordType = $request->input('password_type', 'default');
+            $user->password = $passwordType === 'default'
+                ? Hash::make('123456')
+                : Hash::make($request->password ?? '123456');
             $user->email_verified_at = now();
             $user->role_id           = $role->id;
             $user->permissions       = $role->permissions;
@@ -113,7 +116,11 @@ class ParentGuardianRepository implements ParentGuardianInterface
             $row->save();
 
             DB::commit();
-            return $this->responseWithSuccess(___('alert.created_successfully'), []);
+
+            return $this->responseWithSuccess(___('alert.created_successfully'), [
+                'id'            => $row->id,
+                'guardian_name' => $row->guardian_name,
+            ]);
         } catch (\Throwable $th) {
             DB::rollback();
             report($th);

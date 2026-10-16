@@ -47,9 +47,17 @@ class ParentGuardianController extends Controller
     public function store(ParentGuardianStoreRequest $request)
     {
         $result = $this->repo->store($request);
-        if($result['status']){
+
+        if ($request->expectsJson()) {
+            return $result['status']
+                ? response()->json($result)
+                : response()->json($result, 422);
+        }
+
+        if ($result['status']) {
             return redirect()->route('parent.index')->with('success', $result['message']);
         }
+
         return back()->with('danger', $result['message']);
     }
 

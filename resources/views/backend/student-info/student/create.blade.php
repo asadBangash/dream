@@ -349,29 +349,33 @@
                                     </div>
                                 </div>
                                 <div class="col-md-3 parent mb-3">
-
-                                    <label for="validationServer04"
+                                    <label for="studentParentSelect"
                                         class="form-label">{{ ___('student_info.select_parent') }}
                                         <span class="fillable">*</span></label>
-                                    <select
-                                        class="parent nice-select niceSelect bordered_style wide @error('parent') is-invalid @enderror"
-                                        name="parent" id="validationServer04"
-                                        aria-describedby="validationServer04Feedback">
-                                        <option value="">{{ ___('student_info.select_parent') }}</option>
-                                        @foreach ($data['parentGuardians'] as $parentGuardian)
-                                            <option {{ old('parent') == $parentGuardian->id ? 'selected' : '' }}
-                                                value="{{ $parentGuardian->id }}">
-                                                {{ $parentGuardian->guardian_name }}
-                                            </option>
-                                        @endforeach
-                                    </select>
-
-                                    @error('parent')
-                                        <div id="validationServer04Feedback" class="invalid-feedback">
-                                            {{ $message }}
+                                    <div class="d-flex gap-2 align-items-stretch">
+                                        <div class="flex-grow-1">
+                                            <select
+                                                class="parent nice-select niceSelect bordered_style wide @error('parent') is-invalid @enderror"
+                                                name="parent" id="studentParentSelect">
+                                                <option value="">{{ ___('student_info.select_parent') }}</option>
+                                                @foreach ($data['parentGuardians'] as $parentGuardian)
+                                                    <option {{ old('parent') == $parentGuardian->id ? 'selected' : '' }}
+                                                        value="{{ $parentGuardian->id }}">
+                                                        {{ $parentGuardian->guardian_name }}
+                                                    </option>
+                                                @endforeach
+                                            </select>
                                         </div>
+                                        @if (hasPermission('parent_create'))
+                                            <button type="button" class="btn ot-btn-primary px-3" data-bs-toggle="modal"
+                                                data-bs-target="#addParentModal" title="{{ ___('common.add') }}">
+                                                <i class="fa-solid fa-plus"></i>
+                                            </button>
+                                        @endif
+                                    </div>
+                                    @error('parent')
+                                        <div class="invalid-feedback d-block">{{ $message }}</div>
                                     @enderror
-
                                 </div>
 
                                 <div>
@@ -629,6 +633,8 @@
             </div>
         </div>
     </div>
+
+    @include('backend.student-info.student.partials.add-parent-modal')
 @endsection
 
 @push('script')
