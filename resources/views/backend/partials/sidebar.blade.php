@@ -492,6 +492,27 @@
                     </li>
                 @endif
 
+                @if (hasPermission('teacher_lecture_read') || hasPermission('teacher_exam_notification_read'))
+                    <li class="sidebar-menu-item {{ set_menu(['teacher-lecture*', 'teacher-exam-notification*']) }}">
+                        <a class="parent-item-content has-arrow">
+                            <i class="las la-chalkboard-teacher"></i>
+                            <span class="on-half-expanded">Teacher Panel</span>
+                        </a>
+                        <ul class="child-menu-list">
+                            @if (hasPermission('teacher_lecture_read'))
+                                <li class="sidebar-menu-item {{ set_menu(['teacher-lecture*']) }}">
+                                    <a href="{{ route('teacher-lecture.index') }}">Lecture Upload</a>
+                                </li>
+                            @endif
+                            @if (hasPermission('teacher_exam_notification_read'))
+                                <li class="sidebar-menu-item {{ set_menu(['teacher-exam-notification*']) }}">
+                                    <a href="{{ route('teacher-exam-notification.index') }}">Exam Notifications</a>
+                                </li>
+                            @endif
+                        </ul>
+                    </li>
+                @endif
+
                 @if(hasModule('StudyMaterial'))
                     @include('studymaterial::admin_sidebar_menu')
                 @endif

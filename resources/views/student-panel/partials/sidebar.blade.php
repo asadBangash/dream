@@ -92,6 +92,18 @@
                         </a>
                     </li>
                 @endif
+                <li class="sidebar-menu-item {{ set_menu(['student-panel-lectures*']) }}">
+                    <a href="{{ route('student-panel-lectures.index') }}" class="parent-item-content">
+                        <i class="las la-file-video"></i>
+                        <span class="on-half-expanded">Lectures & Notes</span>
+                    </a>
+                </li>
+                <li class="sidebar-menu-item {{ set_menu(['student-panel-notifications*']) }}">
+                    <a href="{{ route('student-panel-notifications.index') }}" class="parent-item-content">
+                        <i class="las la-bell"></i>
+                        <span class="on-half-expanded">Notifications</span>
+                    </a>
+                </li>
 
                 @if (hasModule('StudyMaterial'))
                     <li class="sidebar-menu-item {{ set_menu(['student.study-material*']) }}">

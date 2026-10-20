@@ -9,6 +9,8 @@ use App\Repositories\StudentPanel\AttendanceRepository;
 use App\Http\Controllers\StudentPanel\ProfileController;
 use Stancl\Tenancy\Middleware\InitializeTenancyByDomain;
 use App\Http\Controllers\StudentPanel\HomeworkController;
+use App\Http\Controllers\StudentPanel\LectureController;
+use App\Http\Controllers\StudentPanel\NotificationController;
 use App\Http\Controllers\StudentPanel\DashboardController;
 use App\Http\Controllers\StudentPanel\MarksheetController;
 use App\Http\Controllers\StudentPanel\AttendanceController;
@@ -97,6 +99,14 @@ Route::middleware(saasMiddleware())->group(function () {
                     Route::controller(HomeworkController::class)->group(function () {
                         Route::get('stundet/panel/homeworks', 'index')->name('student-panel-homeworks.index');
                         Route::post('stundet/panel/homework/submit/', 'submit')->name('student-panel.homework.submit');
+                    });
+
+                    Route::controller(LectureController::class)->group(function () {
+                        Route::get('student-panel/lectures', 'index')->name('student-panel-lectures.index');
+                    });
+
+                    Route::controller(NotificationController::class)->group(function () {
+                        Route::get('student-panel/notifications', 'index')->name('student-panel-notifications.index');
                     });
 
                     Route::controller(BookController::class)->group(function () {

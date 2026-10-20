@@ -4,6 +4,8 @@ use Illuminate\Support\Facades\Route;
 use App\Http\Controllers\Admin\GmeetController;
 use App\Http\Controllers\Admin\IdCardController;
 use App\Http\Controllers\Admin\HomeworkController;
+use App\Http\Controllers\Admin\TeacherExamNotificationController;
+use App\Http\Controllers\Admin\TeacherLectureController;
 use App\Http\Controllers\Admin\SmsMailLogController;
 use App\Http\Controllers\Admin\CertificateController;
 use App\Http\Controllers\Admin\NoticeBoardController;
@@ -26,6 +28,22 @@ Route::middleware(saasMiddleware())->group(function () {
 
                     Route::POST('homework/students',   'students');
                     Route::POST('homework/evaluation/submit',   'evaluationSubmit')->name('homework.evaluation.submit');
+                });
+
+                Route::controller(TeacherLectureController::class)->prefix('teacher-lecture')->group(function () {
+                    Route::get('/', 'index')->name('teacher-lecture.index')->middleware('PermissionCheck:teacher_lecture_read');
+                    Route::get('/create', 'create')->name('teacher-lecture.create')->middleware('PermissionCheck:teacher_lecture_create');
+                    Route::post('/store', 'store')->name('teacher-lecture.store')->middleware('PermissionCheck:teacher_lecture_create', 'DemoCheck');
+                    Route::get('/edit/{id}', 'edit')->name('teacher-lecture.edit')->middleware('PermissionCheck:teacher_lecture_update');
+                    Route::put('/update/{id}', 'update')->name('teacher-lecture.update')->middleware('PermissionCheck:teacher_lecture_update', 'DemoCheck');
+                    Route::delete('/delete/{id}', 'delete')->name('teacher-lecture.delete')->middleware('PermissionCheck:teacher_lecture_delete', 'DemoCheck');
+                });
+
+                Route::controller(TeacherExamNotificationController::class)->prefix('teacher-exam-notification')->group(function () {
+                    Route::get('/', 'index')->name('teacher-exam-notification.index')->middleware('PermissionCheck:teacher_exam_notification_read');
+                    Route::post('/send-offline', 'sendOffline')->name('teacher-exam-notification.send-offline')->middleware('PermissionCheck:teacher_exam_notification_create', 'DemoCheck');
+                    Route::post('/send-online', 'sendOnline')->name('teacher-exam-notification.send-online')->middleware('PermissionCheck:teacher_exam_notification_create', 'DemoCheck');
+                    Route::post('/send-custom', 'sendCustom')->name('teacher-exam-notification.send-custom')->middleware('PermissionCheck:teacher_exam_notification_create', 'DemoCheck');
                 });
 
                 Route::controller(IdCardController::class)->group(function () {

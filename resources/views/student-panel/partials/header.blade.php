@@ -93,6 +93,17 @@
             {{-- End attendance --}}
 
             <div class="header-control-item">
+                <div class="notification_wrapper position-relative d-none d-xl-flex">
+                    <a href="{{ route('student-panel-notifications.index') }}" class="search-home">
+                        <i class="las la-bell fs_25"></i>
+                        @if (isset($notifications) && count($notifications) > 0)
+                            <span class="position-absolute notification_counter">{{ count($notifications) }}</span>
+                        @endif
+                    </a>
+                </div>
+            </div>
+
+            <div class="header-control-item">
                 <div class="item-content">
                     <button class="profile-navigate mt-0 p-0" type="button" id="profile_expand" data-bs-toggle="dropdown"
                         aria-expanded="false">

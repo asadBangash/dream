@@ -129,7 +129,7 @@ class AppServiceProvider extends ServiceProvider
         endif;
 
 
-        view()->composer(['backend.partials.header', 'parent-panel.partials.header'], function ($view) {
+        view()->composer(['backend.partials.header', 'parent-panel.partials.header', 'student-panel.partials.header'], function ($view) {
 
             try {
                 $notifications = SystemNotification::myNotification();

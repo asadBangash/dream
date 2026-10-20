@@ -119,6 +119,8 @@ class PermissionSeeder extends Seeder
             'certificate_generate'    => ['read' => 'certificate_generate_read'],
             // homework
             'homework'             => ['read' => 'homework_read', 'create' => 'homework_create', 'update' => 'homework_update', 'delete' => 'homework_delete'],
+            'teacher_lecture'      => ['read' => 'teacher_lecture_read', 'create' => 'teacher_lecture_create', 'update' => 'teacher_lecture_update', 'delete' => 'teacher_lecture_delete'],
+            'teacher_exam_notification' => ['read' => 'teacher_exam_notification_read', 'create' => 'teacher_exam_notification_create'],
             // gmeet
             'gmeet'                => ['read' => 'gmeet_read', 'create' => 'gmeet_create', 'update' => 'gmeet_update', 'delete' => 'gmeet_delete'],
             // notice board
