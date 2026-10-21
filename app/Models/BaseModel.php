@@ -34,6 +34,7 @@ class BaseModel extends Model
         'subject_assign_childrens',
         'time_schedules',
         'class_rooms',
+        'events',
     ];
 
     protected static function boot()

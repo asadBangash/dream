@@ -48,6 +48,9 @@ class EventRepository implements EventInterface
             $row->address     = $request->address;
             $row->upload_id   = $this->UploadImageCreate($request->image, 'backend/uploads/event', $row->upload_id);
             $row->status      = $request->status;
+            if (hasModule('MultiBranch')) {
+                applyBranchIdToModel($row, 0);
+            }
             $row->save();
 
             $en_row              = new $this->event_trans;
@@ -84,6 +87,9 @@ class EventRepository implements EventInterface
             $row->address     = $request->address;
             $row->upload_id   = $this->UploadImageUpdate($request->image, 'backend/uploads/event', $row->upload_id);
             $row->status      = $request->status;
+            if (hasModule('MultiBranch')) {
+                applyBranchIdToModel($row, 0);
+            }
             $row->save();
 
             // Add translation update

@@ -121,7 +121,7 @@
                     <div class="event_upcoming_list">
                         
                         
-                        @foreach ($data['events'] as $item)
+                        @forelse ($data['events'] as $item)
                             <!-- event_upcoming_single  -->
                             <div class="event_upcoming_single d-flex align-items-center gap_20 flex-wrap">
                                 <div class="icon d-flex align-items-center flex-column justify-content-center">
@@ -129,7 +129,7 @@
                                     <h5>{{ date('D', strtotime($item->date)) }}</h5>
                                 </div>
                                 <div class="event_content_info">
-                                    <h4><a href="{{ route('event.edit', $item->id) }}">{!! Str::limit($item->title,40) !!}</a></h4>
+                                    <h4>{!! Str::limit($item->title, 40) !!}</h4>
                                     <p class="d-flex align-items-center gap-2 "> <svg width="11" height="11" viewBox="0 0 11 11" fill="none" xmlns="http://www.w3.org/2000/svg">
                                             <path d="M8.42676 1.50024H10.4268C10.5594 1.50024 10.6865 1.55292 10.7803 1.64669C10.8741 1.74046 10.9268 1.86764 10.9268 2.00024V10.0002C10.9268 10.1329 10.8741 10.26 10.7803 10.3538C10.6865 10.4476 10.5594 10.5002 10.4268 10.5002H1.42676C1.29415 10.5002 1.16697 10.4476 1.0732 10.3538C0.979436 10.26 0.926758 10.1329 0.926758 10.0002V2.00024C0.926758 1.86764 0.979436 1.74046 1.0732 1.64669C1.16697 1.55292 1.29415 1.50024 1.42676 1.50024H3.42676V0.500244H4.42676V1.50024H7.42676V0.500244H8.42676V1.50024ZM9.92676 5.50024H1.92676V9.50024H9.92676V5.50024ZM7.42676 2.50024H4.42676V3.50024H3.42676V2.50024H1.92676V4.50024H9.92676V2.50024H8.42676V3.50024H7.42676V2.50024ZM2.92676 6.50024H3.92676V7.50024H2.92676V6.50024ZM5.42676 6.50024H6.42676V7.50024H5.42676V6.50024ZM7.92676 6.50024H8.92676V7.50024H7.92676V6.50024Z" fill="#6B6B6B" />
                                         </svg>
@@ -137,9 +137,9 @@
                                     </p>
                                 </div>
                             </div>
-                        @endforeach
-                        
-
+                        @empty
+                            <p class="text-muted mb-0">{{ ___('common.no_data_available') ?? 'No upcoming events.' }}</p>
+                        @endforelse
 
                     </div>
                 </div>

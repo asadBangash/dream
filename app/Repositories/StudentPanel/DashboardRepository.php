@@ -16,15 +16,21 @@ class DashboardRepository implements DashboardInterface
     public function index()
     {
         try {
-            $student = Student::where('user_id', Auth::user()->id)->first();
-            $classSection   = SessionClassStudent::where('session_id', setting('session'))
-                            ->where('student_id', @$student->id)
-                            ->first();
-            
-            $subjectTeacher = SubjectAssign::where('session_id', setting('session'))
-                            ->where('classes_id', @$classSection->classes_id)
-                            ->where('section_id', @$classSection->section_id)
-                            ->first();
+            $sessionId = (int) setting('session');
+            $student = Student::withoutGlobalScopes()->where('user_id', Auth::id())->first();
+            $classSection = $student
+                ? SessionClassStudent::withoutGlobalScopes()
+                    ->where('session_id', $sessionId)
+                    ->where('student_id', $student->id)
+                    ->first()
+                : null;
+
+            $subjectTeacher = $classSection
+                ? SubjectAssign::where('session_id', $sessionId)
+                    ->where('classes_id', $classSection->classes_id)
+                    ->where('section_id', $classSection->section_id)
+                    ->first()
+                : null;
             $data['totalSubject']   = SubjectAssignChildren::where('subject_assign_id', @$subjectTeacher->id)
                             ->distinct('subject_id')
                             ->count();
@@ -35,15 +41,15 @@ class DashboardRepository implements DashboardInterface
                             ->where('section_id', @$classSection->section_id)
                             ->where('session_id', setting('session'))
                             ->count();
-            $data['totalEvent']     = Event::where('session_id', setting('session'))
-                            ->active()->where('date', '>=', date('Y-m-d'))
-                            ->orderBy('date')
-                            ->count();
-            $data['events']         = Event::where('session_id', setting('session'))
-                            ->active()->where('date', '>=', date('Y-m-d'))
-                            ->orderBy('date')
-                            ->take(5)
-                            ->get();
+            $today = date('Y-m-d');
+            $eventQuery = Event::query()
+                ->where('session_id', $sessionId)
+                ->active()
+                ->where('date', '>=', $today)
+                ->orderBy('date');
+
+            $data['totalEvent'] = (clone $eventQuery)->count();
+            $data['events'] = (clone $eventQuery)->take(5)->get();
             $data['student'] = $student;
             return $data;
         } catch (\Throwable $th) {
