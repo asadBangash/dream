@@ -25,6 +25,7 @@ use App\Http\Controllers\Academic\ClassesController;
 use App\Http\Controllers\Backend\LanguageController;
 use App\Http\Controllers\Settings\SessionController;
 use App\Http\Controllers\Backend\DashboardController;
+use App\Http\Controllers\Backend\TeacherDashboardController;
 use App\Http\Controllers\Backend\MyProfileController;
 use App\Http\Controllers\Settings\ReligionController;
 use App\Http\Controllers\WebsiteSetup\AboutController;
@@ -158,6 +159,7 @@ Route::middleware(saasMiddleware())->group(function () {
 
                     // dashboard routes
                     Route::get('dashboard',                    [DashboardController::class, 'index'])->name('dashboard');
+                    Route::get('teacher-dashboard',            [TeacherDashboardController::class, 'index'])->name('teacher.dashboard');
                     Route::get('fees-collection-monthly',      [DashboardController::class, 'feesCollectionMonthly']);
                     Route::get('revenue',                      [DashboardController::class, 'revenueYearly']);
                     Route::get('fees-collection-current-month', [DashboardController::class, 'feesCollectionCurrentMonth']);

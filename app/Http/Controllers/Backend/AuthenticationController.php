@@ -75,6 +75,8 @@ class AuthenticationController extends Controller
                 return redirect()->route('student-panel-dashboard.index');
             elseif ($user->role_id == 7)
                 return redirect()->route('parent-panel-dashboard.index');
+            elseif ($user->role_id == 5)
+                return redirect()->route('teacher.dashboard');
             else
                 return redirect()->route('dashboard');
         }

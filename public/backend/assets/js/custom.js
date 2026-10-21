@@ -181,13 +181,25 @@ $("#getSections").on('change', function (e) {
             // console.log(section_options);
 
 
-            $("select.sections option").not(':first').remove();
-            $("select.sections").append(section_options);
+            var $sectionSelect = $("select.sections");
+            if ($sectionSelect.length === 0) {
+                $sectionSelect = $("#getSubjects");
+            }
+            $sectionSelect.find('option').not(':first').remove();
+            $sectionSelect.append(section_options);
 
             $("div .sections .current").html($("div .sections .list li:first").html());
             $("div .sections .list li").not(':first').remove();
             $("div .sections .list").append(section_li);
 
+            if (typeof $sectionSelect.niceSelect === 'function') {
+                $sectionSelect.niceSelect('update');
+            }
+
+            $("select.subjects option").not(':first').remove();
+            if (typeof $("select.subjects").niceSelect === 'function') {
+                $("select.subjects").niceSelect('update');
+            }
 
         },
         error: function (data) {
@@ -586,12 +598,17 @@ $("#getSubjects").on('change', function (e) {
             $("select.subjects option").not(':first').remove();
             $("select.subjects").append(subject_options);
 
-
             $("div .subjects .current").html($("div .subjects .list li:first").html());
             $("div .subjects .list li").not(':first').remove();
             $("div .subjects .list").append(subject_li);
 
-            getStudents();
+            if (typeof $("select.subjects").niceSelect === 'function') {
+                $("select.subjects").niceSelect('update');
+            }
+
+            if (typeof getStudents === 'function') {
+                getStudents();
+            }
         },
         error: function (data) {
             console.log(data);

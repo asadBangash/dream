@@ -7,7 +7,7 @@
             <!-- parent menu list start  -->
             <ul class="sidebar-dropdown-menu">
                 <li class="sidebar-menu-item">
-                    <a href="{{ route('dashboard') }}" class="parent-item-content">
+                    <a href="{{ Auth::user()->role_id == 5 ? route('teacher.dashboard') : route('dashboard') }}" class="parent-item-content">
                         {{-- <img src="{{ asset('backend') }}/assets/images/icons/notification-status.svg" alt="Dashboard" /> --}}
                         <i class="las la-tachometer-alt"></i>
                         <span class="on-half-expanded">{{ ___('mainapp_dashboard.dashboard') }}</span>

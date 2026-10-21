@@ -32,6 +32,10 @@ class DashboardController extends Controller
 
     public function index()
     {
+        if (auth()->user()->role_id == \App\Enums\RoleEnum::TEACHER) {
+            return redirect()->route('teacher.dashboard');
+        }
+
         $data = $this->repo->index();
         return view('backend.dashboard', compact('data'));
     }

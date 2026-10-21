@@ -300,7 +300,13 @@
                     <button class="profile-navigate mt-0 p-0" type="button" id="profile_expand"
                             data-bs-toggle="dropdown" aria-expanded="false">
                         <div class="profile-photo user-card">
-                            <img src="{{ @globalAsset(Auth::user()->upload->path, '40X40.webp') }}"
+                            @php
+                                $headerAvatar = Auth::user()->upload;
+                                if (Auth::user()->role_id == 5 && Auth::user()->staff?->upload) {
+                                    $headerAvatar = Auth::user()->staff->upload;
+                                }
+                            @endphp
+                            <img src="{{ $headerAvatar ? globalAsset($headerAvatar->path, '40X40.webp') : global_asset('backend/assets/images/crm/crm_summery1.svg') }}"
                                  alt="{{ Auth::user()->name }}">
                         </div>
                         <div class="profile-info md-none max-w-1500-hidden">

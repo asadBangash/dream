@@ -97,11 +97,11 @@
             <div class="card ot-card">
                 <div class="card-header"><h5>Custom exam notification</h5></div>
                 <div class="card-body">
-                    <form method="post" action="{{ route('teacher-exam-notification.send-custom') }}" class="row g-3">
+                    <form method="post" action="{{ route('teacher-exam-notification.send-custom') }}" id="teacherExamNotifyForm" class="row g-3">
                         @csrf
                         <div class="col-md-3">
                             <label class="form-label">{{ ___('student_info.class') }} *</label>
-                            <select id="getSections" name="class" class="form-control" required>
+                            <select id="getSections" name="class" class="nice-select niceSelect bordered_style wide class" required>
                                 <option value="">{{ ___('student_info.select_class') }}</option>
                                 @foreach ($data['classes'] as $item)
                                     <option value="{{ $item->class->id }}">{{ $item->class->name }}</option>
@@ -110,13 +110,13 @@
                         </div>
                         <div class="col-md-3">
                             <label class="form-label">{{ ___('student_info.section') }} *</label>
-                            <select id="getSubjects" name="section" class="form-control" required>
+                            <select id="getSubjects" name="section" class="nice-select niceSelect bordered_style wide sections section" required>
                                 <option value="">{{ ___('student_info.select_section') }}</option>
                             </select>
                         </div>
                         <div class="col-md-3">
                             <label class="form-label">{{ ___('academic.subject') }} *</label>
-                            <select id="subject" name="subject" class="form-control subjects" required>
+                            <select id="subject" name="subject" class="nice-select niceSelect bordered_style wide subjects" required>
                                 <option value="">{{ ___('examination.select_subject') }}</option>
                             </select>
                         </div>
