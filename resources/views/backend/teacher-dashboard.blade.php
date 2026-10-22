@@ -19,7 +19,7 @@
                             src="{{ $photo ? globalAsset($photo->path, '120X120.webp') : global_asset('backend/assets/images/crm/crm_summery1.svg') }}"
                             alt="{{ Auth::user()->name }}">
                         <h5 class="mb-1">{{ $data['staff']?->first_name }} {{ $data['staff']?->last_name }}</h5>
-                        <p class="text-muted mb-1">{{ $data['staff']?->designation?->name ?? Auth::user()->role->name }}</p>
+                        <p class="text-muted mb-1">{{ $data['staff']?->designation?->name ?? Auth::user()->role?->name }}</p>
                         <p class="text-muted mb-0">{{ $data['staff']?->department?->name ?? '' }}</p>
                         <p class="small text-muted mt-2">Staff ID: {{ $data['staff']?->staff_id ?? '—' }}</p>
                         <a href="{{ route('my.profile') }}" class="btn btn-sm ot-btn-primary mt-2">{{ ___('common.my_profile') }}</a>

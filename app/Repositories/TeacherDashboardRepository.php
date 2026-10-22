@@ -8,6 +8,7 @@ use App\Models\Homework;
 use App\Models\Staff\Staff;
 use App\Models\TeacherLecture;
 use Illuminate\Support\Facades\Auth;
+use Illuminate\Support\Facades\Schema;
 
 class TeacherDashboardRepository
 {
@@ -40,9 +41,11 @@ class TeacherDashboardRepository
             'homeworkCount'    => Homework::where('session_id', setting('session'))
                 ->whereIn('subject_id', $subjectIds ?: [0])
                 ->count(),
-            'lectureCount'     => TeacherLecture::where('session_id', setting('session'))
-                ->when($staffId, fn ($q) => $q->where('staff_id', $staffId))
-                ->count(),
+            'lectureCount'     => Schema::hasTable('teacher_lectures')
+                ? TeacherLecture::where('session_id', setting('session'))
+                    ->when($staffId, fn ($q) => $q->where('staff_id', $staffId))
+                    ->count()
+                : 0,
             'events'           => Event::query()
                 ->where('session_id', setting('session'))
                 ->active()
