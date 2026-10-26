@@ -37,6 +37,11 @@ class AccountHeadSeeder extends Seeder
             'status' => 1
         ]);
         AccountHead::create([
+            'name' => 'Income Tax',
+            'type' => 1,
+            'status' => 1,
+        ]);
+        AccountHead::create([
             'name' => 'Stationery Purchase',
             'type' => 2,
             'status' => 1

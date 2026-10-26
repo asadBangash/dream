@@ -126,16 +126,16 @@
                                     <td><input class="form-check-input child" type="checkbox" name="fees_assign_childrens[]"
                                             value="{{ $item->id }}"></td>
                                     <input type="hidden" name="discount_amount" value="{{ calculateDiscount(@$item->feesMaster->amount, @$item->feesDiscount->discount_percentage)}}">
-                                    <input type="hidden" name="discount_name" value="{{@$item->feesDiscount->feesDiscount->title}}">
+                                    <input type="hidden" name="discount_name" value="{{ @$item->feesDiscount->title }}">
                                     <input type="hidden" name="discount_percentage" value="{{@$item->feesDiscount->discount_percentage}}">
                                     <td>{{ @$item->feesMaster->group->name }}</td>
                                     <td>{{ @$item->feesMaster->type->name }}</td>
                                     <td>{{ dateFormat(@$item->feesMaster->due_date) }}</td>
                                     <td>{{ @$item->feesMaster->amount }}
 
-                                        @if (date('Y-m-d') > $item->feesMaster->date && $item->fees_collect_count == 0)
+                                        @if (date('Y-m-d') > $item->feesMaster->due_date && $item->fees_collect_count == 0)
                                             <span class="text-danger">+ {{ @$item->feesMaster->fine_amount }}</span>
-                                        @elseif($item->fees_collect_count == 1 && $item->feesMaster->date < $item->feesCollect->date)
+                                        @elseif($item->fees_collect_count == 1 && $item->feesMaster->due_date < $item->feesCollect->date)
                                             <span class="text-danger">+ {{ @$item->feesMaster->fine_amount }}</span>
                                         @endif
 

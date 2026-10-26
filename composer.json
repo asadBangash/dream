@@ -44,6 +44,9 @@
         },
         "files" : [
             "app/Helpers/common-helpers.php"
+        ],
+        "classmap": [
+            "bootstrap/spatie-ignition-shims"
         ]
     },
     "autoload-dev": {
@@ -54,6 +57,7 @@
     "scripts": {
         "post-autoload-dump": [
             "Illuminate\\Foundation\\ComposerScripts::postAutoloadDump",
+            "@php bootstrap/fix-ignition-shim.php",
             "@php artisan package:discover --ansi"
         ],
         "post-update-cmd": [

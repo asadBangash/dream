@@ -12,6 +12,7 @@ use App\Models\Fees\FeesCollect;
 use App\Traits\ReturnFormatTrait;
 use Illuminate\Support\Facades\DB;
 use Illuminate\Support\Facades\Auth;
+use Illuminate\Support\Facades\Log;
 use App\Models\Fees\FeesAssignChildren;
 use App\Interfaces\Fees\FeesMasterInterface;
 use App\Interfaces\Fees\FeesCollectInterface;
@@ -50,8 +51,8 @@ class FeesCollectRepository implements FeesCollectInterface
                 $row->date             = $request->date;
                 $row->payment_method   = $request->payment_method;
                 $row->fees_assign_children_id   = $item;
-                $row->amount           = $request->amounts[$key] + $request->fine_amounts[$key] ?? 0;
-                $row->fine_amount      = $request->fine_amounts[$key];
+                $row->amount           = ($request->amounts[$key] ?? 0) + ($request->fine_amounts[$key] ?? 0);
+                $row->fine_amount      = $request->fine_amounts[$key] ?? 0;
                 $row->fees_collect_by  = Auth::user()->id;
                 $row->student_id       = $request->student_id;
                 $row->session_id       = setting('session');
@@ -73,16 +74,23 @@ class FeesCollectRepository implements FeesCollectInterface
                }
 
                 $tax = calculateTax($row->amount);
-                $settings = Setting::whereIn('name', ['tax_income_head'])->pluck('value', 'name');
-                $accountHead = AccountHead::where('name', $settings['tax_income_head'])->first();
-                if ($tax > 0 && $settings) {
-                    $incomeStore = new Income();
-                    $incomeStore->name = "Fees-Tax";
-                    $incomeStore->session_id = setting('session');
-                    $incomeStore->income_head = $accountHead->id;
-                    $incomeStore->date = $request->date;
-                    $incomeStore->amount = $tax;
-                    $incomeStore->save();
+                if ($tax > 0) {
+                    $taxHeadName = Setting::where('name', 'tax_income_head')->value('value');
+                    $taxAccountHead = $taxHeadName
+                        ? AccountHead::where('name', $taxHeadName)->first()
+                        : null;
+                    $taxAccountHead = $taxAccountHead ?? $ac_head;
+
+                    if ($taxAccountHead) {
+                        $incomeStore = new Income();
+                        $incomeStore->name = 'Fees-Tax';
+                        $incomeStore->session_id = setting('session');
+                        $incomeStore->income_head = $taxAccountHead->id;
+                        $incomeStore->date = $request->date;
+                        $incomeStore->amount = $tax;
+                        $incomeStore->invoice_number = 'fees_tax_'.$row->id;
+                        $incomeStore->save();
+                    }
                 }
 
                 if ($request->early_payment_percentage > 0){
@@ -103,6 +111,11 @@ class FeesCollectRepository implements FeesCollectInterface
             return $this->responseWithSuccess(___('alert.created_successfully'), []);
         } catch (\Throwable $th) {
             DB::rollBack();
+            Log::error('Fees collect store failed', [
+                'message' => $th->getMessage(),
+                'student_id' => $request->student_id ?? null,
+            ]);
+
             return $this->responseWithError(___('alert.something_went_wrong_please_try_again'), []);
         }
     }

@@ -116,7 +116,7 @@
                         $totalAddition = 0;
                         $totalDeduction = 0;
                         $taxAmount = calculateTax($item->feesMaster->amount);
-                        if(date('Y-m-d') > $item->feesMaster->date) {
+                        if(date('Y-m-d') > $item->feesMaster->due_date) {
                             $fineAmount = @$item->feesMaster->fine_amount;
                         }
 
@@ -128,22 +128,22 @@
                     <input type="hidden" name="fees_assign_childrens[]" value="{{$item->id}}">
                     <input type="hidden" name="amounts[]" value="{{$item->feesMaster->amount}}">
                     <input type="hidden" name="early_payment_percentage" value="{{$data['early_payment_discount_percentage']?? 0}}">
-                    @if(date('Y-m-d') > $item->feesMaster->date)
+                    @if(date('Y-m-d') > $item->feesMaster->due_date)
                         <input type="hidden" name="fine_amounts[]" value="{{$item->feesMaster->fine_amount}}">
                     @else
                         <input type="hidden" name="fine_amounts[]" value="0">
                     @endif
                     <tr
                         data-amount="{{ @$item->feesMaster->amount }}"
-                        data-fine="{{ date('Y-m-d') > $item->feesMaster->date ? @$item->feesMaster->fine_amount : 0 }}"
+                        data-fine="{{ date('Y-m-d') > $item->feesMaster->due_date ? @$item->feesMaster->fine_amount : 0 }}"
                         data-tax="{{ calculateTax(@$item->feesMaster->amount) }}"
                     >
                         <td>{{ @$item->feesMaster->group->name }}</td>
                         <td>{{ @$item->feesMaster->type->name }}</td>
-                        <td>{{ dateFormat(@$item->feesMaster->date) }}</td>
+                        <td>{{ dateFormat(@$item->feesMaster->due_date) }}</td>
                         <td>
                             {{ @$item->feesMaster->amount }}
-                            @if(date('Y-m-d') > $item->feesMaster->date)
+                            @if(date('Y-m-d') > $item->feesMaster->due_date)
                                 <span class="text-danger">+ {{ @$item->feesMaster->fine_amount }}</span>
                             @endif
                         </td>
