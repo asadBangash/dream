@@ -36,12 +36,9 @@ class Classes extends BaseModel
 
     public function defaultTranslate()
     {
-        $relation = $this->hasOne(ClassTranslate::class, 'class_id')->where('locale', request()->locale ?? config('app.locale'));
-        if ($relation->exists()) {
-            return $relation;
-        } else {
-            return $this->hasOne(ClassTranslate::class, 'class_id')->where('locale', 'en');
-        }
+        $locale = request()->locale ?? app()->getLocale();
+
+        return $this->hasOne(ClassTranslate::class, 'class_id')->where('locale', $locale);
     }
 
 

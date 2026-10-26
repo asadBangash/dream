@@ -40,7 +40,7 @@
                                     </div>
                                     <div class="header_topbar_social d-none d-sm-flex">
                                         @foreach ($sections['social_links']->data ?? [] as $item)
-                                        <a target="_blank" href="{{ $item['link'] }}"><i class="{{ $item['icon'] }}"></i></a>
+                                        <a target="_blank" rel="noopener noreferrer" href="{{ normalizeExternalUrl($item['link'] ?? '#') }}"><i class="{{ $item['icon'] }}"></i></a>
                                         @endforeach
                                     </div>
                                     <div class="login__regiter d-flex align-items-center">

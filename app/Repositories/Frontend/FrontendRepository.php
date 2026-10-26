@@ -43,11 +43,22 @@ class FrontendRepository implements FrontendInterface
 
     public function sliders()
     {
-        return Slider::where('status', Status::ACTIVE)->orderBy('serial')->get();
+        $sliders = Slider::with(['upload', 'translations'])
+            ->where('status', Status::ACTIVE)
+            ->orderBy('serial')
+            ->get();
+
+        return hydrateTranslatableCollection($sliders);
     }
+
     public function counters()
     {
-        return Counter::where('status', Status::ACTIVE)->orderBy('serial')->paginate(4);
+        $counters = Counter::with(['upload', 'translations'])
+            ->where('status', Status::ACTIVE)
+            ->orderBy('serial')
+            ->paginate(4);
+
+        return hydrateTranslatableCollection($counters);
     }
 
     public function online_admission_setting()
@@ -72,7 +83,9 @@ class FrontendRepository implements FrontendInterface
     // Abouts
     public function abouts()
     {
-        $data['abouts']   = About::where('status', Status::ACTIVE)->orderBy('serial')->get();
+        $data['abouts']   = hydrateTranslatableCollection(
+            About::with(['upload', 'icon_upload', 'translations'])->where('status', Status::ACTIVE)->orderBy('serial')->get()
+        );
         $data['teachers'] = $this->teachers(8);
 
         return $data;
@@ -81,46 +94,65 @@ class FrontendRepository implements FrontendInterface
     // News
     public function news()
     {
-        return News::where('status', Status::ACTIVE)->where('publish_date', '<=', date('Y-m-d'))->orderBy('id', 'desc')->paginate(6);
+        return hydrateTranslatableCollection(
+            News::with('translations')->where('status', Status::ACTIVE)->where('publish_date', '<=', date('Y-m-d'))->orderBy('id', 'desc')->paginate(6)
+        );
     }
 
     public function latestNews()
     {
-        return News::where('status', Status::ACTIVE)->where('publish_date', '<=', date('Y-m-d'))->orderBy('id', 'desc')->take(4)->get();
+        return hydrateTranslatableCollection(
+            News::with('translations')->where('status', Status::ACTIVE)->where('publish_date', '<=', date('Y-m-d'))->orderBy('id', 'desc')->take(4)->get()
+        );
     }
 
     public function newsDetail($id)
     {
-        return News::where('status', Status::ACTIVE)->where('id', $id)->first();
+        $news = News::with('translations')->where('status', Status::ACTIVE)->where('id', $id)->first();
+        resolveDefaultTranslate($news);
+
+        return $news;
     }
 
     // News
     public function notices()
     {
         $currentDateTime = Carbon::now(); // Get the current datetime
-        return  NoticeBoard::where('status', Status::ACTIVE)->where('is_visible_web', 1)->where('publish_date', '<=', $currentDateTime)->orderBy('id', 'desc')->paginate(6);
+        return hydrateTranslatableCollection(
+            NoticeBoard::with('translations')->where('status', Status::ACTIVE)->where('is_visible_web', 1)->where('publish_date', '<=', $currentDateTime)->orderBy('id', 'desc')->paginate(6)
+        );
     }
 
 
     public function noticeDetail($id)
     {
-        return NoticeBoard::where('status', Status::ACTIVE)->where('id', $id)->first();
+        $notice = NoticeBoard::with('translations')->where('status', Status::ACTIVE)->where('id', $id)->first();
+        resolveDefaultTranslate($notice);
+
+        return $notice;
     }
 
     // Events
     public function events()
     {
-        return Event::where('session_id', setting('session'))->where('status', Status::ACTIVE)->orderBy('id', 'desc')->paginate(6);
+        return hydrateTranslatableCollection(
+            Event::with('translations')->where('session_id', setting('session'))->where('status', Status::ACTIVE)->orderBy('id', 'desc')->paginate(6)
+        );
     }
 
     public function eventDetail($id)
     {
-        return Event::where('session_id', setting('session'))->where('status', Status::ACTIVE)->where('id', $id)->first();
+        $event = Event::with('translations')->where('session_id', setting('session'))->where('status', Status::ACTIVE)->where('id', $id)->first();
+        resolveDefaultTranslate($event);
+
+        return $event;
     }
 
     public function comingEvents()
     {
-        return Event::where('session_id', setting('session'))->where('status', Status::ACTIVE)->where('date', '>=', date('Y-m-d'))->orderBy('date','DESC')->take(4)->get();
+        return hydrateTranslatableCollection(
+            Event::with('translations')->where('session_id', setting('session'))->where('status', Status::ACTIVE)->where('date', '>=', date('Y-m-d'))->orderBy('date', 'DESC')->take(4)->get()
+        );
     }
 
     // Gallery

@@ -22,12 +22,9 @@ class Shift extends BaseModel
 
     public function defaultTranslate()
     {
-        $relation = $this->hasOne(ShiftTranslate::class, 'shift_id')->where('locale', request()->locale ?? config('app.locale'));
-        if ($relation->exists()) {
-            return $relation;
-        } else {
-            return $this->hasOne(Shift::class, 'id','id');
-        }
+        $locale = request()->locale ?? app()->getLocale();
+
+        return $this->hasOne(ShiftTranslate::class, 'shift_id')->where('locale', $locale);
     }
 
 

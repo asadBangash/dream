@@ -76,12 +76,8 @@ class AppServiceProvider extends ServiceProvider
                     try {
 
                         $subscriber = Subscribe::count();
-                        $sections = PageSections::with(['upload', 'defaultTranslate'])->get();
-
-                        $sectionArr = [];
-                        foreach ($sections as $section) {
-                            $sectionArr[$section->key] = $section;
-                        }
+                        $sections = PageSections::with(['upload', 'translations'])->get();
+                        $sectionArr = hydratePageSectionsForFrontend($sections);
 
                         $view->with([
                             'sections' => $sectionArr,
@@ -104,12 +100,8 @@ class AppServiceProvider extends ServiceProvider
                 try {
 
                     $subscriber = Subscribe::count();
-                    $sections = PageSections::with(['upload', 'defaultTranslate'])->get();
-
-                    $sectionArr = [];
-                    foreach ($sections as $section) {
-                        $sectionArr[$section->key] = $section;
-                    }
+                    $sections = PageSections::with(['upload', 'translations'])->get();
+                    $sectionArr = hydratePageSectionsForFrontend($sections);
 
                     $view->with([
                         'sections' => $sectionArr,
@@ -145,7 +137,8 @@ class AppServiceProvider extends ServiceProvider
 
         view()->composer(['frontend.partials.footer-content'], function ($view) {
             try {
-                $footer_pages = Page::where('menu_show', 'footer')->get(['id', 'name', 'slug']);
+                $footer_pages = Page::with('translations')->where('menu_show', 'footer')->get(['id', 'name', 'slug']);
+                hydrateTranslatableCollection($footer_pages);
 
                 $view->with([
                     'footer_pages' => $footer_pages
@@ -159,9 +152,10 @@ class AppServiceProvider extends ServiceProvider
 
         view()->composer(['frontend.partials.menu'], function ($view) {
             try {
-                $footer_pages = Page::where('menu_show', 'header')->get(['id', 'name', 'slug']);
+                $header_pages = Page::with('translations')->where('menu_show', 'header')->get(['id', 'name', 'slug']);
+                hydrateTranslatableCollection($header_pages);
                 $view->with([
-                    'header_pages' => $footer_pages
+                    'header_pages' => $header_pages
                 ]);
             } catch (\Exception $e) {
                 $view->with([

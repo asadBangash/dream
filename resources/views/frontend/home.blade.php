@@ -77,7 +77,7 @@
 
                         <ul class="statement_lists">
 
-                            @foreach ( isset($sections['statement']->defaultTranslate->data) && (is_array($sections['statement']->defaultTranslate->data) ) ? $sections['statement']->defaultTranslate->data : [] as $item)
+                            @foreach (sectionTranslateData($sections['statement'] ?? null) as $item)
                                 {{-- @dd($item) --}}
                                 <li>
                                     <div class="statement_title d-flex align-items-center gap_20">
@@ -126,13 +126,13 @@
                 </div>
             </div>
             <div class="row">
-                @foreach  ( (isset($sections['study_at']->defaultTranslate->data) &&  is_array($sections['study_at']->defaultTranslate->data)) ? $sections['study_at']->defaultTranslate->data : [] as $key => $item)
+                @foreach (sectionTranslateData($sections['study_at'] ?? null) as $key => $item)
                     <div class="col-xl-4 col-md-4">
                         <div class="serevice_box mb_30">
                             <div class="icon">
-                                @php $org =  (json_decode($sections['study_at'])->data) ?? []; @endphp
+                                @php $org = ($sections['study_at'] ?? null)?->data ?? []; @endphp
 
-                                <img src="{{ @globalAsset(uploadPath(@$org[$key]->icon), '90X60.webp') }}" alt="Icon">
+                                <img src="{{ @globalAsset(uploadPath(@$org[$key]['icon'] ?? null), '90X60.webp') }}" alt="Icon">
                             </div>
                             <h3>{{ $item['title'] }}</h3>
                             <p>{{ $item['description'] }}</p>
@@ -164,7 +164,7 @@
                     </div>
                     <div class="nav explorer_tabs" id="nav-tab" role="tablist">
 
-                        @foreach ( ( (isset($sections['explore']->defaultTranslate->data)) &&  is_array($sections['explore']->defaultTranslate->data)) ? $sections['explore']->defaultTranslate->data : [] as $key => $item)
+                        @foreach (sectionTranslateData($sections['explore'] ?? null) as $key => $item)
                             <a class="nav-item nav-link {{ $key == 0 ? 'active' : '' }}" id="item{{ $key }}-tab"
                                 data-toggle="tab" href="#item{{ $key }}" role="tab"
                                 aria-controls="item{{ $key }}" aria-selected="true">{{ $item['tab'] }}</a>
@@ -173,7 +173,7 @@
                     </div>
                     <div class="tab-content explorer_tab_content" id="nav-tabContent">
 
-                        @foreach ( ( (isset($sections['explore']->defaultTranslate->data)) &&  is_array($sections['explore']->defaultTranslate->data)) ? $sections['explore']->defaultTranslate->data : [] as $key => $item)
+                        @foreach (sectionTranslateData($sections['explore'] ?? null) as $key => $item)
                             <div class="tab-pane fade {{ $key == 0 ? 'show active' : '' }}" id="item{{ $key }}"
                                 role="tabpanel" aria-labelledby="item{{ $key }}-tab">
                                 <!-- content ::start  -->
@@ -205,7 +205,7 @@
                 <div class="col-xl-11">
                     <div class="teaching_grid mb_30">
 
-                        @foreach ( ((isset($sections['why_choose_us']->defaultTranslate->data)) &&  is_array($sections['why_choose_us']->defaultTranslate->data)) ? $sections['why_choose_us']->defaultTranslate->data : [] as $item)
+                        @foreach (sectionTranslateData($sections['why_choose_us'] ?? null) as $item)
                             <div class="teaching_single d-flex align-items-center">
                                 <div class="icon">
                                     <i class="far fa-check-circle"></i>

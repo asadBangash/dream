@@ -17,12 +17,9 @@ class Counter extends BaseModel
     public function defaultTranslate()
     {
 
-        $relation = $this->hasOne(CounterTranslate::class, 'counter_id')->where('locale', request()->locale ?? config('app.locale'));
-        if ($relation->exists()) {
-            return $relation;
-        } else {
-            return $this->hasOne(CounterTranslate::class, 'counter_id')->where('locale', 'en');
-        }
+        $locale = request()->locale ?? app()->getLocale();
+
+        return $this->hasOne(CounterTranslate::class, 'counter_id')->where('locale', $locale);
     }
 
 

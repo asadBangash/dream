@@ -22,12 +22,9 @@ class News extends BaseModel
     public function defaultTranslate()
     {
 
-        $relation = $this->hasOne(NewsTranslate::class, 'news_id')->where('locale', request()->locale ?? config('app.locale'));
-        if ($relation->exists()) {
-            return $relation;
-        } else {
-            return $this->hasOne(NewsTranslate::class, 'news_id')->where('locale', 'en');
-        }
+        $locale = request()->locale ?? app()->getLocale();
+
+        return $this->hasOne(NewsTranslate::class, 'news_id')->where('locale', $locale);
     }
 
 

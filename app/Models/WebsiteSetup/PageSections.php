@@ -22,12 +22,9 @@ class PageSections extends Model
 
     public function defaultTranslate()
     {
-        $relation = $this->hasOne(SectionTranslate::class, 'section_id')->where('locale', request()->locale ?? config('app.locale'));
-        if ($relation->exists()) {
-            return $relation;
-        } else {
-            return $this->hasOne(SectionTranslate::class, 'section_id')->where('locale', 'en');
-        }
+        $locale = request()->locale ?? app()->getLocale();
+
+        return $this->hasOne(SectionTranslate::class, 'section_id')->where('locale', $locale);
     }
 
     public function translations()

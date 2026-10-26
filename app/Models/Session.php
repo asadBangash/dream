@@ -21,12 +21,9 @@ class Session extends BaseModel
 
     public function defaultTranslate()
     {
-        $relation = $this->hasOne(SessionTranslate::class, 'session_id')->where('locale', request()->locale ?? config('app.locale'));
-        if ($relation->exists()) {
-            return $relation;
-        } else {
-            return $this->hasOne(Session::class, 'id','id');
-        }
+        $locale = request()->locale ?? app()->getLocale();
+
+        return $this->hasOne(SessionTranslate::class, 'session_id')->where('locale', $locale);
     }
 
 

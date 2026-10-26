@@ -7,7 +7,7 @@
                     <div class="col-xl-4 col-lg-4 col-md-6">
                         <div class="footer_widget">
                             <div class="footer_logo">
-                                <a href="#">
+                                <a href="{{ route('frontend.home') }}">
                                     <img height="60" src="{{ @globalAsset(setting('light_logo'), '154X38.webp') }}" alt="Logo">
                                 </a>
                             </div>
@@ -56,7 +56,7 @@
                             </div>
                             <div class="social__Links">
                                 @foreach ($sections['social_links']->data ?? [] as $item)
-                                    <a target="_blank" href="{{ $item['link'] }}"><i class="{{ $item['icon'] }}"></i></a>
+                                    <a target="_blank" rel="noopener noreferrer" href="{{ normalizeExternalUrl($item['link'] ?? '#') }}"><i class="{{ $item['icon'] }}"></i></a>
                                 @endforeach
                             </div>
                         </div>

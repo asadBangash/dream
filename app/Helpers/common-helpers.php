@@ -11,7 +11,12 @@ use App\Models\Subscription;
 use App\Models\SystemNotification;
 use App\Models\Upload;
 use App\Models\WebsiteSetup\OnlineAdmissionSetting;
+use App\Models\WebsiteSetup\PageSections;
+use App\Models\SectionTranslate;
 use Carbon\Carbon;
+use Illuminate\Database\Eloquent\Model;
+use Illuminate\Pagination\AbstractPaginator;
+use Illuminate\Support\Collection;
 use Illuminate\Support\Facades\Auth;
 use Illuminate\Support\Facades\Cache;
 use Illuminate\Support\Facades\Log;
@@ -259,6 +264,139 @@ if (!function_exists('globalAsset')) {
                 return url("backend/uploads/default-images/$default_image");
             }
         }
+    }
+}
+
+if (! function_exists('frontendLocale')) {
+    function frontendLocale(): string
+    {
+        return request()->locale ?? app()->getLocale();
+    }
+}
+
+if (! function_exists('normalizeExternalUrl')) {
+    function normalizeExternalUrl(?string $url): string
+    {
+        $url = trim((string) $url);
+        if ($url === '' || $url === '#') {
+            return '#';
+        }
+        if (preg_match('#^(https?://|mailto:|tel:|whatsapp:)#i', $url)) {
+            return $url;
+        }
+
+        return 'https://'.ltrim($url, '/');
+    }
+}
+
+if (! function_exists('resolveDefaultTranslate')) {
+    /** Pick locale translation with English fallback; sets defaultTranslate relation when possible. */
+    function resolveDefaultTranslate(?Model $model): ?Model
+    {
+        if ($model === null) {
+            return null;
+        }
+
+        if ($model->relationLoaded('defaultTranslate') && $model->getRelation('defaultTranslate')) {
+            return $model->getRelation('defaultTranslate');
+        }
+
+        if (! method_exists($model, 'translations')) {
+            return null;
+        }
+
+        if (! $model->relationLoaded('translations')) {
+            $model->load('translations');
+        }
+
+        $locale = frontendLocale();
+        $translate = $model->translations->firstWhere('locale', $locale)
+            ?? $model->translations->firstWhere('locale', 'en');
+
+        if ($model instanceof PageSections) {
+            if (! $translate) {
+                $translate = new SectionTranslate([
+                    'name' => $model->name,
+                    'description' => $model->description,
+                    'data' => is_array($model->data) ? $model->data : [],
+                    'locale' => $locale,
+                ]);
+            } else {
+                if (blank($translate->name) && filled($model->name)) {
+                    $translate->name = $model->name;
+                }
+                if (blank($translate->description) && filled($model->description)) {
+                    $translate->description = $model->description;
+                }
+                $translateData = $translate->data ?? null;
+                if ((! is_array($translateData) || $translateData === []) && is_array($model->data) && $model->data !== []) {
+                    $translate->data = $model->data;
+                }
+            }
+        }
+
+        $model->setRelation('defaultTranslate', $translate);
+
+        return $translate;
+    }
+}
+
+if (! function_exists('sectionTranslateData')) {
+    /** @return array<int, mixed> */
+    function sectionTranslateData(?PageSections $section): array
+    {
+        if ($section === null) {
+            return [];
+        }
+
+        resolveDefaultTranslate($section);
+        $data = $section->defaultTranslate?->data ?? null;
+        if (is_array($data) && $data !== []) {
+            return $data;
+        }
+
+        $fallback = $section->data ?? [];
+
+        return is_array($fallback) ? $fallback : [];
+    }
+}
+
+if (! function_exists('hydratePageSectionsForFrontend')) {
+    /** @param iterable<int, PageSections> $sections */
+    function hydratePageSectionsForFrontend(iterable $sections): array
+    {
+        $sectionArr = [];
+        foreach ($sections as $section) {
+            resolveDefaultTranslate($section);
+            $sectionArr[$section->key] = $section;
+        }
+
+        return $sectionArr;
+    }
+}
+
+if (! function_exists('hydrateTranslatableCollection')) {
+    /**
+     * @param  Collection|AbstractPaginator|array<int, Model>  $items
+     * @return Collection|AbstractPaginator|array<int, Model>
+     */
+    function hydrateTranslatableCollection($items)
+    {
+        if ($items instanceof AbstractPaginator) {
+            $items->through(function ($model) {
+                resolveDefaultTranslate($model);
+
+                return $model;
+            });
+
+            return $items;
+        }
+
+        foreach ($items as $model) {
+            resolveDefaultTranslate($model);
+        }
+
+        return $items;
     }
 }
 

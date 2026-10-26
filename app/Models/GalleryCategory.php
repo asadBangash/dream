@@ -27,11 +27,8 @@ class GalleryCategory extends BaseModel
 
     public function defaultTranslate()
     {
-        $relation = $this->hasOne(GalleryCategoryTranslate::class, 'gallery_category_id')->where('locale', request()->locale ?? config('app.locale'));
-        if ($relation->exists()) {
-            return $relation;
-        } else {
-            return $this->hasOne(GalleryCategoryTranslate::class, 'gallery_category_id')->where('locale', 'en');
-        }
+        $locale = request()->locale ?? app()->getLocale();
+
+        return $this->hasOne(GalleryCategoryTranslate::class, 'gallery_category_id')->where('locale', $locale);
     }
 }
