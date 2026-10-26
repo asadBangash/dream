@@ -68,74 +68,8 @@
                                     @enderror
                                 </div>
 
-                                <div class="col-md-3 mb-3">
-
-                                    <label class="form-label" for="inputImage">{{ ___('student_info.father_image') }} {{ ___('common.(95 x 95 px)') }}</label>
-                                    <div class="ot_fileUploader left-side mb-3">
-                                        <input class="form-control" type="text" placeholder="{{ ___('student_info.father_image') }}" readonly="" id="placeholder">
-                                        <button class="primary-btn-small-input" type="button">
-                                            <label class="btn btn-lg ot-btn-primary" for="fileBrouse">{{ ___('common.browse') }}</label>
-                                            <input type="file" class="d-none form-control" name="father_image" id="fileBrouse" accept="image/*">
-                                        </button>
-                                    </div>
-
-                                </div>
-
-
                             </div>
                             {{-- end father --}}
-                            {{-- mother --}}
-                            <div class="row">
-                                <div class="col-md-3 mb-3">
-                                    <label for="exampleDataList" class="form-label ">{{ ___('student_info.mother_name') }} <span
-                                            class="fillable"></span></label>
-                                    <input class="form-control ot-input @error('mother_name') is-invalid @enderror" name="mother_name"
-                                        list="datalistOptions" id="exampleDataList"
-                                        placeholder="{{ ___('student_info.enter_mother_name') }}" type="text" value="{{ old('mother_name') }}">
-                                    @error('mother_name')
-                                        <div id="validationServer04Feedback" class="invalid-feedback">
-                                            {{ $message }}
-                                        </div>
-                                    @enderror
-                                </div>
-                                <div class="col-md-3 mb-3">
-                                    <label for="exampleDataList" class="form-label ">{{ ___('student_info.mother_mobile') }} <span
-                                            class="fillable"></span></label>
-                                    <input class="form-control ot-input @error('mother_mobile') is-invalid @enderror" name="mother_mobile"
-                                        list="datalistOptions" id="exampleDataList"
-                                        placeholder="{{ ___('student_info.enter_mother_mobile') }}" type="text" value="{{ old('mother_mobile') }}">
-                                    @error('mother_mobile')
-                                        <div id="validationServer04Feedback" class="invalid-feedback">
-                                            {{ $message }}
-                                        </div>
-                                    @enderror
-                                </div>
-                                <div class="col-md-3 mb-3">
-                                    <label for="exampleDataList" class="form-label ">{{ ___('student_info.mother_profession') }} <span
-                                            class="fillable"></span></label>
-                                    <input class="form-control ot-input @error('mother_profession') is-invalid @enderror" name="mother_profession"
-                                        list="datalistOptions" id="exampleDataList"
-                                        placeholder="{{ ___('student_info.enter_father_profession') }}" type="text" value="{{ old('mother_profession') }}">
-                                    @error('mother_profession')
-                                        <div id="validationServer04Feedback" class="invalid-feedback">
-                                            {{ $message }}
-                                        </div>
-                                    @enderror
-                                </div>
-                                <div class="col-md-3 mb-3">
-
-                                    <label class="form-label" for="inputImage">{{ ___('student_info.mother_image') }} {{ ___('common.(95 x 95 px)') }}</label>
-                                    <div class="ot_fileUploader left-side mb-3">
-                                        <input class="form-control" type="text" placeholder="{{ ___('student_info.mother_image') }}" readonly="" id="placeholder2">
-                                        <button class="primary-btn-small-input" type="button">
-                                            <label class="btn btn-lg ot-btn-primary" for="fileBrouse2">{{ ___('common.browse') }}</label>
-                                            <input type="file" class="d-none form-control" name="mother_image" id="fileBrouse2" accept="image/*">
-                                        </button>
-                                    </div>
-
-                                </div>
-                            </div>
-                            {{-- end mother --}}
                             {{-- guardian --}}
                             <div class="row">
                                 <div class="col-md-3 mb-3">
@@ -244,17 +178,6 @@
                                         class="email form-control ot-input @error('father_id') is-invalid @enderror"
                                         type="text" value="{{ old('father_id') }}"
                                         @if (is_required('father_id')) required @endif>
-                                </div>
-                                <div class="col-md-3 mb-3">
-                                    <label class="form-label">{{ ___('frontend.Mother_ID') }}
-                                        @if (is_required('mother_id'))
-                                            <span class="text-danger">*</span>
-                                        @endif
-                                    </label>
-                                    <input name="mother_id" placeholder="{{ ___('frontend.Mother_ID') }}"
-                                        class="email form-control ot-input @error('mother_id') is-invalid @enderror"
-                                        type="text" value="{{ old('mother_id') }}"
-                                        @if (is_required('mother_id')) required @endif>
                                 </div>
                                 <div class="col-md-3">
 

@@ -100,12 +100,16 @@ class StudentRepository implements StudentInterface
                 return $this->responseWithError(___('alert.Student limit is over.'), []);
 
             $role                     = Role::find(6); // student role id 6
+            $branchId = hasModule('MultiBranch') ? branchIdForStudentPersist($request) : 1;
+            $admissionNo = $request->filled('admission_no')
+                ? $request->admission_no
+                : $this->generateNextAdmissionNo($branchId);
 
             $user                    = new User();
             $user->name              = $request->first_name . ' ' . $request->last_name;
             $user->email             = $request->email  != "" ? $request->email :  NULL;
             $user->phone             = $request->mobile != "" ? $request->mobile :  NULL;
-            $user->admission_no      = $request->admission_no;
+            $user->admission_no      = $admissionNo;
             $user->password          = $request->password_type == 'default' ? Hash::make('123456') : Hash::make($request->password);
             $user->email_verified_at = now();
             $user->role_id           = $role->id;
@@ -114,7 +118,6 @@ class StudentRepository implements StudentInterface
             $user->username          = $request->username;
             $user->upload_id         = $this->UploadImageCreate($request->image, 'backend/uploads/students');
             $user->uuid              = Str::uuid();
-            $branchId = hasModule('MultiBranch') ? branchIdForStudentPersist($request) : 1;
             if (hasModule('MultiBranch')) {
                 $user->branch_id = $branchId;
             }
@@ -124,7 +127,7 @@ class StudentRepository implements StudentInterface
             $row->user_id              = $user->id;
             $row->first_name           = $request->first_name;
             $row->last_name            = $request->last_name;
-            $row->admission_no         = $request->admission_no;
+            $row->admission_no         = $admissionNo;
             $row->roll_no              = $request->roll_no != "" ? $request->roll_no :  NULL;
             $row->mobile               = $request->mobile;
             $row->image_id             = $user->upload_id;
@@ -308,5 +311,20 @@ class StudentRepository implements StudentInterface
             ->where('classes_id', $class)
             ->with('student')
             ->get();
+    }
+
+    protected function generateNextAdmissionNo(int $branchId): string
+    {
+        $query = $this->model->newQuery()->withoutGlobalScopes()->whereNotNull('admission_no');
+        if (hasModule('MultiBranch')) {
+            $query->where('branch_id', $branchId);
+        }
+
+        $maxNumeric = $query->pluck('admission_no')
+            ->filter(static fn ($no) => $no !== '' && is_numeric($no))
+            ->map(static fn ($no) => (int) $no)
+            ->max();
+
+        return (string) (($maxNumeric ?? 0) + 1);
     }
 }

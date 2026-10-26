@@ -17,49 +17,6 @@
         <input class="form-control ot-input" name="father_profession" type="text"
             placeholder="{{ ___('student_info.enter_father_profession') }}" value="{{ old('father_profession') }}">
     </div>
-    <div class="col-md-3 mb-3">
-        <label class="form-label">{{ ___('student_info.father_image') }} {{ ___('common.(95 x 95 px)') }}</label>
-        <div class="ot_fileUploader left-side mb-3">
-            <input class="form-control" type="text" placeholder="{{ ___('student_info.father_image') }}" readonly
-                id="{{ $fp }}father_image_placeholder">
-            <button class="primary-btn-small-input" type="button">
-                <label class="btn btn-lg ot-btn-primary"
-                    for="{{ $fp }}father_image_file">{{ ___('common.browse') }}</label>
-                <input type="file" class="d-none form-control" name="father_image" id="{{ $fp }}father_image_file"
-                    accept="image/*">
-            </button>
-        </div>
-    </div>
-</div>
-<div class="row">
-    <div class="col-md-3 mb-3">
-        <label class="form-label">{{ ___('student_info.mother_name') }}</label>
-        <input class="form-control ot-input" name="mother_name" type="text"
-            placeholder="{{ ___('student_info.enter_mother_name') }}" value="{{ old('mother_name') }}">
-    </div>
-    <div class="col-md-3 mb-3">
-        <label class="form-label">{{ ___('student_info.mother_mobile') }}</label>
-        <input class="form-control ot-input" name="mother_mobile" type="text"
-            placeholder="{{ ___('student_info.enter_mother_mobile') }}" value="{{ old('mother_mobile') }}">
-    </div>
-    <div class="col-md-3 mb-3">
-        <label class="form-label">{{ ___('student_info.mother_profession') }}</label>
-        <input class="form-control ot-input" name="mother_profession" type="text"
-            value="{{ old('mother_profession') }}">
-    </div>
-    <div class="col-md-3 mb-3">
-        <label class="form-label">{{ ___('student_info.mother_image') }} {{ ___('common.(95 x 95 px)') }}</label>
-        <div class="ot_fileUploader left-side mb-3">
-            <input class="form-control" type="text" placeholder="{{ ___('student_info.mother_image') }}" readonly
-                id="{{ $fp }}mother_image_placeholder">
-            <button class="primary-btn-small-input" type="button">
-                <label class="btn btn-lg ot-btn-primary"
-                    for="{{ $fp }}mother_image_file">{{ ___('common.browse') }}</label>
-                <input type="file" class="d-none form-control" name="mother_image" id="{{ $fp }}mother_image_file"
-                    accept="image/*">
-            </button>
-        </div>
-    </div>
 </div>
 <div class="row">
     <div class="col-md-3 mb-3">
@@ -115,10 +72,6 @@
     <div class="col-md-3 mb-3">
         <label class="form-label">{{ ___('frontend.Father_ID') }}</label>
         <input name="father_id" class="form-control ot-input" type="text" value="{{ old('father_id') }}">
-    </div>
-    <div class="col-md-3 mb-3">
-        <label class="form-label">{{ ___('frontend.Mother_ID') }}</label>
-        <input name="mother_id" class="form-control ot-input" type="text" value="{{ old('mother_id') }}">
     </div>
     <div class="col-md-3 mb-3">
         <label class="form-label">{{ ___('student_info.status') }} <span class="fillable">*</span></label>

@@ -27,7 +27,7 @@ class StudentStoreRequest extends FormRequest
         return array_merge([
             'mobile' => $mobile,
             'email' => $email,
-            'admission_no' => ['required', 'max:255', new BranchUnique('students', 'admission_no')],
+            'admission_no' => ['nullable', 'max:255', new BranchUnique('students', 'admission_no')],
             'roll_no' => 'required|max:255',
             'first_name' => 'required|max:255',
             'last_name' => 'required|max:255',

@@ -42,19 +42,6 @@
                             <div class="row">
                                 <x-branch-field />
                                 <div class="col-md-3 mb-3">
-                                    <label for="exampleDataList" class="form-label ">{{ ___('student_info.admission_no') }}
-                                        <span class="fillable">*</span></label>
-                                    <input class="form-control ot-input @error('admission_no') is-invalid @enderror"
-                                        type="number" name="admission_no" list="datalistOptions" id="exampleDataList"
-                                        placeholder="{{ ___('student_info.enter_admission_no') }}"
-                                        value="{{ old('admission_no') }}">
-                                    @error('admission_no')
-                                        <div id="validationServer04Feedback" class="invalid-feedback">
-                                            {{ $message }}
-                                        </div>
-                                    @enderror
-                                </div>
-                                <div class="col-md-3 mb-3">
                                     <label for="exampleDataList" class="form-label ">{{ ___('student_info.roll_no') }}
                                         <span class="fillable">*</span></label>
                                     <input class="form-control ot-input @error('roll_no') is-invalid @enderror"
@@ -93,13 +80,6 @@
                                         </div>
                                     @enderror
                                 </div>
-                                <div class="col-md-3 mb-3">
-                                    <label class="form-label">{{ ___('frontend.Arabic_Name') }} </label>
-                                    <input name="student_ar_name" placeholder="{{ ___('frontend.Arabic_Name') }}"
-                                        class="email form-control ot-input mb_30" type="text"
-                                        value="{{ old('student_ar_name') }}">
-                                </div>
-
                                 <div class="col-md-3 mb-3">
                                     <label for="exampleDataList" class="form-label ">{{ ___('student_info.mobile') }} <span
                                             class="fillable"></span></label>
