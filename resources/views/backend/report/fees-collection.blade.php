@@ -545,7 +545,13 @@
         @if (@$data['result'])
             <div class="col-lg-12">
                 @if (count($data['result']) > 0)
-                <div class="download_print_btns">
+                @php
+                    $slipBulkQuery = http_build_query(array_filter([
+                        'class' => $data['request']->class ?? null,
+                        'section' => $data['request']->section ?? null,
+                    ]));
+                @endphp
+                <div class="download_print_btns flex-wrap">
                     <button class="btn btn-lg ot-btn-primary" onclick="printDiv('printableArea')">
                         {{___('common.print_now')}}
                         <span><i class="fa-solid fa-print"></i></span>
@@ -553,6 +559,15 @@
                     <a class="btn btn-lg ot-btn-primary" href="{{ route('report-fees-collection.pdf-generate', ['class'=>$data['request']->class, 'section'=>$data['request']->section, 'dates'=>Illuminate\Support\Facades\Crypt::encryptString($data['request']->dates)]) }}">
                         {{___('common.pdf_download')}}
                         <span><i class="fa-brands fa-dochub"></i></span>
+                    </a>
+                    <a class="btn btn-lg ot-btn-primary" href="{{ route('fees-slip.bulk.print') }}?{{ $slipBulkQuery }}" target="_blank">
+                        Fee slips (print)
+                    </a>
+                    <a class="btn btn-lg ot-btn-primary" href="{{ route('fees-slip.bulk.pdf') }}?{{ $slipBulkQuery }}">
+                        Fee slips (PDF)
+                    </a>
+                    <a class="btn btn-lg ot-btn-primary" href="{{ route('fees-slip.bulk.excel') }}?{{ $slipBulkQuery }}">
+                        Fee slips (Excel)
                     </a>
                 </div>
                 @endif
@@ -580,6 +595,7 @@
                                     <th>{{___('report.fees_type')}}</th>
                                     <th>{{___('common.date')}}</th>
                                     <th>{{___('report.Amount')}} ({{ Setting('currency_symbol') }})</th>
+                                    <th>Slip</th>
                                 </tr>
                             </thead>
                             <tbody>
@@ -592,10 +608,13 @@
                                     <td>{{ $item->feesMaster->type->name }}</td>
                                     <td>{{ dateFormat($item->feesCollect->date)}}</td>
                                     <td>{{ $item->feesCollect->amount + $item->feesCollect->fine_amount }}</td>
+                                    <td>
+                                        <a class="btn btn-sm ot-btn-primary" href="{{ route('fees-slip.student.pdf', ['student' => $item->student_id, 'payment_date' => $item->feesCollect->date]) }}" target="_blank">Slip</a>
+                                    </td>
                                 </tr>
                                 @empty
                                 <tr>
-                                    <td colspan="7" class="td-text-center">
+                                    <td colspan="8" class="td-text-center">
                                           @include('backend.includes.no-data')
                                     </td>
                                 </tr>

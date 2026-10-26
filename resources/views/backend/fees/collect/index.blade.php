@@ -77,9 +77,22 @@
         <!--  table content start -->
         <div class="table-content table-basic mt-20">
             <div class="card">
-                <div class="card-header d-flex justify-content-between align-items-center">
+                <div class="card-header d-flex justify-content-between align-items-center flex-wrap gap-2">
                     <h4 class="mb-0">{{ $data['title'] }}</h4>
-
+                    @if (!empty($data['filter_class']) || !empty($data['filter_section']) || !empty($data['filter_student']))
+                        @php
+                            $bulkQuery = http_build_query(array_filter([
+                                'class' => $data['filter_class'] ?? null,
+                                'section' => $data['filter_section'] ?? null,
+                                'student' => $data['filter_student'] ?? null,
+                            ]));
+                        @endphp
+                        <div class="d-flex flex-wrap gap-2">
+                            <a class="btn btn-sm ot-btn-primary" href="{{ route('fees-slip.bulk.print') }}?{{ $bulkQuery }}" target="_blank">Print slips</a>
+                            <a class="btn btn-sm ot-btn-primary" href="{{ route('fees-slip.bulk.pdf') }}?{{ $bulkQuery }}">PDF</a>
+                            <a class="btn btn-sm ot-btn-primary" href="{{ route('fees-slip.bulk.excel') }}?{{ $bulkQuery }}">Excel</a>
+                        </div>
+                    @endif
                 </div>
                 <div class="card-body">
 

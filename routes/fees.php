@@ -7,6 +7,7 @@ use App\Http\Controllers\Fees\FeesGroupController;
 use App\Http\Controllers\Fees\FeesAssignController;
 use App\Http\Controllers\Fees\FeesMasterController;
 use App\Http\Controllers\Fees\FeesCollectController;
+use App\Http\Controllers\Fees\FeeSlipController;
 use Stancl\Tenancy\Middleware\InitializeTenancyByDomain;
 use Stancl\Tenancy\Middleware\PreventAccessFromCentralDomains;
 
@@ -73,6 +74,15 @@ Route::middleware(saasMiddleware())->group(function () {
 
                     Route::any('/search', 'getFeesCollectStudents')->name('fees-collect-search');
                     Route::get('/fees-show', 'feesShow');
+                });
+
+                Route::controller(FeeSlipController::class)->prefix('fees-slip')->group(function () {
+                    Route::get('/student/{student}/print', 'studentPrint')->name('fees-slip.student.print');
+                    Route::get('/student/{student}/pdf', 'studentPdf')->name('fees-slip.student.pdf');
+                    Route::get('/student/{student}/excel', 'studentExcel')->name('fees-slip.student.excel');
+                    Route::get('/bulk/print', 'bulkPrint')->name('fees-slip.bulk.print');
+                    Route::get('/bulk/pdf', 'bulkPdf')->name('fees-slip.bulk.pdf');
+                    Route::get('/bulk/excel', 'bulkExcel')->name('fees-slip.bulk.excel');
                 });
 
                 Route::controller(FeesDiscountController::class)->prefix('fees-discount')->group(function () {

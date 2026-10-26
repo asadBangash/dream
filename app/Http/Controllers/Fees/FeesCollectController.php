@@ -65,9 +65,23 @@ class FeesCollectController extends Controller
     public function store(Request $request)
     {
         $result = $this->repo->store($request);
-        if($result['status']){
-            return back()->with('success', $result['message']);
+        if ($result['status']) {
+            $assignIds = implode(',', $result['data']['fees_assign_childrens'] ?? []);
+            $paymentDate = $result['data']['payment_date'] ?? null;
+            $studentId = $result['data']['student_id'] ?? $request->student_id;
+
+            $printUrl = route('fees-slip.student.print', [
+                'student'      => $studentId,
+                'assign_ids'   => $assignIds,
+                'payment_date' => $paymentDate,
+            ]);
+
+            return redirect()
+                ->route('fees-collect.collect', $studentId)
+                ->with('success', $result['message'])
+                ->with('fee_slip_print_url', $printUrl);
         }
+
         return back()->with('danger', $result['message']);
     }
 
@@ -107,9 +121,13 @@ class FeesCollectController extends Controller
 
     public function getFeesCollectStudents(Request $request)
     {
-        $data['students'] = $this->repo->getFeesAssignStudents($request);
-        $data['title']    = ___('fees.fees_collect');
-        $data['classes']  = $this->classRepo->assignedAll();
+        $data['students']       = $this->repo->getFeesAssignStudents($request);
+        $data['title']          = ___('fees.fees_collect');
+        $data['classes']        = $this->classRepo->assignedAll();
+        $data['filter_class']   = $request->class;
+        $data['filter_section'] = $request->section;
+        $data['filter_student'] = $request->student;
+
         return view('backend.fees.collect.index', compact('data'));
     }
 

@@ -86,15 +86,20 @@
                     </div>
                 </div>
 
-                <div class="card-header d-flex justify-content-between align-items-center mb-3">
+                <div class="card-header d-flex justify-content-between align-items-center mb-3 flex-wrap gap-2">
                     <h4 class="mb-0">{{___('fees.fees_details')}}</h4>
-                    @if (hasPermission('fees_collect_create'))
-                        <a href="#" class="btn btn-lg ot-btn-primary" data-bs-toggle="modal"
-                            data-bs-target="#modalCustomizeWidth" onclick="feesCollect()">
-                            <span><i class="fa-solid fa-plus"></i> </span>
-                            <span class="">{{ ___('fees.Collect') }}</span>
-                        </a>
-                    @endif
+                    <div class="d-flex flex-wrap gap-2 align-items-center">
+                        <a class="btn btn-sm ot-btn-secondary" href="{{ route('fees-slip.student.print', ['student' => $data['student']->id]) }}" target="_blank">Print slip</a>
+                        <a class="btn btn-sm ot-btn-secondary" href="{{ route('fees-slip.student.pdf', ['student' => $data['student']->id]) }}">PDF slip</a>
+                        <a class="btn btn-sm ot-btn-secondary" href="{{ route('fees-slip.student.excel', ['student' => $data['student']->id]) }}">Excel</a>
+                        @if (hasPermission('fees_collect_create'))
+                            <a href="#" class="btn btn-lg ot-btn-primary" data-bs-toggle="modal"
+                                data-bs-target="#modalCustomizeWidth" onclick="feesCollect()">
+                                <span><i class="fa-solid fa-plus"></i> </span>
+                                <span class="">{{ ___('fees.Collect') }}</span>
+                            </a>
+                        @endif
+                    </div>
                 </div>
 
                 <div class="table-responsive">
@@ -212,4 +217,9 @@
 @endsection
 @push('script')
     @include('backend.partials.delete-ajax')
+    @if (session('fee_slip_print_url'))
+        <script>
+            window.open(@json(session('fee_slip_print_url')), '_blank');
+        </script>
+    @endif
 @endpush

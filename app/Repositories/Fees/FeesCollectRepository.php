@@ -46,6 +46,7 @@ class FeesCollectRepository implements FeesCollectInterface
     {
         DB::beginTransaction();
         try {
+            $collectIds = [];
             foreach ($request->fees_assign_childrens as $key=>$item) {
                 $row                   = new $this->model;
                 $row->date             = $request->date;
@@ -57,6 +58,7 @@ class FeesCollectRepository implements FeesCollectInterface
                 $row->student_id       = $request->student_id;
                 $row->session_id       = setting('session');
                 $row->save();
+                $collectIds[] = $row->id;
 
                $ac_head =  AccountHead::where('type', 1)->where('status', 1)->first();
 
@@ -108,7 +110,13 @@ class FeesCollectRepository implements FeesCollectInterface
             }
 
             DB::commit();
-            return $this->responseWithSuccess(___('alert.created_successfully'), []);
+
+            return $this->responseWithSuccess(___('alert.created_successfully'), [
+                'collect_ids'          => $collectIds,
+                'student_id'           => (int) $request->student_id,
+                'fees_assign_childrens'=> $request->fees_assign_childrens,
+                'payment_date'         => $request->date,
+            ]);
         } catch (\Throwable $th) {
             DB::rollBack();
             Log::error('Fees collect store failed', [
