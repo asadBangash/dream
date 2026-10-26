@@ -76,7 +76,7 @@ class AppServiceProvider extends ServiceProvider
                     try {
 
                         $subscriber = Subscribe::count();
-                        $sections = PageSections::with('upload')->get();
+                        $sections = PageSections::with(['upload', 'defaultTranslate'])->get();
 
                         $sectionArr = [];
                         foreach ($sections as $section) {
@@ -104,7 +104,7 @@ class AppServiceProvider extends ServiceProvider
                 try {
 
                     $subscriber = Subscribe::count();
-                    $sections = PageSections::with('upload')->get();
+                    $sections = PageSections::with(['upload', 'defaultTranslate'])->get();
 
                     $sectionArr = [];
                     foreach ($sections as $section) {

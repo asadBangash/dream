@@ -198,6 +198,38 @@ footer.home_three_footer .copyright_area .footer_border {
     background-color: var(--dream-green-accent) !important;
 }
 
+.whatsapp-float {
+    position: fixed;
+    left: 20px;
+    bottom: 30px;
+    z-index: 9999998;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    width: 56px;
+    height: 56px;
+    border-radius: 50%;
+    background-color: #25d366;
+    color: #fff;
+    box-shadow: 0 4px 12px rgba(0, 0, 0, 0.25);
+    transition: transform 0.2s ease, box-shadow 0.2s ease;
+}
+
+.whatsapp-float:hover {
+    color: #fff;
+    transform: scale(1.06);
+    box-shadow: 0 6px 16px rgba(0, 0, 0, 0.3);
+}
+
+@media (max-width: 575px) {
+    .whatsapp-float {
+        left: 16px;
+        bottom: 20px;
+        width: 50px;
+        height: 50px;
+    }
+}
+
 .theme_pagination a.active,
 .theme_pagination a:hover {
     background: var(--dream-green-dark) !important;

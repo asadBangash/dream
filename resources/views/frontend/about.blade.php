@@ -31,7 +31,7 @@
                         <h3>{{ @$sections['statement']->defaultTranslate->name }}</h3>
                         <ul class="statement_lists">
                             {{-- @dd($sections['statement']->data) --}}
-                            @foreach (is_array($sections['statement']->defaultTranslate->data ?? []) ? $sections['statement']->defaultTranslate->data : [] as $item)
+                            @foreach (isset($sections['statement']->defaultTranslate->data) && is_array($sections['statement']->defaultTranslate->data) ? $sections['statement']->defaultTranslate->data : [] as $item)
                                 <li>
                                     <div class="statement_title d-flex align-items-center gap_20">
                                         <div class="icon">
@@ -79,14 +79,14 @@
                 </div>
             </div>
             <div class="row">
-                @foreach (is_array($sections['study_at']->defaultTranslate->data) ? $sections['study_at']->defaultTranslate->data : [] as $key => $item)
+                @foreach (isset($sections['study_at']->defaultTranslate->data) && is_array($sections['study_at']->defaultTranslate->data) ? $sections['study_at']->defaultTranslate->data : [] as $key => $item)
                     <div class="col-xl-4 col-md-4">
                         <div class="serevice_box mb_30">
                             <div class="icon">
                                 @php
-                                    $org = $sections['study_at']->data ?? [];
+                                    $org = isset($sections['study_at']) ? (json_decode($sections['study_at'])->data ?? []) : [];
                                 @endphp
-                                <img src="{{ @globalAsset(uploadPath(@$org[$key]['icon']), '90X60.webp') }}"
+                                <img src="{{ @globalAsset(uploadPath(@$org[$key]->icon ?? ''), '90X60.webp') }}"
                                     alt="Icon">
                             </div>
                             <h3>{{ $item['title'] }}</h3>
