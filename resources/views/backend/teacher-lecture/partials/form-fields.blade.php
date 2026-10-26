@@ -51,9 +51,22 @@
     </div>
     <div class="col-md-6 mb-3">
         <label class="form-label">File (PDF / video / document)</label>
-        <input type="file" name="document" class="form-control ot-input">
+        <div class="ot_fileUploader left-side mb-0">
+            <input class="form-control" type="text"
+                placeholder="{{ ___('common.document') }}"
+                readonly
+                id="lectureFilePlaceholder"
+                value="{{ $lecture?->upload ? basename($lecture->upload->path) : '' }}">
+            <button class="primary-btn-small-input" type="button">
+                <label class="btn btn-lg ot-btn-primary mb-0" for="lectureFileBrowse">{{ ___('common.browse') }}</label>
+                <input type="file" class="d-none form-control" name="document" id="lectureFileBrowse"
+                    accept=".pdf,.doc,.docx,.ppt,.pptx,.mp4,.mov,.avi,.zip,application/pdf,video/*">
+            </button>
+        </div>
         @if ($lecture?->upload)
-            <small><a href="{{ globalAsset($lecture->upload->path) }}" target="_blank">Current file</a></small>
+            <small class="d-block mt-1">
+                <a href="{{ globalAsset($lecture->upload->path) }}" target="_blank">{{ ___('common.view') }} current file</a>
+            </small>
         @endif
     </div>
     <div class="col-md-6 mb-3">
@@ -72,3 +85,16 @@
         </select>
     </div>
 </div>
+@push('script')
+    @once('lecture-file-upload-script')
+        <script>
+            $(function () {
+                $('#lectureFileBrowse').on('change', function () {
+                    var parts = (this.value || '').split('\\');
+                    var name = parts[parts.length - 1] || '';
+                    $('#lectureFilePlaceholder').val(name);
+                });
+            });
+        </script>
+    @endonce
+@endpush
