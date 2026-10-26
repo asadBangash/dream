@@ -22,6 +22,7 @@ class TeacherLectureController extends Controller
     {
         $data['title'] = 'Lecture Upload';
         $data['lectures'] = $this->repo->getPaginateAll();
+        $data['lectures_table_missing'] = ! \Illuminate\Support\Facades\Schema::hasTable('teacher_lectures');
 
         return view('backend.teacher-lecture.index', compact('data'));
     }

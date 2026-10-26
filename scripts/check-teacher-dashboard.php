@@ -12,7 +12,7 @@ $app->make(Illuminate\Contracts\Console\Kernel::class)->bootstrap();
 
 use Illuminate\Support\Facades\Schema;
 
-echo "=== Teacher dashboard checks ===\n\n";
+echo "=== Teacher panel checks ===\n\n";
 
 $files = [
     'app/Http/Controllers/Backend/TeacherDashboardController.php',

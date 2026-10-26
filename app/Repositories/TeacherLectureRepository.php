@@ -8,6 +8,9 @@ use App\Traits\CommonHelperTrait;
 use App\Traits\ReturnFormatTrait;
 use Illuminate\Support\Facades\Auth;
 use Illuminate\Support\Facades\DB;
+use Illuminate\Support\Facades\Log;
+use Illuminate\Support\Facades\Schema;
+use Illuminate\Pagination\LengthAwarePaginator;
 
 class TeacherLectureRepository
 {
@@ -18,6 +21,10 @@ class TeacherLectureRepository
 
     public function getPaginateAll()
     {
+        if (! Schema::hasTable('teacher_lectures')) {
+            return new LengthAwarePaginator([], 0, 10);
+        }
+
         $query = $this->model::with(['class', 'section', 'subject', 'upload'])
             ->latest()
             ->where('session_id', setting('session'));
@@ -43,6 +50,13 @@ class TeacherLectureRepository
 
     public function store($request)
     {
+        if (! Schema::hasTable('teacher_lectures')) {
+            return $this->responseWithError(
+                'Lecture table is missing on the server. Run: php artisan migrate --path=database/migrations/tenant --force',
+                []
+            );
+        }
+
         DB::beginTransaction();
         try {
             $row = new $this->model;
@@ -68,6 +82,10 @@ class TeacherLectureRepository
             return $this->responseWithSuccess(___('alert.created_successfully'), []);
         } catch (\Throwable $th) {
             DB::rollBack();
+            Log::error('Teacher lecture store failed', [
+                'message' => $th->getMessage(),
+                'teacher_user_id' => Auth::id(),
+            ]);
 
             return $this->responseWithError(___('alert.something_went_wrong_please_try_again'), []);
         }

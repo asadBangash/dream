@@ -9,13 +9,15 @@
         <select id="getSections" name="class" class="nice-select niceSelect bordered_style wide" required>
             <option value="">{{ ___('student_info.select_class') }}</option>
             @foreach ($data['classes'] as $item)
-                <option value="{{ $item->class->id }}" @selected(old('class', $lecture->classes_id ?? '') == $item->class->id)>{{ $item->class->name }}</option>
+                @if ($item->class)
+                    <option value="{{ $item->class->id }}" @selected(old('class', $lecture->classes_id ?? '') == $item->class->id)>{{ $item->class->name }}</option>
+                @endif
             @endforeach
         </select>
     </div>
     <div class="col-md-4 mb-3">
         <label class="form-label">{{ ___('student_info.section') }} *</label>
-        <select id="getSubjects" name="section" class="nice-select niceSelect bordered_style wide" required>
+        <select id="getSubjects" name="section" class="nice-select niceSelect bordered_style wide sections section" required>
             <option value="">{{ ___('student_info.select_section') }}</option>
             @foreach ($sections as $item)
                 <option value="{{ $item->section->id }}" @selected(old('section', $lecture->section_id ?? '') == $item->section->id)>{{ $item->section->name }}</option>

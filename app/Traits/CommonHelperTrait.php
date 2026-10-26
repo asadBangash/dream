@@ -26,12 +26,17 @@ trait CommonHelperTrait
                 $filePath           = s3Upload($path, $image);
                 $imagePostSuccess   = Storage::disk('s3')->exists($filePath);
                 $image_record->path = $filePath;
-            }else{
-                if (!File::exists($path)) {
-                    File::makeDirectory($path, 0755, true);
+            } else {
+                $relativePath = ltrim(str_replace('\\', '/', $path), '/');
+                if (str_contains($relativePath, ':')) {
+                    $relativePath = preg_replace('#^.*?/public/#', '', $relativePath);
                 }
-                $image->move($path, $filename);
-                $image_record->path = $path .'/'. $filename;
+                $diskPath = public_path($relativePath);
+                if (! File::exists($diskPath)) {
+                    File::makeDirectory($diskPath, 0755, true);
+                }
+                $image->move($diskPath, $filename);
+                $image_record->path = $relativePath . '/' . $filename;
             }
             $image_record->save();
 
@@ -50,16 +55,13 @@ trait CommonHelperTrait
                 $image_record = Upload::find($upload_id);
                 if (setting('file_system') == 's3') {
                     Storage::disk('s3')->delete($image_record->path);
-                }else{
-                    if (!File::exists($path)) {
-                        File::makeDirectory($path, 0755, true);
-                    }
-                    $file_path    = public_path($image_record->path);
-                    if(file_exists($file_path)){
+                } else {
+                    $file_path = public_path($image_record->path);
+                    if (file_exists($file_path)) {
                         File::delete($file_path);
                     }
                 }
-            }else{
+            } else {
                 $image_record = new Upload();
             }
 
@@ -68,9 +70,17 @@ trait CommonHelperTrait
             if (setting('file_system') == 's3') {
                 $filePath       = s3Upload($path, $image);
                 $image_record->path = $filePath;
-            }else{
-                $image->move($path, $filename);
-                $image_record->path = $path .'/'. $filename;
+            } else {
+                $relativePath = ltrim(str_replace('\\', '/', $path), '/');
+                if (str_contains($relativePath, ':')) {
+                    $relativePath = preg_replace('#^.*?/public/#', '', $relativePath);
+                }
+                $diskPath = public_path($relativePath);
+                if (! File::exists($diskPath)) {
+                    File::makeDirectory($diskPath, 0755, true);
+                }
+                $image->move($diskPath, $filename);
+                $image_record->path = $relativePath . '/' . $filename;
             }
 
             $image_record->save();

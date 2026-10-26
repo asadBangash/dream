@@ -38,7 +38,10 @@ class ClassSetupRepository implements ClassSetupInterface
 
     public function all()
     {
-        return $this->model->where('session_id', setting('session'))->active()->get();
+        return $this->model->with('class')
+            ->where('session_id', setting('session'))
+            ->active()
+            ->get();
     }
 
     public function getPaginateAll()

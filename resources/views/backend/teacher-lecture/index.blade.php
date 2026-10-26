@@ -16,6 +16,12 @@
                 </div>
             </div>
         </div>
+        @if (!empty($data['lectures_table_missing']))
+            <div class="alert alert-warning">
+                Lecture upload requires the <code>teacher_lectures</code> database table. On the server run:
+                <code>php artisan migrate --path=database/migrations/tenant --force</code>
+            </div>
+        @endif
         <div class="card ot-card">
             <div class="card-body table-responsive">
                 <table class="table table-bordered">
