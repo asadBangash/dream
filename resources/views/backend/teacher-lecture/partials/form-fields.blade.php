@@ -10,7 +10,7 @@
             <option value="">{{ ___('student_info.select_class') }}</option>
             @foreach ($data['classes'] as $item)
                 @if ($item->class)
-                    <option value="{{ $item->class->id }}" @selected(old('class', $lecture->classes_id ?? '') == $item->class->id)>{{ $item->class->name }}</option>
+                    <option value="{{ $item->class->id }}" @selected(old('class', $lecture?->classes_id) == $item->class->id)>{{ $item->class->name }}</option>
                 @endif
             @endforeach
         </select>
@@ -20,7 +20,9 @@
         <select id="getSubjects" name="section" class="nice-select niceSelect bordered_style wide sections section" required>
             <option value="">{{ ___('student_info.select_section') }}</option>
             @foreach ($sections as $item)
-                <option value="{{ $item->section->id }}" @selected(old('section', $lecture->section_id ?? '') == $item->section->id)>{{ $item->section->name }}</option>
+                @if ($item->section)
+                    <option value="{{ $item->section->id }}" @selected(old('section', $lecture?->section_id) == $item->section->id)>{{ $item->section->name }}</option>
+                @endif
             @endforeach
         </select>
     </div>
@@ -29,19 +31,21 @@
         <select id="subject" name="subject" class="nice-select niceSelect bordered_style wide subjects" required>
             <option value="">{{ ___('examination.select_subject') }}</option>
             @foreach ($subjects as $item)
-                <option value="{{ $item->subject->id }}" @selected(old('subject', $lecture->subject_id ?? '') == $item->subject->id)>{{ $item->subject->name }}</option>
+                @if ($item->subject)
+                    <option value="{{ $item->subject->id }}" @selected(old('subject', $lecture?->subject_id) == $item->subject->id)>{{ $item->subject->name }}</option>
+                @endif
             @endforeach
         </select>
     </div>
     <div class="col-md-6 mb-3">
         <label class="form-label">Title *</label>
-        <input type="text" name="title" class="form-control ot-input" value="{{ old('title', $lecture->title ?? '') }}" required>
+        <input type="text" name="title" class="form-control ot-input" value="{{ old('title', $lecture?->title) }}" required>
     </div>
     <div class="col-md-6 mb-3">
         <label class="form-label">Material type *</label>
         <select name="lecture_type" class="nice-select niceSelect bordered_style wide" required>
             @foreach ($data['lectureTypes'] as $value => $label)
-                <option value="{{ $value }}" @selected(old('lecture_type', $lecture->lecture_type ?? 'pdf') == $value)>{{ $label }}</option>
+                <option value="{{ $value }}" @selected(old('lecture_type', $lecture?->lecture_type ?? 'pdf') == $value)>{{ $label }}</option>
             @endforeach
         </select>
     </div>
@@ -54,17 +58,17 @@
     </div>
     <div class="col-md-6 mb-3">
         <label class="form-label">Video URL (optional)</label>
-        <input type="url" name="video_url" class="form-control ot-input" value="{{ old('video_url', $lecture->video_url ?? '') }}" placeholder="https://...">
+        <input type="url" name="video_url" class="form-control ot-input" value="{{ old('video_url', $lecture?->video_url) }}" placeholder="https://...">
     </div>
     <div class="col-md-12 mb-3">
         <label class="form-label">{{ ___('common.description') }}</label>
-        <textarea name="description" class="form-control ot-input" rows="3">{{ old('description', $lecture->description ?? '') }}</textarea>
+        <textarea name="description" class="form-control ot-input" rows="3">{{ old('description', $lecture?->description) }}</textarea>
     </div>
     <div class="col-md-4 mb-3">
         <label class="form-label">{{ ___('common.status') }} *</label>
         <select name="status" class="nice-select niceSelect bordered_style wide">
-            <option value="1" @selected(old('status', $lecture->status ?? 1) == 1)>{{ ___('common.active') }}</option>
-            <option value="0" @selected(old('status', $lecture->status ?? 1) == 0)>{{ ___('common.inactive') }}</option>
+            <option value="1" @selected(old('status', $lecture?->status ?? 1) == 1)>{{ ___('common.active') }}</option>
+            <option value="0" @selected(old('status', $lecture?->status ?? 1) == 0)>{{ ___('common.inactive') }}</option>
         </select>
     </div>
 </div>
