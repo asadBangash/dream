@@ -40,7 +40,12 @@ class SettingRepository implements SettingInterface
 
     public function getLanguage()
     {
-        return Language::all();
+        $codes = enabledLanguageCodes();
+
+        return Language::query()
+            ->whereIn('code', $codes)
+            ->orderBy('name')
+            ->get();
     }
 
     public function getSessions()

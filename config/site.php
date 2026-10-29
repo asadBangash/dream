@@ -50,5 +50,14 @@ return [
         2 => 'B',
         3 => 'C',
         4 => 'D'
-    ]
+    ],
+
+    /*
+    | Comma-separated language codes shown in the UI (e.g. "en" or "en,bn").
+    | Override with APP_ENABLED_LANGUAGES in .env
+    */
+    'enabled_language_codes' => array_values(array_filter(array_map(
+        'trim',
+        explode(',', env('APP_ENABLED_LANGUAGES', 'en'))
+    ))),
 ];

@@ -1603,6 +1603,19 @@ if (! function_exists('certificateDreamContext')) {
     }
 }
 
+if (! function_exists('enabledLanguageCodes')) {
+    /** @return list<string> */
+    function enabledLanguageCodes(): array
+    {
+        $codes = config('site.enabled_language_codes', ['en']);
+        if (! is_array($codes) || $codes === []) {
+            return ['en'];
+        }
+
+        return array_values(array_unique($codes));
+    }
+}
+
 if (! function_exists('idCardIsTeacher')) {
     function idCardIsTeacher($idCard): bool
     {

@@ -19,17 +19,19 @@ class LanguageMiddleware
      */
     public function handle(Request $request, Closure $next)
     {
-        if (Session::has('locale')) {
-            App::setLocale(Session::get('locale'));
-        } else {
-            if (setting('default-language')) {
-                App::setLocale(setting('default-language'));
-                Session::put('locale',setting('default-language'));
-            } else {
-                App::setLocale(Config::get('app.locale'));
-                Session::put('locale',Config::get('app.locale'));
+        $enabled = enabledLanguageCodes();
+        $fallback = $enabled[0] ?? Config::get('app.locale', 'en');
+
+        $locale = Session::get('locale');
+        if (! $locale || ! in_array($locale, $enabled, true)) {
+            $locale = setting('default-language');
+            if (! $locale || ! in_array($locale, $enabled, true)) {
+                $locale = $fallback;
             }
+            Session::put('locale', $locale);
         }
+
+        App::setLocale($locale);
 
         return $next($request);
     }

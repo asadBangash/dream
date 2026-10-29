@@ -34,8 +34,11 @@ class LanguageComposer
      */
     public function compose(View $view)
     {
-        $language['languages']  = $this->language->all();
-        $language['language'] = Language::where('code', \Session::get('locale'))->first();
+        $language['languages'] = $this->language->all();
+        $locale = \Session::get('locale', enabledLanguageCodes()[0] ?? 'en');
+        $language['language'] = $language['languages']->firstWhere('code', $locale)
+            ?? Language::where('code', 'en')->first()
+            ?? $language['languages']->first();
         $view->with('language', $language);
     }
 }

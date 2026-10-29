@@ -181,6 +181,7 @@
                     </select>
                 </div>
             @endif
+            @if(($language['languages'] ?? collect())->count() > 1)
             <div class="header-control-item md-none">
                 <div class="item-content language-currceny-container">
                     <button class="language-currency-btn d-flex align-items-center mt-0" type="button"
@@ -197,7 +198,7 @@
 
                         <div class="lanuage-currency-">
                             <div class="dropdown-item-list language-list mb-20">
-                                <h5>{{ __('common.language') }} </h5>
+                                <h5>{{ ___('common.language') }}</h5>
                                 <select name="language" id="language_with_flag"
                                         class="form-select ot-input mb-3 language-change"
                                         aria-label="Default select example">
@@ -215,6 +216,7 @@
                 </div>
 
             </div>
+            @endif
             <div class="header-control-item md-none">
                 <div class="item-content language-currceny-container">
                     <button class="language-currency-btn d-flex align-items-center mt-0" type="button"

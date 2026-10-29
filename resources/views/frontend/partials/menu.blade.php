@@ -29,15 +29,17 @@
                                             </button>
                                         </div>
                                     </div>
+                                    @if(($language['languages'] ?? collect())->count() > 1)
                                     <div class="">
                                         <select class="nice_Select language-change">
-                                            @foreach (@$language['languages'] as $row)
+                                            @foreach ($language['languages'] as $row)
                                                 <option value="{{ $row->code }}" {{ $row->code == \Session::get('locale') ? 'selected' : '' }}>
                                                     {{ $row->name }}
                                                 </option>
                                             @endforeach
                                         </select>
                                     </div>
+                                    @endif
                                     <div class="header_topbar_social d-none d-sm-flex">
                                         @foreach ($sections['social_links']->data ?? [] as $item)
                                         <a target="_blank" rel="noopener noreferrer" href="{{ normalizeExternalUrl($item['link'] ?? '#') }}"><i class="{{ $item['icon'] }}"></i></a>
