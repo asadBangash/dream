@@ -2,9 +2,9 @@
 
 namespace App\Repositories\IdCard;
 
+use App\Enums\IdCardType;
 use App\Models\IdCard;
-use App\Models\Homework;
-use App\Models\HomeworkStudent;
+use App\Models\Staff\Staff;
 use App\Traits\CommonHelperTrait;
 use App\Traits\ReturnFormatTrait;
 use Illuminate\Support\Facades\DB;
@@ -54,6 +54,7 @@ class IdCardRepository implements IdCardInterface
 
             $row                     = new $this->model;
             $row->title              = $request->title;
+            $row->card_type          = $request->card_type ?? IdCardType::STUDENT;
             $row->expired_date       = $request->expired_date;
             $row->frontside_bg_image       = $this->UploadImageCreate($request->frontside_bg_image, 'backend/uploads/idcards');
             $row->backside_bg_image        = $this->UploadImageCreate($request->backside_bg_image, 'backend/uploads/idcards');
@@ -92,6 +93,7 @@ class IdCardRepository implements IdCardInterface
         try {
             $row                     = $this->model->find($id);
             $row->title              = $request->title;
+            $row->card_type          = $request->card_type ?? IdCardType::STUDENT;
             $row->expired_date       = $request->expired_date;
             $row->frontside_bg_image       = $this->UploadImageUpdate($request->frontside_bg_image, 'backend/uploads/idcards', $row->frontside_bg_image);
             $row->backside_bg_image        = $this->UploadImageUpdate($request->backside_bg_image, 'backend/uploads/idcards', $row->backside_bg_image);
@@ -144,19 +146,37 @@ class IdCardRepository implements IdCardInterface
 
         try {
 
-            $data['students'] =  SessionClassStudent::where('session_id', setting('session'))
-                                                    ->where('classes_id', $request->class)
-                                                    ->where('section_id', $request->section)
-                                                    ->when($request->student != '', function($query) use ($request)  {
-                                                        return $query->where('student_id', $request->student);
-                                                    })
-                                                    ->get();
-            $data['idcard'] = $this->model->find($request->id_card);      
-            
+            $data['idcard'] = $this->model->find($request->id_card);
+
+            if (! $data['idcard']) {
+                return $this->responseWithError(___('alert.something_went_wrong_please_try_again'), []);
+            }
+
+            $cardType = $data['idcard']->card_type ?? IdCardType::STUDENT;
+
+            if ($cardType === IdCardType::TEACHER) {
+                $data['students'] = collect();
+                $data['staff_members'] = Staff::query()
+                    ->active()
+                    ->with(['upload', 'designation', 'department'])
+                    ->when($request->filled('staff'), fn ($q) => $q->where('id', $request->staff))
+                    ->orderBy('first_name')
+                    ->get();
+            } else {
+                $data['staff_members'] = collect();
+                $data['students'] = SessionClassStudent::query()
+                    ->forStudentListing()
+                    ->where('session_id', setting('session'))
+                    ->where('classes_id', $request->class)
+                    ->where('section_id', $request->section)
+                    ->when($request->filled('student'), fn ($q) => $q->where('student_id', $request->student))
+                    ->get();
+            }
+
             return $this->responseWithSuccess('', $data);
         } catch (\Throwable $th) {
             return $this->responseWithError(___('alert.something_went_wrong_please_try_again'), []);
-        }                 
-                                                
+        }
+
     }
 }

@@ -2,7 +2,9 @@
 
 namespace App\Http\Requests\IdCard;
 
+use App\Enums\IdCardType;
 use Illuminate\Foundation\Http\FormRequest;
+use Illuminate\Validation\Rule;
 
 class IdCardUpdateRequest extends FormRequest
 {
@@ -24,7 +26,8 @@ class IdCardUpdateRequest extends FormRequest
     public function rules()
     {
         return [
-            'title'              => 'required|unique:id_cards,title,'.$this->id,
+            'title'              => 'required|unique:id_cards,title,'.$this->route('id'),
+            'card_type'          => ['required', Rule::in(IdCardType::values())],
         ];
     }
 }

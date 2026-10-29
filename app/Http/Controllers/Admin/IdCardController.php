@@ -8,8 +8,8 @@ use App\Repositories\IdCard\IdCardRepository;
 use App\Http\Requests\IdCard\IdCardStoreRequest;
 use App\Http\Requests\IdCard\IdCardSearchRequest;
 use App\Http\Requests\IdCard\IdCardUpdateRequest;
+use App\Models\Staff\Staff;
 use App\Repositories\Academic\ClassSetupRepository;
-use App\Http\Requests\Examination\Homework\HomeworkStoreRequest;
 
 class IdCardController extends Controller
 {
@@ -96,6 +96,7 @@ class IdCardController extends Controller
         $data['title']              = ___('common.generate_id_cards');
         $data['id_cards']           = $this->repo->all();
         $data['classes']            = $this->classSetupRepo->all();
+        $data['staffs']             = Staff::query()->active()->orderBy('first_name')->get(['id', 'first_name', 'last_name', 'staff_id']);
         return view('backend.id-card.generate', compact('data'));
     }
 
@@ -105,10 +106,12 @@ class IdCardController extends Controller
         if ($result['status']) {
             $data['idcard']             = $result['data']['idcard'];
             $data['students']           = $result['data']['students'];
+            $data['staff_members']      = $result['data']['staff_members'] ?? collect();
             $data['title']              = ___('common.generate_id_cards');
 
             $data['id_cards']           = $this->repo->all();
             $data['classes']            = $this->classSetupRepo->all();
+            $data['staffs']             = Staff::query()->active()->orderBy('first_name')->get(['id', 'first_name', 'last_name', 'staff_id']);
 
             return view('backend.id-card.generate', compact('data'));
         }

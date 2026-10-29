@@ -50,19 +50,18 @@ class CertificateRepository implements CertificateInterface
 
     public function store($request)
     {
-        // DB::beginTransaction();
-        // try {
-
+        DB::beginTransaction();
+        try {
             $row                     = new $this->model;
-            $row->title              = $request->title;
-            $row->top_text           = $request->top_text;
-            $row->description        = $request->description;
+            $row->title              = $this->optionalCertificateText($request, 'title');
+            $row->top_text           = $this->optionalCertificateText($request, 'top_text');
+            $row->description        = $this->optionalCertificateText($request, 'description');
             $row->bg_image           = $this->UploadImageCreate($request->bg_image, 'backend/uploads/certificates');
 
-            $row->bottom_left_text             = $request->bottom_left_text;
+            $row->bottom_left_text             = $this->optionalCertificateText($request, 'bottom_left_text');
             $row->bottom_left_signature        = $this->UploadImageCreate($request->bottom_left_signature, 'backend/uploads/certificates');
 
-            $row->bottom_right_text             = $request->bottom_right_text;
+            $row->bottom_right_text             = $this->optionalCertificateText($request, 'bottom_right_text');
             $row->bottom_right_signature        = $this->UploadImageCreate($request->bottom_right_signature, 'backend/uploads/certificates');
 
             $row->logo             = $request->logo ==  'on' ? true:false;
@@ -70,11 +69,13 @@ class CertificateRepository implements CertificateInterface
             $row->save();
 
             DB::commit();
+
             return $this->responseWithSuccess(___('alert.created_successfully'), []);
-        // } catch (\Throwable $th) {
-        //     DB::rollBack();
-        //     return $this->responseWithError(___('alert.something_went_wrong_please_try_again'), []);
-        // }
+        } catch (\Throwable $th) {
+            DB::rollBack();
+
+            return $this->responseWithError(___('alert.something_went_wrong_please_try_again'), []);
+        }
     }
 
     public function show($id)
@@ -87,15 +88,15 @@ class CertificateRepository implements CertificateInterface
         DB::beginTransaction();
         try {
             $row                     = $this->model->find($id);
-            $row->title              = $request->title;
-            $row->top_text           = $request->top_text;
-            $row->description        = $request->description;
+            $row->title              = $this->optionalCertificateText($request, 'title');
+            $row->top_text           = $this->optionalCertificateText($request, 'top_text');
+            $row->description        = $this->optionalCertificateText($request, 'description');
             $row->bg_image           = $this->UploadImageCreate($request->bg_image, 'backend/uploads/certificates', $row->bg_image);
 
-            $row->bottom_left_text             = $request->bottom_left_text;
+            $row->bottom_left_text             = $this->optionalCertificateText($request, 'bottom_left_text');
             $row->bottom_left_signature        = $this->UploadImageCreate($request->bottom_left_signature, 'backend/uploads/certificates', $row->bottom_left_signature);
 
-            $row->bottom_right_text             = $request->bottom_right_text;
+            $row->bottom_right_text             = $this->optionalCertificateText($request, 'bottom_right_text');
             $row->bottom_right_signature        = $this->UploadImageCreate($request->bottom_right_signature, 'backend/uploads/certificates', $row->bottom_right_signature);
 
             $row->logo             = $request->logo ==  'on' ? true:false;
@@ -136,21 +137,34 @@ class CertificateRepository implements CertificateInterface
 
         try {
 
-            $data['students'] =  SessionClassStudent::where('session_id', setting('session'))
-                                                    ->where('classes_id', $request->class)
-                                                    ->where('section_id', $request->section)
-                                                    ->when($request->student != '', function($query) use ($request)  {
-                                                        return $query->where('student_id', $request->student);
-                                                    })
-                                                    ->get();
+            $data['students'] = SessionClassStudent::query()
+                ->forStudentListing()
+                ->where('session_id', setting('session'))
+                ->where('classes_id', $request->class)
+                ->where('section_id', $request->section)
+                ->when($request->filled('student'), function ($query) use ($request) {
+                    return $query->where('student_id', $request->student);
+                })
+                ->get();
             $data['certificate'] = $this->model->find($request->certificate);
-            $data['session']     = Session::find(setting('session'))->name;
+            $data['session']     = Session::find(setting('session'))?->name ?? (string) setting('session');
             
             return $this->responseWithSuccess('', $data);
         } catch (\Throwable $th) {
             return $this->responseWithError(___('alert.something_went_wrong_please_try_again'), []);
         }                 
                                                 
+    }
+
+    private function optionalCertificateText($request, string $key): string
+    {
+        $value = $request->input($key);
+
+        if ($value === null) {
+            return '';
+        }
+
+        return is_string($value) ? $value : (string) $value;
     }
 
 }

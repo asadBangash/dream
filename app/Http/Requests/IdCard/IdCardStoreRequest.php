@@ -2,7 +2,9 @@
 
 namespace App\Http\Requests\IdCard;
 
+use App\Enums\IdCardType;
 use Illuminate\Foundation\Http\FormRequest;
+use Illuminate\Validation\Rule;
 
 class IdCardStoreRequest extends FormRequest
 {
@@ -25,6 +27,7 @@ class IdCardStoreRequest extends FormRequest
     {
         return [
             'title'              => 'required|unique:id_cards',
+            'card_type'          => ['required', Rule::in(IdCardType::values())],
         ];
     }
 }

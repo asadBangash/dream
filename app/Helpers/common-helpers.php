@@ -1485,3 +1485,245 @@ if (!function_exists('saasTenantMigrationPaths')) {
         return $migrationPaths;
     }
 }
+
+if (! function_exists('certificateSchoolLocation')) {
+    function certificateSchoolLocation(): string
+    {
+        $address = (string) setting('address');
+        if ($address !== '' && preg_match('/nahaqi/i', $address)) {
+            return 'Nahaqi';
+        }
+
+        return 'Nahaqi';
+    }
+}
+
+if (! function_exists('replaceCertificatePlaceholders')) {
+    function replaceCertificatePlaceholders(string $text, $sessionStudent, ?string $sessionName = null): string
+    {
+        if (! $sessionStudent) {
+            return $text;
+        }
+
+        $sessionStudent->loadMissing(['student.parent', 'class', 'section']);
+        $student = $sessionStudent->student;
+        $parent = $student?->parent;
+        $fatherOrGuardian = trim((string) ($parent?->father_name ?? $parent?->guardian_name ?? ''));
+
+        $className = $sessionStudent->class?->name ?? '';
+        $sectionName = $sessionStudent->section?->name ?? '';
+
+        $replacements = [
+            '[student_name]' => trim(($student?->first_name ?? '').' '.($student?->last_name ?? '')),
+            '[class_name]' => $className,
+            '[section_name]' => $sectionName,
+            '[course_name]' => $className,
+            '[level]' => $sectionName,
+            '[father_name]' => $fatherOrGuardian,
+            '[parent_line]' => $fatherOrGuardian !== '' ? 'D/o '.$fatherOrGuardian : '',
+            '[school_name]' => setting('application_name'),
+            '[school_address]' => setting('address'),
+            '[school_location]' => certificateSchoolLocation(),
+            '[session]' => $sessionName ?? '',
+        ];
+
+        return str_replace(array_keys($replacements), array_values($replacements), $text);
+    }
+}
+
+if (! function_exists('certificateDreamContext')) {
+    /** @return array<string, mixed> */
+    function certificateDreamContext($certificate, $sessionStudent = null, ?string $sessionName = null, bool $preview = false): array
+    {
+        $logoUrl = globalAsset(setting('dark_logo'), '154X38.webp');
+        $defaultInstitute = 'at The Dream Tuition Academy, '.certificateSchoolLocation().'.';
+        $defaultTagline = 'Keep Learning, Keep Growing!';
+
+        if (! $certificate) {
+            return [
+                'student_name' => '',
+                'parent_line' => '',
+                'course_name' => '',
+                'level' => '',
+                'institute_line' => $defaultInstitute,
+                'tagline' => $defaultTagline,
+                'show_name' => true,
+                'show_logo' => true,
+                'logo_url' => $logoUrl,
+                'school_name' => settingLocale('application_name') ?: 'DREAM TUITION ACADEMY',
+            ];
+        }
+
+        if ($preview || ! $sessionStudent) {
+            $previewCourse = trim((string) $certificate->title);
+            $previewLevel = trim((string) $certificate->top_text);
+            if ($previewCourse === '' || str_contains($previewCourse, '[')) {
+                $previewCourse = 'ENGLISH LANGUAGE';
+            }
+            if ($previewLevel === '' || str_contains($previewLevel, '[')) {
+                $previewLevel = 'LEVEL 3';
+            }
+
+            return [
+                'student_name' => 'Wafa Bibi',
+                'parent_line' => 'D/o Orangzaib',
+                'course_name' => $previewCourse,
+                'level' => $previewLevel,
+                'institute_line' => $certificate->bottom_right_text ?: $defaultInstitute,
+                'tagline' => $certificate->bottom_left_text ?: $defaultTagline,
+                'show_name' => (bool) $certificate->name,
+                'show_logo' => (bool) $certificate->logo,
+                'logo_url' => $logoUrl,
+                'school_name' => settingLocale('application_name') ?: 'DREAM TUITION ACADEMY',
+            ];
+        }
+
+        $parentTemplate = trim(strip_tags((string) $certificate->description));
+        if ($parentTemplate === '') {
+            $parentTemplate = 'D/o [father_name]';
+        }
+        $parentLine = replaceCertificatePlaceholders($parentTemplate, $sessionStudent, $sessionName);
+
+        return [
+            'student_name' => replaceCertificatePlaceholders('[student_name]', $sessionStudent, $sessionName),
+            'parent_line' => $parentLine,
+            'course_name' => replaceCertificatePlaceholders((string) $certificate->title, $sessionStudent, $sessionName),
+            'level' => replaceCertificatePlaceholders((string) $certificate->top_text, $sessionStudent, $sessionName),
+            'institute_line' => replaceCertificatePlaceholders(
+                $certificate->bottom_right_text ?: $defaultInstitute,
+                $sessionStudent,
+                $sessionName
+            ),
+            'tagline' => $certificate->bottom_left_text ?: $defaultTagline,
+            'show_name' => (bool) $certificate->name,
+            'show_logo' => (bool) $certificate->logo,
+            'logo_url' => $logoUrl,
+            'school_name' => settingLocale('application_name') ?: 'DREAM TUITION ACADEMY',
+        ];
+    }
+}
+
+if (! function_exists('idCardIsTeacher')) {
+    function idCardIsTeacher($idCard): bool
+    {
+        return ($idCard->card_type ?? \App\Enums\IdCardType::STUDENT) === \App\Enums\IdCardType::TEACHER;
+    }
+}
+
+if (! function_exists('idCardTemplateImageUrl')) {
+    function idCardTemplateImageUrl($idCard): string
+    {
+        if ($idCard instanceof \App\Models\IdCard) {
+            $idCard->loadMissing('frontendBg');
+        }
+
+        $bgId = data_get($idCard, 'frontside_bg_image');
+        $bgPath = data_get($idCard, 'frontendBg.path');
+
+        if ($bgId && $bgPath) {
+            return globalAsset($bgPath, '800X800.webp');
+        }
+
+        $file = idCardIsTeacher($idCard)
+            ? 'dream-teacher-id-card.png'
+            : 'dream-student-id-card.png';
+
+        return asset('backend/uploads/idcard-templates/'.$file);
+    }
+}
+
+if (! function_exists('idCardFieldValue')) {
+    function idCardFieldValue($value): string
+    {
+        $text = trim((string) $value);
+
+        return $text !== '' ? $text : '—';
+    }
+}
+
+if (! function_exists('idCardStudentClassLabel')) {
+    function idCardStudentClassLabel($sessionStudent, $idCard = null): string
+    {
+        $parts = [];
+        if (! $idCard || $idCard->class_name) {
+            $parts[] = $sessionStudent->class->name ?? '';
+        }
+        if (! $idCard || $idCard->section_name) {
+            $parts[] = $sessionStudent->section->name ?? '';
+        }
+
+        return trim(implode(' / ', array_filter($parts)));
+    }
+}
+
+if (! function_exists('idCardStudentContext')) {
+    /** @return array<string, mixed> */
+    function idCardStudentContext($sessionStudent, $idCard, bool $preview = false): array
+    {
+        $sessionName = \App\Models\Session::find(setting('session'))?->name ?? (string) setting('session');
+        $issueDate = now()->format('d/m/Y');
+        $expiry = $idCard && $idCard->expired_date ? date('d/m/Y', strtotime($idCard->expired_date)) : '';
+
+        if ($preview || ! $sessionStudent) {
+            return [
+                'photo_url' => null,
+                'student_name' => 'Student Name',
+                'admission_no' => '122302',
+                'class_course' => 'DIT / Semester 1 (6 Months)',
+                'session_year' => $sessionName ?: '2026',
+                'issue_date' => $issueDate,
+                'expiry_date' => $expiry ?: '31/12/2026',
+                'qr_url' => $idCard?->qrCode ? globalAsset($idCard->qrCode->path, '200X200.webp') : null,
+            ];
+        }
+
+        $sessionStudent->loadMissing(['student.upload', 'student.blood', 'class', 'section']);
+        $student = $sessionStudent->student;
+
+        return [
+            'photo_url' => $student?->upload ? globalAsset($student->upload->path, '200X200.webp') : null,
+            'student_name' => trim(($student->first_name ?? '').' '.($student->last_name ?? '')),
+            'admission_no' => (string) ($student->admission_no ?? ''),
+            'class_course' => idCardStudentClassLabel($sessionStudent, $idCard),
+            'session_year' => (string) $sessionName,
+            'issue_date' => $issueDate,
+            'expiry_date' => $expiry,
+            'roll_no' => (string) ($student->roll_no ?? ''),
+            'dob' => $student?->dob ? date('d/m/Y', strtotime($student->dob)) : '',
+            'blood_group' => $student?->blood?->name ?? '',
+            'qr_url' => $idCard?->qrCode ? globalAsset($idCard->qrCode->path, '200X200.webp') : null,
+        ];
+    }
+}
+
+if (! function_exists('idCardTeacherContext')) {
+    /** @return array<string, mixed> */
+    function idCardTeacherContext($staff, $idCard, bool $preview = false): array
+    {
+        if ($preview || ! $staff) {
+            return [
+                'photo_url' => null,
+                'teacher_name' => 'Teacher Name',
+                'employee_id' => 'EMP-001',
+                'designation' => 'Instructor',
+                'department' => 'Academic',
+                'joining_date' => '01/01/2026',
+                'contact' => '+92 300 0000000',
+                'qr_url' => $idCard?->qrCode ? globalAsset($idCard->qrCode->path, '200X200.webp') : null,
+            ];
+        }
+
+        $staff->loadMissing(['upload', 'designation', 'department']);
+
+        return [
+            'photo_url' => $staff->upload ? globalAsset($staff->upload->path, '200X200.webp') : null,
+            'teacher_name' => trim(($staff->first_name ?? '').' '.($staff->last_name ?? '')),
+            'employee_id' => (string) ($staff->staff_id ?? $staff->id),
+            'designation' => $staff->designation->name ?? '',
+            'department' => $staff->department->name ?? '',
+            'joining_date' => $staff->joining_date ? date('d/m/Y', strtotime($staff->joining_date)) : '',
+            'contact' => (string) ($staff->phone ?? ''),
+            'qr_url' => $idCard?->qrCode ? globalAsset($idCard->qrCode->path, '200X200.webp') : null,
+        ];
+    }
+}

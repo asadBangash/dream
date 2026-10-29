@@ -24,8 +24,14 @@ class CertificateStoreRequest extends FormRequest
     public function rules()
     {
         return [
-            'title'              => 'required|unique:id_cards',
-            'description'        => 'required',
+            'title'                   => ['nullable', 'string', 'max:255'],
+            'top_text'                => ['nullable', 'string', 'max:255'],
+            'description'             => ['nullable', 'string'],
+            'bottom_left_text'        => ['nullable', 'string'],
+            'bottom_right_text'       => ['nullable', 'string'],
+            'bg_image'                => ['nullable', 'image', 'max:5120'],
+            'bottom_left_signature'   => ['nullable', 'image', 'max:5120'],
+            'bottom_right_signature'  => ['nullable', 'image', 'max:5120'],
         ];
     }
 }

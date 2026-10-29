@@ -298,13 +298,15 @@
                                 <div class="row">
                                     <div class="col-md-12 mb-3">
                                         <label for="exampleDataList" class="form-label ">{{ ___('common.ID_Card_Title') }} <span class="fillable">*</span></label>
-                                        <input class="form-control ot-input @error('title') is-invalid @enderror" type="text" name="title" list="datalistOptions" id="exampleDataList" placeholder="{{ ___('student_info.enter_admission_no') }}" value="{{ old('admission_no') }}">
+                                        <input class="form-control ot-input @error('title') is-invalid @enderror" type="text" name="title" list="datalistOptions" id="exampleDataList" placeholder="{{ ___('common.title') }}" value="{{ old('title') }}">
                                         @error('title')
                                         <div id="validationServer04Feedback" class="invalid-feedback">
                                             {{ $message }}
                                         </div>
                                         @enderror
                                     </div>
+
+                                    @include('backend.id-card.partials.card-type-and-visibility', ['idCard' => null])
 
                                     <div class="col-md-12 mb-3">
                                         <label for="exampleDataList" class="form-label ">{{ ___('common.expired_date') }} <span
@@ -370,75 +372,6 @@
                                         placeholder="{{ ___('account.enter_description') }}">{{ old('backside_description') }}</textarea>
                                     </div>
 
-                                    <div class="col-md-12 mb-3">
-                                        <label for="exampleDataList" class="form-label ">{{ ___('common.ID_Card_Visibility') }} <span class="fillable"></span></label>
-                                        <div class="card_visibility_box">
-                                            <!-- card_visibility_box_item::start  -->
-                                            <div class="card_visibility_box_item d-flex align-items-center flex-wrap gap-3">
-                                                <span class="card_visibility_box_item_title flex-fill">{{ ___('student_info.admission_no') }}</span>
-                                                <div class="toggle-checkbox-wrapper">
-                                                    <input class="toggle-checkbox" type="checkbox" name="admission_no" checked id="Admission">
-                                                    <label class="slider-btn" for="Admission"></label>
-                                                </div>
-                                            </div>
-                                            <!-- card_visibility_box_item::end  -->
-                                            <!-- card_visibility_box_item::start  -->
-                                            <div class="card_visibility_box_item d-flex align-items-center flex-wrap gap-3">
-                                                <span class="card_visibility_box_item_title flex-fill">{{ ___('student_info.roll_no') }}</span>
-                                                <div class="toggle-checkbox-wrapper">
-                                                    <input class="toggle-checkbox" type="checkbox" name="roll_no" checked id="Roll">
-                                                    <label class="slider-btn" for="Roll"></label>
-                                                </div>
-                                            </div>
-                                            <!-- card_visibility_box_item::end  -->
-                                            <!-- card_visibility_box_item::start  -->
-                                            <div class="card_visibility_box_item d-flex align-items-center flex-wrap gap-3">
-                                                <span class="card_visibility_box_item_title flex-fill">{{ ___('common.student_name') }}</span>
-                                                <div class="toggle-checkbox-wrapper">
-                                                    <input class="toggle-checkbox" type="checkbox" name="student_name" checked id="3">
-                                                    <label class="slider-btn" for="3"></label>
-                                                </div>
-                                            </div>
-                                            <!-- card_visibility_box_item::end  -->
-                                            <!-- card_visibility_box_item::start  -->
-                                            <div class="card_visibility_box_item d-flex align-items-center flex-wrap gap-3">
-                                                <span class="card_visibility_box_item_title flex-fill">{{ ___('common.class_name') }}</span>
-                                                <div class="toggle-checkbox-wrapper">
-                                                    <input class="toggle-checkbox" type="checkbox" name="class_name" checked id="4">
-                                                    <label class="slider-btn" for="4"></label>
-                                                </div>
-                                            </div>
-                                            <!-- card_visibility_box_item::end  -->
-                                            <!-- card_visibility_box_item::start  -->
-                                            <div class="card_visibility_box_item d-flex align-items-center flex-wrap gap-3">
-                                                <span class="card_visibility_box_item_title flex-fill">{{ ___('common.section_name') }}</span>
-                                                <div class="toggle-checkbox-wrapper">
-                                                    <input class="toggle-checkbox" type="checkbox" name="section_name" checked id="toggle5">
-                                                    <label class="slider-btn" for="toggle5"></label>
-                                                </div>
-                                            </div>
-                                            <!-- card_visibility_box_item::end  -->
-                                  
-                                            <!-- card_visibility_box_item::start  -->
-                                            <div class="card_visibility_box_item d-flex align-items-center flex-wrap gap-3">
-                                                <span class="card_visibility_box_item_title flex-fill">{{ ___('common.blood_group') }}</span>
-                                                <div class="toggle-checkbox-wrapper">
-                                                    <input class="toggle-checkbox" type="checkbox" checked name="blood_group" id="toggle7">
-                                                    <label class="slider-btn" for="toggle7"></label>
-                                                </div>
-                                            </div>
-                                            <!-- card_visibility_box_item::end  -->
-                                            <!-- card_visibility_box_item::start  -->
-                                            <div class="card_visibility_box_item d-flex align-items-center flex-wrap gap-3">
-                                                <span class="card_visibility_box_item_title flex-fill">{{ ___('common.date_of_birth') }}</span>
-                                                <div class="toggle-checkbox-wrapper">
-                                                    <input class="toggle-checkbox" type="checkbox" checked name="dob" id="toggle7">
-                                                    <label class="slider-btn" for="toggle7"></label>
-                                                </div>
-                                            </div>
-                                            <!-- card_visibility_box_item::end  -->
-                                        </div>
-                                    </div>
                                     <div class="col-12 d-flex justify-content-end gap-2">
                                         <button class="btn btn-lg ot-btn-primary"><span><i class="fa-solid fa-save"></i>
                                         </span>{{ ___('common.submit') }}</button>
@@ -448,52 +381,23 @@
                             <div class="col-xl-5">
                                 <div class="preview_box_wrapper">
                                     <h4 class="preview_title">{{ ___('common.format') }}</h4>
-                                    <div class="preview_box  ">
-                                        <div class="preview_box_inner d-flex flex-wrap flex-xxl-nowrap">
-                                            <!-- id_card_front  -->
-                                            <div class="id_card_front">
-                                                <div class="shape_img_top">
-                                                    <img src="{{ asset('backend') }}/uploads/card-images/card-top-shape.png" alt="">
-                                                </div>
-                                                <div class="id_card_front_info">
-                                                    <div class="id_card_front_inner">
-                                                        <div class="id_card_profile_img">
-                                                            <!-- <img src="{{ asset('backend') }}/uploads/card-images/card_profile.png" alt=""> -->
-                                                            <img src="https://bennettfeely.com/clippy/pics/pittsburgh.jpg" alt="">
-                                                        </div>
-                                                        <h3>Student Name</h3>
-                                                        <span class="class_name">Class 6 (A)</span>
-                                                    </div>
-                                                    <div class="student_info">
-                                                        <p>ID No 123.456.789</p>
-                                                        <p>DOB MM/DD/YEAR</p>
-                                                        <p>Section A</p>
-                                                        <p>Blood Group B+ (Positive)</p>
-                                                        <div class="signature_image ">
-                                                            <img src="{{ asset('backend') }}/uploads/card-images/signature.png" alt="">
-                                                        </div>
-                                                    </div>
-                                                </div>
-                                            </div>
-                                            <!-- id_card_front  -->
-                                            <div class="id_card_back">
-                                                <div class="id_card_back_info">
-                                                    <p>Lorem ipsum dolor sit amet, consectetuer consequat. Aenean et eros in justo pretium laoreet. Pellentesque pharetra purus dui, non vestibulum arcu dapibus at.</p>
-                                                    <h5>EXPIRED: MM/DD/YEAR</h5>
-                                                    <div class="qr_code">
-                                                        <img src="{{ asset('backend') }}/uploads/card-images/qr_code.png" alt="">
-                                                    </div>
-                                                </div>
-
-                                                <div class="id_card_back_logo_img">
-                                                    <img width="50%" src="{{  @globalAsset(setting('light_logo'), '154X38.webp')  }}" alt="#">
-                                                </div>
-                                                <div class="shape_img_top">
-                                                    <img src="{{ asset('backend') }}/uploads/card-images/card-bottom-shape.png" alt="#">
-                                                </div>
-                                            </div>
+                                    <div class="preview_box overflow-auto">
+                                        @include('backend.id-card.partials.dream-tuition-id-styles')
+                                        @php
+                                            $previewIsTeacher = old('card_type', \App\Enums\IdCardType::STUDENT) === \App\Enums\IdCardType::TEACHER;
+                                        @endphp
+                                        <div id="idCardFormatPreviewStudent" class="{{ $previewIsTeacher ? 'd-none' : 'd-flex' }} justify-content-center" style="transform:scale(0.42);transform-origin:top center;">
+                                            @include('backend.id-card.partials.dream-student-id', [
+                                                'idCard' => (object) ['card_type' => \App\Enums\IdCardType::STUDENT, 'student_name' => true, 'admission_no' => true, 'class_name' => true, 'roll_no' => true, 'expired_date' => now()->addYear()],
+                                                'idCardContext' => idCardStudentContext(null, null, true),
+                                            ])
                                         </div>
-
+                                        <div id="idCardFormatPreviewTeacher" class="{{ $previewIsTeacher ? 'd-flex' : 'd-none' }} justify-content-center" style="transform:scale(0.55);transform-origin:top center;">
+                                            @include('backend.id-card.partials.dream-teacher-id', [
+                                                'idCard' => (object) ['card_type' => \App\Enums\IdCardType::TEACHER, 'student_name' => true, 'admission_no' => true, 'class_name' => true, 'section_name' => true, 'dob' => true, 'blood_group' => true],
+                                                'idCardContext' => idCardTeacherContext(null, null, true),
+                                            ])
+                                        </div>
                                     </div>
                                 </div>
                             </div>

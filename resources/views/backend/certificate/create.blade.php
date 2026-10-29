@@ -222,8 +222,8 @@
                             <div class="col-xl-7">
                                 <div class="row">
                                     <div class="col-md-12 mb-3">
-                                        <label for="exampleDataList" class="form-label ">{{ ___('common.certificate_title') }} <span class="fillable">*</span></label>
-                                        <input class="form-control ot-input @error('title') is-invalid @enderror" type="text" name="title" list="datalistOptions" id="exampleDataList" placeholder="{{ ___('student_info.enter_admission_no') }}" value="{{ old('admission_no') }}">
+                                        <label for="exampleDataList" class="form-label ">{{ ___('common.certificate_title') }}</label>
+                                        <input class="form-control ot-input @error('title') is-invalid @enderror" type="text" name="title" list="datalistOptions" id="exampleDataList" placeholder="{{ ___('common.certificate_title') }}" value="{{ old('title') }}">
                                         @error('title')
                                         <div id="validationServer04Feedback" class="invalid-feedback">
                                             {{ $message }}
@@ -231,8 +231,8 @@
                                         @enderror
                                     </div>
                                     <div class="col-md-12 mb-3">
-                                        <label for="exampleDataList" class="form-label ">{{ ___('common.top_text') }} <span class="fillable">*</span></label>
-                                        <input class="form-control ot-input @error('top_text') is-invalid @enderror" type="text" name="top_text" list="datalistOptions" id="exampleDataList" placeholder="{{ ___('student_info.enter_admission_no') }}" value="{{ old('admission_no') }}">
+                                        <label for="exampleDataList" class="form-label ">{{ ___('common.top_text') }}</label>
+                                        <input class="form-control ot-input @error('top_text') is-invalid @enderror" type="text" name="top_text" list="datalistOptions" id="exampleDataList" placeholder="{{ ___('common.top_text') }}" value="{{ old('top_text') }}">
                                         @error('top_text')
                                         <div id="validationServer04Feedback" class="invalid-feedback">
                                             {{ $message }}

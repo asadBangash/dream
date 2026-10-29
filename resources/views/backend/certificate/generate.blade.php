@@ -39,7 +39,7 @@
                                 <select id="getSections" class="class nice-select niceSelect bordered_style wide @error('class') is-invalid @enderror" name="class">
                                     <option value="">{{ ___('student_info.select_class') }} *</option>
                                     @foreach ($data['classes'] as $item)
-                                    <option {{ old('class', @$data['student']->session_class_student->class->id) == $item->id ? 'selected' : '' }} value="{{ $item->class->id }}">{{ $item->class->name }}</option>
+                                    <option {{ old('class', request('class')) == $item->class->id ? 'selected' : '' }} value="{{ $item->class->id }}">{{ $item->class->name }}</option>
                                     @endforeach
                                 </select>
                                 @error('class')
@@ -72,7 +72,7 @@
                                 <select class="nice-select niceSelect bordered_style wide certificate @error('certificate') is-invalid @enderror" name="certificate">
                                     <option value="">{{ ___('examination.select certificate') }} *</option>
                                     @foreach ($data['certificates'] as $item)
-                                    <option value="{{ $item->id }}">{{ $item->title }}</option>
+                                    <option {{ old('certificate', request('certificate')) == $item->id ? 'selected' : '' }} value="{{ $item->id }}">{{ $item->title ?: ___('common.certificate') . ' #' . $item->id }}</option>
                                     @endforeach
                                 </select>
                                 @error('certificate')
@@ -93,26 +93,19 @@
 
         @if(isset($data['students']))
 
-        @php
-        $words = explode(' ', $data['certificate']->title);
-        // Get the first word (index 0) from the array
-        $firstWord = $words[0];
-        $restofWord = Str::replace($words[0], '', $data['certificate']->title);
-        @endphp
-
         <div class="col-md-12">
 
             <div class="preview_box_wrapper  ">
                 <div class="download_print_btns">
-                    <button class="btn btn-lg ot-btn-primary" onclick="printDiv('printableArea')">
+                    <button class="btn btn-lg ot-btn-primary" type="button" onclick="printDreamCertificate('printableArea')">
                         {{___('common.print_now')}}
                         <span><i class="fa-solid fa-print"></i></span>
                     </button>
                 </div>
 
-                <div class="preview_box print-view">
+                <div class="preview_box print-view dream-cert-preview-box">
 
-                    <div id="printableArea" class="row">
+                    <div id="printableArea" class="row dream-cert-print-area w-100 mx-0">
                         @include('backend.certificate.printCertificate')
                     </div>
                 </div>
@@ -125,3 +118,47 @@
     </div>
 </div>
 @endsection
+
+@push('script')
+<script>
+    (function () {
+        var restoreSectionId = @json(request('section'));
+        var restoreStudentId = @json(request('student'));
+
+        window.restoreCertificateGenerateFilters = function () {
+            if (!restoreSectionId) {
+                return;
+            }
+            var sectionId = restoreSectionId;
+            restoreSectionId = null;
+            var $section = $('form#marksheet select.sections');
+            $section.val(String(sectionId));
+            if (typeof $section.niceSelect === 'function') {
+                $section.niceSelect('update');
+            }
+            if (typeof getStudents === 'function') {
+                getStudents();
+            }
+        };
+
+        window.restoreCertificateGenerateStudent = function () {
+            if (!restoreStudentId) {
+                return;
+            }
+            var studentId = restoreStudentId;
+            restoreStudentId = null;
+            var $student = $('form#marksheet select.students');
+            $student.val(String(studentId));
+            if (typeof $student.niceSelect === 'function') {
+                $student.niceSelect('update');
+            }
+        };
+
+        $(function () {
+            if ($('#getSections').val()) {
+                $('#getSections').trigger('change');
+            }
+        });
+    })();
+</script>
+@endpush

@@ -153,57 +153,91 @@ const Toast = Swal.mixin({
 })
 
 
-// Start get section
-$("#getSections").on('change', function (e) {
-    var classId = $("#getSections").val();
-    var url = $('#url').val();
-    var formData = {
-        id: classId,
+function sectionLabelFromRow(item) {
+    if (!item || !item.section) {
+        return { id: null, label: '' };
     }
+    var section = item.section;
+    var label = section.name || section.section_tran || '';
+    return { id: section.id, label: label };
+}
+
+function fillClassSectionDropdown($sectionSelect, rows) {
+    if (!$sectionSelect || !$sectionSelect.length) {
+        return;
+    }
+
+    $sectionSelect.find('option:not(:first)').remove();
+
+    $.each(rows || [], function (i, item) {
+        var row = sectionLabelFromRow(item);
+        if (!row.id) {
+            return;
+        }
+        $sectionSelect.append(
+            $('<option></option>').val(row.id).text(row.label)
+        );
+    });
+
+    if (typeof $sectionSelect.niceSelect === 'function') {
+        $sectionSelect.niceSelect('update');
+    }
+
+    var $dropdown = $sectionSelect.next('.nice-select');
+    if ($dropdown.length) {
+        var sectionLi = '';
+        $sectionSelect.find('option').each(function () {
+            var val = $(this).val();
+            sectionLi += '<li data-value="' + val + '" class="option">' + $(this).text() + '</li>';
+        });
+        $dropdown.find('.current').html($sectionSelect.find('option:first').text());
+        $dropdown.find('.list li').remove();
+        $dropdown.find('.list').append(sectionLi);
+    }
+}
+
+// Start get section
+$(document).on('change', '#getSections', function () {
+    var classId = $(this).val();
+    var $form = $(this).closest('form');
+    var url = $('#url').val() || '';
+
+    var $sectionSelect = $form.length ? $form.find('select.sections').first() : $('select.sections').first();
+    if ($sectionSelect.length === 0) {
+        $sectionSelect = $('#getSubjects');
+    }
+
+    if (!classId) {
+        fillClassSectionDropdown($sectionSelect, []);
+        return;
+    }
+
     $.ajax({
-        type: "GET",
-        dataType: 'html',
-        data: formData,
+        type: 'GET',
+        dataType: 'json',
+        data: { id: classId },
         headers: {
             'X-CSRF-TOKEN': $('meta[name="csrf-token"]').attr('content')
         },
         url: url + '/class-setup/get-sections',
         success: function (data) {
+            var rows = Array.isArray(data) ? data : (Array.isArray(data && data.data) ? data.data : []);
+            fillClassSectionDropdown($sectionSelect, rows);
 
-            var section_options = '';
-            var section_li = '';
-
-            $.each(JSON.parse(data), function (i, item) {
-                section_options += "<option value=" + item.section.id + ">" + item.section.name + "</option>";
-                section_li += "<li data-value=" + item.section.id + " class='option'>" + item.section.name + "</li>";
-            });
-
-            // console.log(section_options);
-
-
-            var $sectionSelect = $("select.sections");
-            if ($sectionSelect.length === 0) {
-                $sectionSelect = $("#getSubjects");
-            }
-            $sectionSelect.find('option').not(':first').remove();
-            $sectionSelect.append(section_options);
-
-            $("div .sections .current").html($("div .sections .list li:first").html());
-            $("div .sections .list li").not(':first').remove();
-            $("div .sections .list").append(section_li);
-
-            if (typeof $sectionSelect.niceSelect === 'function') {
-                $sectionSelect.niceSelect('update');
+            $form.find('select.subjects option:not(:first)').remove();
+            if (typeof $form.find('select.subjects').niceSelect === 'function') {
+                $form.find('select.subjects').niceSelect('update');
             }
 
-            $("select.subjects option").not(':first').remove();
-            if (typeof $("select.subjects").niceSelect === 'function') {
-                $("select.subjects").niceSelect('update');
+            if (typeof window.restoreCertificateGenerateFilters === 'function') {
+                window.restoreCertificateGenerateFilters();
+            } else if ($form.is('#marksheet') && $sectionSelect.val()) {
+                getStudents();
             }
-
         },
-        error: function (data) {
-            console.log(data);
+        error: function (xhr) {
+            console.log('get-sections failed', xhr.status, xhr.responseText);
+            fillClassSectionDropdown($sectionSelect, []);
         }
     });
 });
@@ -1940,6 +1974,14 @@ function getStudents() {
                 $("div .students .current").html($("div .students .list li:first").html());
                 $("div .students .list li").not(':first').remove();
                 $("div .students .list").append(student_li);
+
+                if (typeof $("select.students").niceSelect === 'function') {
+                    $("select.students").niceSelect('update');
+                }
+
+                if (typeof window.restoreCertificateGenerateStudent === 'function') {
+                    window.restoreCertificateGenerateStudent();
+                }
             },
             error: function (data) {
                 console.log(data);
@@ -1963,6 +2005,46 @@ function printDiv(divName) {
     window.print();
 
     document.body.innerHTML = originalContents;
+}
+
+/** Certificate print — forces landscape page size in a dedicated print window. */
+function printDreamCertificate(divName) {
+    var node = document.getElementById(divName);
+    if (!node) {
+        return;
+    }
+
+    var printWindow = window.open("", "_blank", "noopener,noreferrer");
+    if (!printWindow) {
+        printDiv(divName);
+        return;
+    }
+
+    printWindow.document.write(
+        "<!DOCTYPE html><html><head><meta charset=\"utf-8\"><title>Certificate</title>" +
+        "<style>@page { size: A4 landscape; margin: 6mm; } html, body { margin: 0; padding: 0; }</style>" +
+        "</head><body>" +
+        node.innerHTML +
+        "</body></html>"
+    );
+    printWindow.document.close();
+    printWindow.focus();
+
+    printWindow.onload = function () {
+        printWindow.print();
+        printWindow.close();
+    };
+
+    setTimeout(function () {
+        try {
+            if (!printWindow.closed) {
+                printWindow.print();
+                printWindow.close();
+            }
+        } catch (e) {
+            /* ignore */
+        }
+    }, 500);
 }
 // Report end
 

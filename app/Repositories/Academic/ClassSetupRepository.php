@@ -6,6 +6,7 @@ use App\Traits\ReturnFormatTrait;
 use App\Models\Academic\ClassSetup;
 use App\Interfaces\Academic\ClassSetupInterface;
 use App\Models\Academic\ClassSetupChildren;
+use App\Models\StudentInfo\SessionClassStudent;
 use Illuminate\Support\Facades\DB;
 use Symfony\Component\HttpKernel\Exception\HttpExceptionInterface;
 
@@ -22,9 +23,35 @@ class ClassSetupRepository implements ClassSetupInterface
 
     public function getSections($id) // class id
     {
-
         $result = $this->model->active()->where('classes_id', $id)->where('session_id', setting('session'))->first();
-        return ClassSetupChildren::with('section')->where('class_setup_id', @$result->id)->select('section_id')->get()->unique('section_id');
+        $children = ClassSetupChildren::with('section')
+            ->where('class_setup_id', @$result->id)
+            ->select('section_id')
+            ->get()
+            ->unique('section_id')
+            ->filter(fn ($row) => $row->section !== null)
+            ->values();
+
+        if ($children->isNotEmpty()) {
+            return $children;
+        }
+
+        return SessionClassStudent::query()
+            ->forStudentListing()
+            ->where('session_id', setting('session'))
+            ->where('classes_id', $id)
+            ->with('section')
+            ->get()
+            ->unique('section_id')
+            ->filter(fn ($row) => $row->section !== null)
+            ->values()
+            ->map(function ($row) {
+                $child = new ClassSetupChildren();
+                $child->section_id = $row->section_id;
+                $child->setRelation('section', $row->section);
+
+                return $child;
+            });
     }
     public function promoteClasses($id) // session id
     {

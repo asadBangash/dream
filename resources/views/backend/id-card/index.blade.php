@@ -38,6 +38,7 @@
                                 <tr>
                                     <th class="serial">{{ ___('common.sr_no') }}</th>
                                     <th class="purchase">{{ ___('common.title') }} </th>
+                                    <th class="purchase">{{ ___('common.type') }}</th>
                                     <th class="purchase">{{ ___('common.expired_date') }}</th>
                                     <th class="purchase">{{ ___('common.visibility') }}</th>
                                     <th class="purchase">{{ ___('common.preview') }}</th>
@@ -51,6 +52,7 @@
                                 <tr id="row_{{ $row->id }}">
                                     <td class="serial">{{ ++$key }}</td>
                                     <td>{{ $row->title }}</td>
+                                    <td>{{ \App\Enums\IdCardType::label($row->card_type ?? \App\Enums\IdCardType::STUDENT) }}</td>
                                     <td>{{ $row->expired_date }}</td>
            
                                     <td>
