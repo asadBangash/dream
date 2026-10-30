@@ -136,18 +136,17 @@
                                 <input type="hidden" id="siblings_discount" name="siblings_discount" value="0">
                                 <div class="col-md-3">
 
-                                    <label for="validationServer04" class="form-label">{{ ___('student_info.class') }}
+                                    <label for="studentClassSelect" class="form-label">{{ ___('student_info.class') }}
                                         <span class="fillable">*</span></label>
-                                    <select id="getSections"
+                                    <select
                                         class="nice-select niceSelect bordered_style wide @error('class') is-invalid @enderror"
-                                        name="class" id="validationServer04"
+                                        name="class" id="studentClassSelect"
                                         aria-describedby="validationServer04Feedback">
                                         <option value="">{{ ___('student_info.select_class') }}</option>
                                         @foreach ($data['classes'] as $item)
-                                            <option {{ old('class') == $item->id ? 'selected' : '' }}
-                                                value="{{ $item->class->id }}">{{ $item->class->name }}
+                                            <option {{ old('class') == $item->class->id ? 'selected' : '' }}
+                                                value="{{ $item->class->id }}">{{ $item->class->name }}</option>
                                         @endforeach
-                                        </option>
                                     </select>
 
                                     @error('class')
@@ -159,11 +158,11 @@
                                 </div>
 
                                 <div class="col-md-3">
-                                    <label for="validationServer04" class="form-label">{{ ___('student_info.section') }}
+                                    <label for="studentSectionSelect" class="form-label">{{ ___('student_info.section') }}
                                         <span class="fillable">*</span></label>
-                                    <select id="getSections"
+                                    <select
                                         class="nice-select sections niceSelect bordered_style wide @error('section') is-invalid @enderror"
-                                        name="section" id="validationServer04"
+                                        name="section" id="studentSectionSelect"
                                         aria-describedby="validationServer04Feedback">
                                         <option value="">{{ ___('student_info.select_section') }}</option>
                                     </select>
@@ -620,6 +619,11 @@
 @push('script')
     <script>
         $(document).ready(function() {
+            var $classSelect = $('#studentClassSelect');
+            if ($classSelect.val()) {
+                $classSelect.trigger('change');
+            }
+
             var fileInp1 = document.getElementById("fileBrouse1");
             if (fileInp1) {
                 fileInp1.addEventListener("change", showFileName);

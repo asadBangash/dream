@@ -158,7 +158,7 @@ function sectionLabelFromRow(item) {
         return { id: null, label: '' };
     }
     var section = item.section;
-    var label = section.name || section.section_tran || '';
+    var label = section.name || section.section_tran || section.sectionTran || '';
     return { id: section.id, label: label };
 }
 
@@ -196,8 +196,12 @@ function fillClassSectionDropdown($sectionSelect, rows) {
     }
 }
 
-// Start get section
-$(document).on('change', '#getSections', function () {
+// Start get section (class select must not share id with section select)
+$(document).on('change', '#getSections, form:has(select.sections) select[name="class"]', function () {
+    if ($(this).hasClass('sections') || $(this).is('select[name="section"]')) {
+        return;
+    }
+
     var classId = $(this).val();
     var $form = $(this).closest('form');
     var url = $('#url').val() || '';
