@@ -103,7 +103,7 @@
     <script src="{{ global_asset('backend') }}/assets/js/main.js"></script>
     {{-- Custom Js --}}
     <script src="{{ global_asset('backend') }}/assets/js/fees-master.js"></script>
-    <script src="{{ global_asset('backend') }}/assets/js/custom.js"></script>
+    <script src="{{ publicAssetVersion('backend/assets/js/custom.js') }}"></script>
 
 
     <script src="{{ global_asset('backend') }}/vendors/summernote/summernote-lite.min.js"></script>

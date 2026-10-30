@@ -156,11 +156,11 @@
 
                                 <div class="col-md-3">
 
-                                    <label for="studentClassSelect" class="form-label">{{ ___('student_info.class') }}
+                                    <label for="getSections" class="form-label">{{ ___('student_info.class') }}
                                         <span class="fillable">*</span></label>
                                     <select
                                         class="nice-select niceSelect bordered_style wide @error('class') is-invalid @enderror"
-                                        name="class" id="studentClassSelect"
+                                        name="class" id="getSections"
                                         aria-describedby="validationServer04Feedback">
                                         <option value="">{{ ___('student_info.select_class') }}</option>
                                         @foreach ($data['classes'] as $item)
@@ -655,6 +655,7 @@
     </div>
 
     @include('backend.student-info.student.partials.add-parent-modal')
+    @include('backend.partials.class-section-loader')
 @endsection
 @push('script')
     <script>
