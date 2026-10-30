@@ -35,6 +35,7 @@ Route::middleware(saasMiddleware())->group(function () {
                 Route::get('/talent-test', 'talentTest')->name('frontend.talent-test');
                 Route::post('/talent-test', 'storeTalentTest')->name('frontend.talent-test.store');
 
+                Route::redirect('/online_admission', '/online-admission', 301);
                 Route::get('/online-admission', 'onlineAdmission')->name('frontend.online-admission');
                 Route::get('/online-admission-fees/{id}/{ref}', 'onlineAdmissionFees')->name('frontend.online-admission-fees');
 

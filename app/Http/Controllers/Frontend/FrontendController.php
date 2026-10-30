@@ -192,11 +192,16 @@ class FrontendController extends Controller
     // onlineAdmission
     public function onlineAdmission()
     {
+        if (! Schema::hasTable('online_admission_settings')) {
+            return redirect()->route('frontend.home')
+                ->with('error', ___('frontend.something_went_wrong'));
+        }
+
         $data = $this->repo->result();
-        $data['religions']= $this->religionRepo->all();
-        $data['genders']  = $this->genderRepo->all();
-        $data['shifts']  = $this->shift_repo->all();
-        $data['setting']  = $this->admission_setting_repo->getIsShowByType('online_admission');
+        $data['religions'] = $this->religionRepo->all();
+        $data['genders'] = $this->genderRepo->all();
+        $data['shifts'] = $this->shift_repo->all();
+        $data['setting'] = $this->admission_setting_repo->getIsShowByType('online_admission');
         return view('frontend.online-admission', compact('data'));
     }
 

@@ -284,7 +284,7 @@
                                                 {{ ___('frontend.Select_Shift') }}</option>
                                             @foreach ($data['shifts'] as $item)
                                                 <option {{ old('shift') == $item->id ? 'selected' : '' }}
-                                                    value="{{ $item->id }}">{{ $item->defaultTranslate->name }}
+                                                    value="{{ $item->id }}">{{ $item->defaultTranslate->name ?? $item->name }}
                                                 </option>
                                             @endforeach
 

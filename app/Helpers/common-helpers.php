@@ -1320,7 +1320,7 @@ if (!function_exists('admission_fields')) {
                 return Cache::get('online_admission_field_is_show');
             }
             return Cache::rememberForever('online_admission_setting', function () {
-                return OnlineAdmissionSetting::where('type', 'online_admission')->where('is_show', 1)->get()->pluck(['field'])->toArray();
+                return OnlineAdmissionSetting::where('type', 'online_admission')->where('is_show', 1)->get()->pluck('field')->toArray();
             });
         } catch (\Throwable $th) {
             return [];
@@ -1335,7 +1335,6 @@ if (!function_exists('is_show')) {
             $field_array = admission_fields();
             return in_array($field, $field_array);
         } catch (\Throwable $th) {
-            dd($th);
             return false;
         }
     }
@@ -1361,7 +1360,7 @@ if (!function_exists('admission_required_fields')) {
                 return Cache::get('online_admission_field_is_require');
             }
             return Cache::rememberForever('online_admission_field_is_require', function () {
-                return OnlineAdmissionSetting::where('type', 'online_admission')->where('is_required', 1)->get()->pluck(['field'])->toArray();
+                return OnlineAdmissionSetting::where('type', 'online_admission')->where('is_required', 1)->get()->pluck('field')->toArray();
             });
         } catch (\Throwable $th) {
             return [];
