@@ -1640,7 +1640,16 @@ if (! function_exists('idCardTemplateImageUrl')) {
             ? 'dream-teacher-id-card.png'
             : 'dream-student-id-card.png';
 
-        return asset('backend/uploads/idcard-templates/'.$file);
+        foreach ([
+            'backend/uploads/idcard-templates/'.$file,
+            'backend/assets/images/idcard-templates/'.$file,
+        ] as $relativePath) {
+            if (is_file(public_path($relativePath))) {
+                return asset($relativePath);
+            }
+        }
+
+        return asset('backend/assets/images/idcard-templates/'.$file);
     }
 }
 
