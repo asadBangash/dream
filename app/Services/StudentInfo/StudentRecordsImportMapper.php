@@ -38,6 +38,10 @@ class StudentRecordsImportMapper
 
     private function loadLookups(): void
     {
+        if (! \Illuminate\Support\Facades\Schema::hasTable('branches')) {
+            return;
+        }
+
         foreach (DB::table('branches')->get(['id', 'name']) as $branch) {
             $name = Str::lower(trim((string) $branch->name));
             if (Str::contains($name, 'boy')) {
@@ -103,26 +107,28 @@ class StudentRecordsImportMapper
             return ['ok' => false, 'reason' => "No {$genderKey} branch found in database (expected Boys Branch / Girls Branch)"];
         }
 
-        $departmentId = $this->resolveDepartmentId((string) ($row['department'] ?? ''));
-        if ($departmentId === null) {
-            return ['ok' => false, 'reason' => 'Unknown department: ' . ($row['department'] ?? '')];
-        }
+        $departmentLabel = (string) ($row['department'] ?? '');
+        $departmentId = $this->resolveDepartmentId($departmentLabel);
 
         $classSection = $this->resolveClassAndSection(
-            (string) ($row['department'] ?? ''),
+            $departmentLabel,
             (string) ($row['class'] ?? ''),
             (string) ($row['section'] ?? ''),
-            $departmentId
+            $departmentId ?? 0
         );
         if ($classSection === null) {
             return [
                 'ok' => false,
-                'reason' => 'Could not map class/section for department "' . ($row['department'] ?? '')
+                'reason' => 'Could not map class/section for department "' . $departmentLabel
                     . '", class "' . ($row['class'] ?? '') . '", section "' . ($row['section'] ?? '') . '"',
             ];
         }
 
         [$classId, $sectionId] = $classSection;
+
+        if ($departmentId === null) {
+            $departmentId = $this->inferDepartmentId($departmentLabel, $classId);
+        }
 
         if (empty($this->allowedSectionsByClass[$classId][$sectionId])) {
             return [
@@ -204,27 +210,94 @@ class StudentRecordsImportMapper
             return null;
         }
 
+        if (isset($this->departmentsByName[$key])) {
+            return $this->departmentsByName[$key];
+        }
+
         $aliases = [
-            'english language' => 'english language',
-            'cit' => 'it & diploma programs',
-            'dit' => 'it & diploma programs',
-            'tuition classes' => 'school tuition',
-            'tuition' => 'school tuition',
+            'english language' => ['english language', 'english', 'language', 'languages'],
+            'cit' => ['it & diploma programs', 'it & diploma', 'diploma', 'it'],
+            'dit' => ['it & diploma programs', 'it & diploma', 'diploma', 'it'],
+            'tuition classes' => ['school tuition', 'tuition', 'school'],
+            'tuition' => ['school tuition', 'tuition', 'school'],
         ];
 
-        $lookup = $aliases[$key] ?? $key;
-
-        if (isset($this->departmentsByName[$lookup])) {
-            return $this->departmentsByName[$lookup];
+        if (isset($aliases[$key])) {
+            foreach ($aliases[$key] as $hint) {
+                $id = $this->departmentIdByNameHint($hint);
+                if ($id !== null) {
+                    return $id;
+                }
+            }
         }
 
         foreach ($this->departmentsByName as $deptName => $id) {
-            if (Str::contains($deptName, $lookup) || Str::contains($lookup, $deptName)) {
+            if (Str::contains($deptName, $key) || Str::contains($key, $deptName)) {
                 return $id;
             }
         }
 
+        return $this->departmentIdByExcelLabel($key);
+    }
+
+    private function departmentIdByExcelLabel(string $excelKey): ?int
+    {
+        $rules = [
+            ['english', 'language', 'languages'],
+            ['cit', 'dit', 'diploma', 'it &', 'it '],
+            ['tuition', 'school'],
+        ];
+
+        if (Str::contains($excelKey, 'english') || Str::contains($excelKey, 'language')) {
+            return $this->departmentIdByNameHints(['english', 'language', 'languages']);
+        }
+        if (in_array($excelKey, ['cit', 'dit'], true) || Str::contains($excelKey, 'it program')) {
+            return $this->departmentIdByNameHints(['diploma', 'it &', 'it ']);
+        }
+        if (Str::contains($excelKey, 'tuition') || Str::contains($excelKey, 'school')) {
+            return $this->departmentIdByNameHints(['tuition', 'school']);
+        }
+
         return null;
+    }
+
+    /**
+     * @param  list<string>  $hints
+     */
+    private function departmentIdByNameHints(array $hints): ?int
+    {
+        foreach ($this->departmentsByName as $deptName => $id) {
+            foreach ($hints as $hint) {
+                if (Str::contains($deptName, $hint)) {
+                    return $id;
+                }
+            }
+        }
+
+        return null;
+    }
+
+    private function departmentIdByNameHint(string $hint): ?int
+    {
+        return $this->departmentIdByNameHints([$hint]);
+    }
+
+    private function inferDepartmentId(string $departmentLabel, int $classId): ?int
+    {
+        $className = array_search($classId, $this->classesByName, true);
+        if (is_string($className)) {
+            if (Str::contains($className, 'english')) {
+                return $this->departmentIdByNameHints(['english', 'language', 'languages']);
+            }
+            if (in_array($className, ['cit', 'dit'], true)) {
+                return $this->departmentIdByNameHints(['diploma', 'it']);
+            }
+            if (Str::startsWith($className, 'class ') || in_array($className, ['prep', 'pg', 'nursery'], true)) {
+                return $this->departmentIdByNameHints(['tuition', 'school']);
+            }
+        }
+
+        return $this->resolveDepartmentId($departmentLabel);
     }
 
     /**

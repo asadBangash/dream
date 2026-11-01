@@ -2,6 +2,7 @@
 
 namespace App\Services\StudentInfo;
 
+use App\Services\StudentInfo\Concerns\PersistsBranchOnImport;
 use App\Models\Role;
 use App\Models\StudentInfo\ParentGuardian;
 use App\Models\StudentInfo\SessionClassStudent;
@@ -11,9 +12,12 @@ use Illuminate\Support\Facades\DB;
 use Illuminate\Support\Facades\Hash;
 use Illuminate\Support\Str;
 use PhpOffice\PhpSpreadsheet\IOFactory;
+use Throwable;
 
 class StudentRecordsImportService
 {
+    use PersistsBranchOnImport;
+
     public function __construct(
         private readonly StudentRecordsImportMapper $mapper
     ) {}
@@ -31,7 +35,15 @@ class StudentRecordsImportService
             return $stats;
         }
 
-        $reader = IOFactory::load($absolutePath);
+        try {
+            $reader = IOFactory::load($absolutePath);
+        } catch (Throwable $e) {
+            $stats['errors'][] = 'Could not read Excel file: ' . $e->getMessage()
+                . ' (ensure vendor/ is deployed: composer install --no-dev)';
+
+            return $stats;
+        }
+
         $sheet = $reader->getSheetByName('Combined Master');
         if (! $sheet) {
             $stats['errors'][] = 'Sheet "Combined Master" not found in workbook';
@@ -66,7 +78,7 @@ class StudentRecordsImportService
 
             if ($this->studentAlreadyImported($data['import_code'], $data['branch_id'], $data['roll_no'])) {
                 $stats['duplicates']++;
-                $stats['skipped_details'][] = ['row' => $rowNum, 'reason' => 'Already imported (student_code or roll+branch)', 'name' => $data['first_name'] . ' ' . $data['last_name']];
+                $stats['skipped_details'][] = ['row' => $rowNum, 'reason' => 'Already imported (student_code)', 'name' => $data['first_name'] . ' ' . $data['last_name']];
                 continue;
             }
 
@@ -195,9 +207,7 @@ class StudentRecordsImportService
         $user->permissions = $role->permissions;
         $user->username = $username;
         $user->uuid = (string) Str::uuid();
-        if (hasModule('MultiBranch')) {
-            $user->branch_id = (int) $data['branch_id'];
-        }
+        $this->applyBranchId($user, (int) $data['branch_id']);
         $user->save();
 
         $guardian = new ParentGuardian();
@@ -208,9 +218,7 @@ class StudentRecordsImportService
         $guardian->guardian_mobile = $data['guardian_mobile_display'] ?: $phoneKey;
         $guardian->guardian_relation = 'Father';
         $guardian->status = 1;
-        if (hasModule('MultiBranch')) {
-            $guardian->branch_id = (int) $data['branch_id'];
-        }
+        $this->applyBranchId($guardian, (int) $data['branch_id']);
         $guardian->save();
 
         $parentCache[$phoneKey] = $guardian->id;
@@ -223,7 +231,7 @@ class StudentRecordsImportService
     {
         $query = ParentGuardian::query()->withoutGlobalScopes();
 
-        if (hasModule('MultiBranch')) {
+        if ($this->usesBranchColumns()) {
             $query->where(function ($q) use ($branchId) {
                 $q->where('branch_id', $branchId)->orWhereNull('branch_id')->orWhere('branch_id', 0);
             });
@@ -269,9 +277,7 @@ class StudentRecordsImportService
         $user->date_of_birth = $data['dob'];
         $user->username = $username;
         $user->uuid = (string) Str::uuid();
-        if (hasModule('MultiBranch')) {
-            $user->branch_id = $branchId;
-        }
+        $this->applyBranchId($user, $branchId);
         $user->save();
 
         $student = new Student();
@@ -279,18 +285,16 @@ class StudentRecordsImportService
         $student->first_name = $data['first_name'];
         $student->last_name = $data['last_name'];
         $student->admission_no = $admissionNo;
-        $student->roll_no = $data['roll_no'];
+        $student->roll_no = is_numeric($data['roll_no'] ?? null) ? (int) $data['roll_no'] : $data['roll_no'];
         $student->dob = $data['dob'];
         $student->admission_date = $data['admission_date'];
         $student->gender_id = $data['gender_id'];
-        $student->department_id = $data['department_id'];
+        $student->department_id = $data['department_id'] ?: null;
         $student->parent_guardian_id = $parentId;
         $student->status = $data['status'];
         $student->student_code = $data['import_code'];
         $student->emergency_contact = $data['guardian_mobile_display'] ?: $data['guardian_mobile'];
-        if (hasModule('MultiBranch')) {
-            $student->branch_id = $branchId;
-        }
+        $this->applyBranchId($student, $branchId);
         $student->save();
 
         $sessionClass = new SessionClassStudent();
@@ -299,9 +303,7 @@ class StudentRecordsImportService
         $sessionClass->section_id = $data['section_id'];
         $sessionClass->student_id = $student->id;
         $sessionClass->roll = $data['roll_no'];
-        if (hasModule('MultiBranch')) {
-            $sessionClass->branch_id = $branchId;
-        }
+        $this->applyBranchId($sessionClass, $branchId);
         $sessionClass->save();
 
         if ($data['gender_key'] === 'boy') {
@@ -314,7 +316,7 @@ class StudentRecordsImportService
     private function nextAdmissionNo(int $branchId): string
     {
         $query = Student::query()->withoutGlobalScopes()->whereNotNull('admission_no');
-        if (hasModule('MultiBranch')) {
+        if ($this->usesBranchColumns()) {
             $query->where('branch_id', $branchId);
         }
 
