@@ -49,13 +49,12 @@ class IdCardRepository implements IdCardInterface
 
     public function store($request)
     {
-        // DB::beginTransaction();
-        // try {
-
+        DB::beginTransaction();
+        try {
             $row                     = new $this->model;
             $row->title              = $request->title;
             $row->card_type          = $request->card_type ?? IdCardType::STUDENT;
-            $row->expired_date       = $request->expired_date;
+            $row->expired_date       = $this->normalizeExpiredDate($request);
             $row->frontside_bg_image       = $this->UploadImageCreate($request->frontside_bg_image, 'backend/uploads/idcards');
             $row->backside_bg_image        = $this->UploadImageCreate($request->backside_bg_image, 'backend/uploads/idcards');
 
@@ -75,11 +74,13 @@ class IdCardRepository implements IdCardInterface
             $row->save();
 
             DB::commit();
+
             return $this->responseWithSuccess(___('alert.created_successfully'), []);
-        // } catch (\Throwable $th) {
-        //     DB::rollBack();
-        //     return $this->responseWithError(___('alert.something_went_wrong_please_try_again'), []);
-        // }
+        } catch (\Throwable $th) {
+            DB::rollBack();
+
+            return $this->responseWithError(___('alert.something_went_wrong_please_try_again'), []);
+        }
     }
 
     public function show($id)
@@ -94,7 +95,7 @@ class IdCardRepository implements IdCardInterface
             $row                     = $this->model->find($id);
             $row->title              = $request->title;
             $row->card_type          = $request->card_type ?? IdCardType::STUDENT;
-            $row->expired_date       = $request->expired_date;
+            $row->expired_date       = $this->normalizeExpiredDate($request);
             $row->frontside_bg_image       = $this->UploadImageUpdate($request->frontside_bg_image, 'backend/uploads/idcards', $row->frontside_bg_image);
             $row->backside_bg_image        = $this->UploadImageUpdate($request->backside_bg_image, 'backend/uploads/idcards', $row->backside_bg_image);
 
@@ -178,5 +179,16 @@ class IdCardRepository implements IdCardInterface
             return $this->responseWithError(___('alert.something_went_wrong_please_try_again'), []);
         }
 
+    }
+
+    private function normalizeExpiredDate($request): ?string
+    {
+        $value = $request->input('expired_date');
+
+        if ($value === null || $value === '') {
+            return null;
+        }
+
+        return $value;
     }
 }
