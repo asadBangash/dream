@@ -8,8 +8,10 @@ use App\Repositories\IdCard\IdCardRepository;
 use App\Http\Requests\IdCard\IdCardStoreRequest;
 use App\Http\Requests\IdCard\IdCardSearchRequest;
 use App\Http\Requests\IdCard\IdCardUpdateRequest;
+use App\Enums\IdCardType;
 use App\Models\Staff\Staff;
 use App\Repositories\Academic\ClassSetupRepository;
+use Symfony\Component\HttpFoundation\Response;
 
 class IdCardController extends Controller
 {
@@ -34,6 +36,28 @@ class IdCardController extends Controller
     {
         $data['title']                  = ___('common.id_cards_create');
         return view('backend.id-card.create', compact('data'));
+    }
+
+    public function templateImage(string $type)
+    {
+        if (! in_array($type, IdCardType::values(), true)) {
+            abort(Response::HTTP_NOT_FOUND);
+        }
+
+        $filename = $type === IdCardType::TEACHER
+            ? 'dream-teacher-id-card.png'
+            : 'dream-student-id-card.png';
+
+        $path = idCardDefaultTemplateAbsolutePath($filename);
+
+        if (! $path) {
+            abort(Response::HTTP_NOT_FOUND, 'ID card template image is missing on the server.');
+        }
+
+        return response()->file($path, [
+            'Content-Type' => 'image/png',
+            'Cache-Control' => 'public, max-age=604800',
+        ]);
     }
 
     public function store(IdCardStoreRequest $request)

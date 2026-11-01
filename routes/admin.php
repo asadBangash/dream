@@ -48,6 +48,7 @@ Route::middleware(saasMiddleware())->group(function () {
 
                 Route::controller(IdCardController::class)->group(function () {
                     Route::get('idcard/',                 'index')->name('idcard.index')->middleware('PermissionCheck:id_card_read');
+                    Route::get('idcard/template/{type}',  'templateImage')->name('idcard.template-image');
                     Route::get('idcard/create',           'create')->name('idcard.create')->middleware('PermissionCheck:id_card_create');
                     Route::post('idcard/store',           'store')->name('idcard.store')->middleware('PermissionCheck:id_card_create');
                     Route::get('idcard/edit/{id}',           'edit')->name('idcard.edit')->middleware('PermissionCheck:id_card_update');

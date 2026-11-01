@@ -1622,6 +1622,33 @@ if (! function_exists('idCardIsTeacher')) {
     }
 }
 
+if (! function_exists('idCardDefaultTemplateFilename')) {
+    function idCardDefaultTemplateFilename($idCard): string
+    {
+        return idCardIsTeacher($idCard)
+            ? 'dream-teacher-id-card.png'
+            : 'dream-student-id-card.png';
+    }
+}
+
+if (! function_exists('idCardDefaultTemplateAbsolutePath')) {
+    /** Absolute path to bundled default ID card artwork, or null if missing. */
+    function idCardDefaultTemplateAbsolutePath(string $filename): ?string
+    {
+        foreach ([
+            resource_path('idcard-templates/'.$filename),
+            public_path('backend/assets/images/idcard-templates/'.$filename),
+            public_path('backend/uploads/idcard-templates/'.$filename),
+        ] as $path) {
+            if (is_file($path)) {
+                return $path;
+            }
+        }
+
+        return null;
+    }
+}
+
 if (! function_exists('idCardTemplateImageUrl')) {
     function idCardTemplateImageUrl($idCard): string
     {
@@ -1636,20 +1663,9 @@ if (! function_exists('idCardTemplateImageUrl')) {
             return globalAsset($bgPath, '800X800.webp');
         }
 
-        $file = idCardIsTeacher($idCard)
-            ? 'dream-teacher-id-card.png'
-            : 'dream-student-id-card.png';
+        $type = idCardIsTeacher($idCard) ? \App\Enums\IdCardType::TEACHER : \App\Enums\IdCardType::STUDENT;
 
-        foreach ([
-            'backend/uploads/idcard-templates/'.$file,
-            'backend/assets/images/idcard-templates/'.$file,
-        ] as $relativePath) {
-            if (is_file(public_path($relativePath))) {
-                return asset($relativePath);
-            }
-        }
-
-        return asset('backend/assets/images/idcard-templates/'.$file);
+        return route('idcard.template-image', ['type' => $type]);
     }
 }
 

@@ -55,11 +55,19 @@ class IdCardRepository implements IdCardInterface
             $row->title              = $request->title;
             $row->card_type          = $request->card_type ?? IdCardType::STUDENT;
             $row->expired_date       = $this->normalizeExpiredDate($request);
-            $row->frontside_bg_image       = $this->UploadImageCreate($request->frontside_bg_image, 'backend/uploads/idcards');
-            $row->backside_bg_image        = $this->UploadImageCreate($request->backside_bg_image, 'backend/uploads/idcards');
+            $row->frontside_bg_image       = $request->hasFile('frontside_bg_image')
+                ? $this->UploadImageCreate($request->file('frontside_bg_image'), 'backend/uploads/idcards')
+                : null;
+            $row->backside_bg_image        = $request->hasFile('backside_bg_image')
+                ? $this->UploadImageCreate($request->file('backside_bg_image'), 'backend/uploads/idcards')
+                : null;
 
-            $row->signature     = $this->UploadImageCreate($request->signature, 'backend/uploads/idcards');
-            $row->qr_code       = $this->UploadImageCreate($request->qr_code, 'backend/uploads/idcards');
+            $row->signature     = $request->hasFile('signature')
+                ? $this->UploadImageCreate($request->file('signature'), 'backend/uploads/idcards')
+                : null;
+            $row->qr_code       = $request->hasFile('qr_code')
+                ? $this->UploadImageCreate($request->file('qr_code'), 'backend/uploads/idcards')
+                : null;
 
             $row->backside_description    = $request->backside_description;
 
@@ -96,11 +104,19 @@ class IdCardRepository implements IdCardInterface
             $row->title              = $request->title;
             $row->card_type          = $request->card_type ?? IdCardType::STUDENT;
             $row->expired_date       = $this->normalizeExpiredDate($request);
-            $row->frontside_bg_image       = $this->UploadImageUpdate($request->frontside_bg_image, 'backend/uploads/idcards', $row->frontside_bg_image);
-            $row->backside_bg_image        = $this->UploadImageUpdate($request->backside_bg_image, 'backend/uploads/idcards', $row->backside_bg_image);
+            $row->frontside_bg_image       = $request->hasFile('frontside_bg_image')
+                ? $this->UploadImageUpdate($request->file('frontside_bg_image'), 'backend/uploads/idcards', $row->frontside_bg_image)
+                : $row->frontside_bg_image;
+            $row->backside_bg_image        = $request->hasFile('backside_bg_image')
+                ? $this->UploadImageUpdate($request->file('backside_bg_image'), 'backend/uploads/idcards', $row->backside_bg_image)
+                : $row->backside_bg_image;
 
-            $row->signature     = $this->UploadImageUpdate($request->signature, 'backend/uploads/idcards', $row->signature);
-            $row->qr_code       = $this->UploadImageUpdate($request->qr_code, 'backend/uploads/idcards', $row->qr_code);
+            $row->signature     = $request->hasFile('signature')
+                ? $this->UploadImageUpdate($request->file('signature'), 'backend/uploads/idcards', $row->signature)
+                : $row->signature;
+            $row->qr_code       = $request->hasFile('qr_code')
+                ? $this->UploadImageUpdate($request->file('qr_code'), 'backend/uploads/idcards', $row->qr_code)
+                : $row->qr_code;
 
             $row->backside_description    = $request->backside_description;
 
