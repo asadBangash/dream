@@ -1615,6 +1615,22 @@ if (! function_exists('enabledLanguageCodes')) {
     }
 }
 
+if (! function_exists('htmlDateInputValue')) {
+    /** Format a DB/date string for HTML date inputs (Y-m-d). */
+    function htmlDateInputValue($value): string
+    {
+        if ($value === null || $value === '') {
+            return '';
+        }
+
+        try {
+            return \Carbon\Carbon::parse($value)->format('Y-m-d');
+        } catch (\Throwable) {
+            return '';
+        }
+    }
+}
+
 if (! function_exists('idCardIsTeacher')) {
     function idCardIsTeacher($idCard): bool
     {

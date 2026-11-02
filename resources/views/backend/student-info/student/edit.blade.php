@@ -182,6 +182,7 @@
                                     <select
                                         class="nice-select sections niceSelect bordered_style wide @error('section') is-invalid @enderror"
                                         name="section" id="studentSectionSelect"
+                                        data-initial-section="{{ old('section', @$data['session_class_student']->section_id) }}"
                                         aria-describedby="validationServer04Feedback">
                                         <option value="">{{ ___('student_info.select_section') }}</option>
                                         @foreach ($data['sections'] as $item)
@@ -228,7 +229,7 @@
                                         class="form-control ot-input @error('date_of_birth') is-invalid @enderror"
                                         name="date_of_birth" list="datalistOptions" id="exampleDataList"
                                         placeholder="{{ ___('common.date_of_birth') }}"
-                                        value="{{ old('date_of_birth', @$data['student']->dob) }}">
+                                        value="{{ old('date_of_birth', htmlDateInputValue(@$data['student']->dob)) }}">
                                     @error('date_of_birth')
                                         <div id="validationServer04Feedback" class="invalid-feedback">
                                             {{ $message }}
@@ -334,7 +335,7 @@
                                         class="form-control ot-input @error('admission_date') is-invalid @enderror"
                                         name="admission_date" list="datalistOptions" id="exampleDataList"
                                         placeholder="{{ ___('student_info.admission_date') }}"
-                                        value="{{ old('admission_date', @$data['student']->admission_date) }}">
+                                        value="{{ old('admission_date', htmlDateInputValue(@$data['student']->admission_date)) }}">
                                     @error('admission_date')
                                         <div id="validationServer04Feedback" class="invalid-feedback">
                                             {{ $message }}

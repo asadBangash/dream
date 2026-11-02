@@ -209,7 +209,9 @@ class StudentRepository implements StudentInterface
             $user->name               = $request->first_name . ' ' . $request->last_name;
             $user->email              = $request->email != "" ? $request->email :  NULL;
             $user->phone              = $request->mobile != "" ? $request->mobile :  NULL;
-            $user->date_of_birth      = $request->date_of_birth;
+            if ($request->filled('date_of_birth')) {
+                $user->date_of_birth = $request->date_of_birth;
+            }
             $user->admission_no       = $request->admission_no;
             $user->upload_id          = $this->UploadImageUpdate($request->image, 'backend/uploads/students', $user->upload_id);
             $user->permissions        = $role->permissions;
@@ -223,7 +225,9 @@ class StudentRepository implements StudentInterface
             $row->mobile               = $request->mobile;
             $row->image_id             = $user->upload_id;
             $row->email                = $request->email;
-            $row->dob                  = $request->date_of_birth;
+            if ($request->filled('date_of_birth')) {
+                $row->dob = $request->date_of_birth;
+            }
             $row->religion_id          = $request->religion != "" ? $request->religion :  NULL;
             $row->gender_id            = $request->gender != "" ? $request->gender :  NULL;
             $row->blood_group_id       = $request->blood != "" ? $request->blood :  NULL;

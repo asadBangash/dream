@@ -3,6 +3,7 @@
 namespace App\Http\Requests\IdCard;
 
 use App\Enums\IdCardType;
+use App\Rules\BranchUnique;
 use Illuminate\Foundation\Http\FormRequest;
 use Illuminate\Validation\Rule;
 
@@ -26,7 +27,7 @@ class IdCardStoreRequest extends FormRequest
     public function rules()
     {
         return [
-            'title'              => 'required|unique:id_cards',
+            'title'              => ['required', 'max:255', new BranchUnique('id_cards', 'title')],
             'card_type'          => ['required', Rule::in(IdCardType::values())],
         ];
     }

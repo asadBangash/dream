@@ -162,9 +162,13 @@ function sectionLabelFromRow(item) {
     return { id: section.id, label: label };
 }
 
-function fillClassSectionDropdown($sectionSelect, rows) {
+function fillClassSectionDropdown($sectionSelect, rows, selectedSectionId) {
     if (!$sectionSelect || !$sectionSelect.length) {
         return;
+    }
+
+    if (selectedSectionId === undefined || selectedSectionId === null || selectedSectionId === '') {
+        selectedSectionId = $sectionSelect.data('initial-section') || $sectionSelect.val();
     }
 
     $sectionSelect.find('option:not(:first)').remove();
@@ -179,6 +183,10 @@ function fillClassSectionDropdown($sectionSelect, rows) {
         );
     });
 
+    if (selectedSectionId && $sectionSelect.find('option[value="' + selectedSectionId + '"]').length) {
+        $sectionSelect.val(String(selectedSectionId));
+    }
+
     if (typeof $sectionSelect.niceSelect === 'function') {
         $sectionSelect.niceSelect('update');
     }
@@ -186,11 +194,17 @@ function fillClassSectionDropdown($sectionSelect, rows) {
     var $dropdown = $sectionSelect.next('.nice-select');
     if ($dropdown.length) {
         var sectionLi = '';
+        var selectedText = $sectionSelect.find('option:first').text();
         $sectionSelect.find('option').each(function () {
             var val = $(this).val();
-            sectionLi += '<li data-value="' + val + '" class="option">' + $(this).text() + '</li>';
+            var text = $(this).text();
+            var selectedClass = $sectionSelect.val() === val ? ' selected focus' : '';
+            sectionLi += '<li data-value="' + val + '" class="option' + selectedClass + '">' + text + '</li>';
+            if ($sectionSelect.val() === val) {
+                selectedText = text;
+            }
         });
-        $dropdown.find('.current').html($sectionSelect.find('option:first').text());
+        $dropdown.find('.current').html(selectedText);
         $dropdown.find('.list li').remove();
         $dropdown.find('.list').append(sectionLi);
     }
@@ -226,6 +240,7 @@ $(document).on('change', '#getSections, form:has(select.sections) select[name="c
         url: url + '/class-setup/get-sections',
         success: function (data) {
             var rows = Array.isArray(data) ? data : (Array.isArray(data && data.data) ? data.data : []);
+            $sectionSelect.removeData('initial-section');
             fillClassSectionDropdown($sectionSelect, rows);
 
             $form.find('select.subjects option:not(:first)').remove();

@@ -8,6 +8,7 @@ use App\Models\Staff\Staff;
 use App\Traits\CommonHelperTrait;
 use App\Traits\ReturnFormatTrait;
 use Illuminate\Support\Facades\DB;
+use Illuminate\Support\Facades\Log;
 use App\Repositories\IdCard\IdCardInterface;
 use App\Models\StudentInfo\SessionClassStudent;
 
@@ -86,6 +87,11 @@ class IdCardRepository implements IdCardInterface
             return $this->responseWithSuccess(___('alert.created_successfully'), []);
         } catch (\Throwable $th) {
             DB::rollBack();
+            Log::error('IdCard store failed', [
+                'message' => $th->getMessage(),
+                'title' => $request->input('title'),
+                'card_type' => $request->input('card_type'),
+            ]);
 
             return $this->responseWithError(___('alert.something_went_wrong_please_try_again'), []);
         }

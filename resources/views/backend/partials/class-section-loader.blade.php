@@ -12,9 +12,12 @@
         return { id: s.id, label: s.name || s.section_tran || s.sectionTran || '' };
     }
 
-    function fillSections($sectionSelect, rows) {
+    function fillSections($sectionSelect, rows, selectedSectionId) {
         if (!$sectionSelect.length) {
             return;
+        }
+        if (selectedSectionId === undefined || selectedSectionId === null || selectedSectionId === '') {
+            selectedSectionId = $sectionSelect.data('initial-section') || $sectionSelect.val();
         }
         $sectionSelect.find('option:not(:first)').remove();
         $.each(rows || [], function (i, item) {
@@ -24,28 +27,41 @@
             }
             $sectionSelect.append($('<option></option>').val(row.id).text(row.label));
         });
+        if (selectedSectionId && $sectionSelect.find('option[value="' + selectedSectionId + '"]').length) {
+            $sectionSelect.val(String(selectedSectionId));
+        }
         if (typeof $sectionSelect.niceSelect === 'function') {
             $sectionSelect.niceSelect('update');
         }
         var $dropdown = $sectionSelect.next('.nice-select');
         if ($dropdown.length) {
             var sectionLi = '';
+            var selectedText = $sectionSelect.find('option:first').text();
             $sectionSelect.find('option').each(function () {
-                sectionLi += '<li data-value="' + $(this).val() + '" class="option">' + $(this).text() + '</li>';
+                var val = $(this).val();
+                var text = $(this).text();
+                var selectedClass = $sectionSelect.val() === val ? ' selected focus' : '';
+                sectionLi += '<li data-value="' + val + '" class="option' + selectedClass + '">' + text + '</li>';
+                if ($sectionSelect.val() === val) {
+                    selectedText = text;
+                }
             });
-            $dropdown.find('.current').html($sectionSelect.find('option:first').text());
+            $dropdown.find('.current').html(selectedText);
             $dropdown.find('.list li').remove();
             $dropdown.find('.list').append(sectionLi);
         }
     }
 
-    function loadSectionsForForm($form, classId) {
+    function loadSectionsForForm($form, classId, preserveSelection) {
         var $sectionSelect = $form.find('select.sections').first();
         if (!$sectionSelect.length) {
             return;
         }
+        var preserveSection = preserveSelection
+            ? ($sectionSelect.data('initial-section') || $sectionSelect.val())
+            : null;
         if (!classId) {
-            fillSections($sectionSelect, []);
+            fillSections($sectionSelect, [], preserveSection);
             return;
         }
         $.ajax({
@@ -56,10 +72,10 @@
             url: sectionsUrl,
             success: function (data) {
                 var rows = Array.isArray(data) ? data : (Array.isArray(data && data.data) ? data.data : []);
-                fillSections($sectionSelect, rows);
+                fillSections($sectionSelect, rows, preserveSection);
             },
             error: function () {
-                fillSections($sectionSelect, []);
+                fillSections($sectionSelect, [], preserveSection);
             }
         });
     }
@@ -68,15 +84,22 @@
         if ($(this).hasClass('sections') || $(this).is('select[name="section"]')) {
             return;
         }
-        loadSectionsForForm($(this).closest('form'), $(this).val());
+        loadSectionsForForm($(this).closest('form'), $(this).val(), false);
     });
 
     $(function () {
         $('form').has('select.sections').each(function () {
-            var $class = $(this).find('select[name="class"]').first();
-            if ($class.val()) {
-                loadSectionsForForm($(this), $class.val());
+            var $form = $(this);
+            var $class = $form.find('select[name="class"]').first();
+            var $sectionSelect = $form.find('select.sections').first();
+            if (!$class.val()) {
+                return;
             }
+            // Edit forms already render section options; reloading clears the selection.
+            if ($sectionSelect.find('option').length > 1) {
+                return;
+            }
+            loadSectionsForForm($form, $class.val(), true);
         });
     });
 })();

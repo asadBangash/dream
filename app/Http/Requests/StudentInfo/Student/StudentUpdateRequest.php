@@ -36,7 +36,7 @@ class StudentUpdateRequest extends FormRequest
             'department_id' => 'required|exists:departments,id',
             'class' => 'required|max:255',
             'section' => 'required|max:255',
-            'date_of_birth' => 'required|max:255',
+            'date_of_birth' => 'nullable|date',
             'admission_date' => 'required|max:255',
             'parent' => 'required|max:255',
             'status' => 'required|max:255',
