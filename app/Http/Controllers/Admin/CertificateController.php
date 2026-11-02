@@ -9,6 +9,7 @@ use App\Repositories\Certificate\CertificateRepository;
 use App\Http\Requests\Certificate\CertificateStoreRequest;
 use App\Http\Requests\Certificate\CertificateSearchRequest;
 use App\Http\Requests\Certificate\CertificateUpdateRequest;
+use Symfony\Component\HttpFoundation\Response;
 
 class CertificateController extends Controller
 {
@@ -32,6 +33,20 @@ class CertificateController extends Controller
     {
         $data['title']                  = ___('common.certificate create');
         return view('backend.certificate.create', compact('data'));
+    }
+
+    public function masterTemplate()
+    {
+        $path = certificateMasterTemplateAbsolutePath();
+
+        if (! $path) {
+            abort(Response::HTTP_NOT_FOUND, 'Certificate template artwork is missing on the server.');
+        }
+
+        return response()->file($path, [
+            'Content-Type' => 'image/jpeg',
+            'Cache-Control' => 'public, max-age=604800',
+        ]);
     }
 
     public function store(CertificateStoreRequest $request)

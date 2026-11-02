@@ -63,6 +63,7 @@ Route::middleware(saasMiddleware())->group(function () {
 
                 Route::controller(CertificateController::class)->group(function () {
                     Route::get('certificate/',                 'index')->name('certificate.index')->middleware('PermissionCheck:certificate_read');
+                    Route::get('certificate/template/master',  'masterTemplate')->name('certificate.template-master');
                     Route::get('certificate/create',           'create')->name('certificate.create')->middleware('PermissionCheck:certificate_create');
                     Route::post('certificate/store',           'store')->name('certificate.store')->middleware('PermissionCheck:certificate_create');
                     Route::get('certificate/edit/{id}',           'edit')->name('certificate.edit')->middleware('PermissionCheck:certificate_update');

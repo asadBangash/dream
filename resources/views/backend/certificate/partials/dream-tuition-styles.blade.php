@@ -27,7 +27,7 @@
         overflow: hidden;
         container-type: inline-size;
         container-name: dreamcert;
-        background: url("{{ asset('backend/uploads/certificate-templates/dream-certificate-master.jpg') }}") center center / 100% 100% no-repeat;
+        background: url("{{ certificateMasterTemplateUrl() }}") center center / 100% 100% no-repeat;
         background-color: #f3ede3;
         box-sizing: border-box;
         -webkit-print-color-adjust: exact;

@@ -1530,6 +1530,32 @@ if (! function_exists('replaceCertificatePlaceholders')) {
     }
 }
 
+if (! function_exists('certificateMasterTemplateAbsolutePath')) {
+    function certificateMasterTemplateAbsolutePath(): ?string
+    {
+        $filename = 'dream-certificate-master.jpg';
+
+        foreach ([
+            resource_path('certificate-templates/'.$filename),
+            public_path('backend/assets/images/certificate-templates/'.$filename),
+            public_path('backend/uploads/certificate-templates/'.$filename),
+        ] as $path) {
+            if (is_file($path)) {
+                return $path;
+            }
+        }
+
+        return null;
+    }
+}
+
+if (! function_exists('certificateMasterTemplateUrl')) {
+    function certificateMasterTemplateUrl(): string
+    {
+        return route('certificate.template-master');
+    }
+}
+
 if (! function_exists('certificateDreamContext')) {
     /** @return array<string, mixed> */
     function certificateDreamContext($certificate, $sessionStudent = null, ?string $sessionName = null, bool $preview = false): array
