@@ -16,6 +16,7 @@ use App\Models\Staff\Department;
 use Modules\LiveChat\Entities\Message;
 use App\Models\Fees\FeesAssignChildren;
 use Illuminate\Database\Eloquent\Model;
+use Illuminate\Database\Eloquent\SoftDeletes;
 use App\Models\Academic\SubjectAssignChildren;
 use App\Models\AssignFeesDiscount;
 use App\Models\Fees\FeesCollect;
@@ -26,7 +27,7 @@ use PhpParser\Node\Expr\Assign;
 
 class Student extends BaseModel
 {
-    use HasFactory;
+    use HasFactory, SoftDeletes;
 
     protected $appends = ['full_name'];
 

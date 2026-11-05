@@ -2,6 +2,7 @@
 
 namespace App\Repositories\StudentInfo;
 
+use App\Enums\Status;
 use App\Models\Role;
 use App\Models\SiblingFeesDiscount;
 use App\Models\User;
@@ -274,24 +275,50 @@ class StudentRepository implements StudentInterface
 
     public function destroy($id)
     {
+        return $this->softDeleteStudents([(int) $id]);
+    }
+
+    public function bulkDestroy(array $ids): array
+    {
+        $ids = array_values(array_unique(array_filter(array_map('intval', $ids), fn ($id) => $id > 0)));
+
+        if ($ids === []) {
+            return $this->responseWithError(___('alert.something_went_wrong_please_try_again'), []);
+        }
+
+        return $this->softDeleteStudents($ids);
+    }
+
+    private function softDeleteStudents(array $studentIds): array
+    {
         DB::beginTransaction();
         try {
-            $row  = $this->model->find($id);
-            $user = User::find($row->user_id);
-            if ($user) {
-                $this->UploadImageDelete($user->upload_id);
-                foreach ($row->upload_documents ?? [] as $doc) {
-                    $this->UploadImageDelete($doc['file']);
-                }
-                $user->delete(); // when user delete auto delete student, session class student table's row
+            $students = $this->model->newQuery()->whereIn('id', $studentIds)->get();
+
+            if ($students->isEmpty()) {
+                DB::rollBack();
+
+                return $this->responseWithError(___('alert.something_went_wrong_please_try_again'), []);
             }
-            SessionClassStudent::where('student_id', $row->id)->delete();
-            $row->delete();
+
+            foreach ($students as $row) {
+                $user = User::find($row->user_id);
+                if ($user) {
+                    $user->status = Status::INACTIVE;
+                    $user->save();
+                }
+
+                $row->status = Status::INACTIVE;
+                $row->save();
+                $row->delete();
+            }
 
             DB::commit();
-            return $this->responseWithSuccess(___('alert.deleted_successfully'), []);
+
+            return $this->responseWithSuccess(___('alert.deleted_successfully'), ['deleted' => $students->count()]);
         } catch (\Throwable $th) {
-            DB::rollback();
+            DB::rollBack();
+
             return $this->responseWithError(___('alert.something_went_wrong_please_try_again'), []);
         }
     }

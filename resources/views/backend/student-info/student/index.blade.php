@@ -85,14 +85,23 @@
         <!--  table content start -->
         <div class="table-content table-basic mt-20">
             <div class="card">
-                <div class="card-header d-flex justify-content-between align-items-center">
+                <div class="card-header d-flex justify-content-between align-items-center flex-wrap gap-2">
                     <h4 class="mb-0">{{ $data['title'] }}</h4>
-                    @if (hasPermission('student_create'))
-                        <a href="{{ route('student.create') }}" class="btn btn-lg ot-btn-primary">
-                            <span><i class="fa-solid fa-plus"></i> </span>
-                            <span class="">{{ ___('common.add') }}</span>
-                        </a>
-                    @endif
+                    <div class="d-flex align-items-center gap-2">
+                        @if (hasPermission('student_delete'))
+                            <button type="button" class="btn btn-lg ot-btn-danger d-none" id="studentBulkDeleteBtn"
+                                onclick="bulk_delete_students()">
+                                <i class="fa-solid fa-trash-can"></i>
+                                <span>{{ ___('common.delete') }}</span>
+                            </button>
+                        @endif
+                        @if (hasPermission('student_create'))
+                            <a href="{{ route('student.create') }}" class="btn btn-lg ot-btn-primary">
+                                <span><i class="fa-solid fa-plus"></i> </span>
+                                <span class="">{{ ___('common.add') }}</span>
+                            </a>
+                        @endif
+                    </div>
                 </div>
                 @if (@$data['students'])
                     <div class="card-body">
@@ -100,6 +109,12 @@
                             <table class="table table-bordered role-table">
                                 <thead class="thead">
                                     <tr>
+                                        @if (hasPermission('student_delete'))
+                                            <th class="serial" style="width: 40px;">
+                                                <input type="checkbox" class="form-check-input" id="studentSelectAll"
+                                                    title="{{ ___('common.select_all') ?? 'Select all' }}">
+                                            </th>
+                                        @endif
                                         <th class="serial">{{ ___('common.sr_no') }}</th>
                                         <th class="purchase">{{ ___('student_info.admission_no') }}</th>
                                         <th class="purchase">{{ ___('student_info.roll_no') }}</th>
@@ -121,6 +136,12 @@
                                     {{-- @dd($data['students']) --}}
                                     @forelse ($data['students'] as $key => $row)
                                         <tr id="row_{{ @$row->student->id }}">
+                                            @if (hasPermission('student_delete'))
+                                                <td>
+                                                    <input type="checkbox" class="form-check-input student-row-check"
+                                                        value="{{ @$row->student->id }}">
+                                                </td>
+                                            @endif
                                             <td class="serial">{{ ++$key }}</td>
                                             <td class="serial">{{ @$row->student->admission_no }}</td>
                                             <td class="serial">{{ @$row->roll }}</td>
@@ -226,3 +247,70 @@
 
     </div>
 @endsection
+
+@push('script')
+    @include('backend.partials.delete-ajax')
+    <script>
+        function toggleStudentBulkDeleteBtn() {
+            const any = $('.student-row-check:checked').length > 0;
+            $('#studentBulkDeleteBtn').toggleClass('d-none', !any);
+        }
+
+        $('#studentSelectAll').on('change', function() {
+            $('.student-row-check').prop('checked', this.checked);
+            toggleStudentBulkDeleteBtn();
+        });
+
+        $(document).on('change', '.student-row-check', toggleStudentBulkDeleteBtn);
+
+        function bulk_delete_students() {
+            const ids = $('.student-row-check:checked').map(function() {
+                return $(this).val();
+            }).get();
+
+            if (!ids.length) {
+                return;
+            }
+
+            Swal.fire({
+                title: $('#alert_title').val(),
+                text: $('#alert_subtitle').val(),
+                icon: 'warning',
+                showCancelButton: true,
+                confirmButtonText: $('#alert_yes_btn').val(),
+                cancelButtonText: $('#alert_cancel_btn').val(),
+            }).then((confirmed) => {
+                if (!confirmed.isConfirmed) {
+                    return;
+                }
+
+                $.ajax({
+                    type: 'POST',
+                    dataType: 'json',
+                    url: '{{ route('student.bulk-delete') }}',
+                    data: {
+                        ids: ids,
+                        _token: $('meta[name="csrf-token"]').attr('content')
+                    },
+                }).done(function(response) {
+                    Swal.fire({
+                        icon: response[1],
+                        title: response[2],
+                        text: response[0],
+                        showCloseButton: true,
+                        confirmButtonText: response[3],
+                    });
+                    ids.forEach(function(id) {
+                        $('#row_' + id).fadeOut(400);
+                    });
+                    setTimeout(function() {
+                        location.reload();
+                    }, 1500);
+                }).fail(function() {
+                    Swal.fire('{{ ___('common.opps') }}...',
+                        '{{ ___('common.something_went_wrong_with_ajax') }}', 'error');
+                });
+            });
+        }
+    </script>
+@endpush

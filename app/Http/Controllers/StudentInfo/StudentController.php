@@ -32,6 +32,7 @@ use Maatwebsite\Excel\Exceptions\ImportValidationException;
 use App\Http\Requests\StudentInfo\Student\StudentStoreRequest;
 use App\Http\Requests\StudentInfo\Student\StudentImportRequest;
 use App\Http\Requests\StudentInfo\Student\StudentUpdateRequest;
+use Illuminate\Http\JsonResponse;
 
 class StudentController extends Controller
 {
@@ -289,6 +290,32 @@ class StudentController extends Controller
             $success[2] = ___('alert.oops');
             return response()->json($success);
         endif;
+    }
+
+    public function bulkDelete(Request $request): JsonResponse
+    {
+        $request->validate([
+            'ids' => ['required', 'array', 'min:1'],
+            'ids.*' => ['integer'],
+        ]);
+
+        $result = $this->repo->bulkDestroy($request->input('ids', []));
+
+        if ($result['status']) {
+            return response()->json([
+                $result['message'],
+                'success',
+                ___('alert.deleted'),
+                ___('alert.OK'),
+            ]);
+        }
+
+        return response()->json([
+            $result['message'],
+            'error',
+            ___('alert.oops'),
+            ___('alert.OK'),
+        ]);
     }
 
     public function import()

@@ -24,15 +24,22 @@ class SessionClassStudent extends BaseModel
         // BaseModel branch scope + whereHas('student') used to double-apply Student scope and hide rows.
         $query->withoutGlobalScope('branch_id');
 
-        $query->whereHas('student', fn (Builder $q) => $q->withoutGlobalScopes());
-
         $branchId = effectiveBranchScopeId();
-        if (hasModule('MultiBranch') && $branchId) {
-            $query->whereHas('student', fn (Builder $q) => $q->withoutGlobalScopes()->where('branch_id', $branchId));
-        }
+
+        $query->whereHas('student', function (Builder $q) use ($branchId) {
+            $q->withoutGlobalScope('branch_id');
+            if (hasModule('MultiBranch') && $branchId) {
+                $q->where('branch_id', $branchId);
+            }
+        });
 
         return $query->with([
-            'student' => fn ($q) => $q->withoutGlobalScopes(),
+            'student' => function ($q) use ($branchId) {
+                $q->withoutGlobalScope('branch_id');
+                if (hasModule('MultiBranch') && $branchId) {
+                    $q->where('branch_id', $branchId);
+                }
+            },
             'class' => fn ($q) => $q->withoutGlobalScopes(),
             'section' => fn ($q) => $q->withoutGlobalScopes(),
         ]);

@@ -29,6 +29,7 @@ Route::middleware(saasMiddleware())->group(function () {
                     Route::get('show/{id}',         'show')->name('student.show')->middleware('PermissionCheck:student_read');
                     Route::PUT('update',            'update')->name('student.update')->middleware('PermissionCheck:student_update', 'DemoCheck');
                     Route::delete('/delete/{id}',   'delete')->name('student.delete')->middleware('PermissionCheck:student_delete', 'DemoCheck');
+                    Route::post('/bulk-delete',     'bulkDelete')->name('student.bulk-delete')->middleware('PermissionCheck:student_delete', 'DemoCheck');
                     Route::get('/get-children/{parentId}', 'getChildren')->name('student.getChildren');
 
 
