@@ -1641,6 +1641,25 @@ if (! function_exists('enabledLanguageCodes')) {
     }
 }
 
+if (! function_exists('activeSessionEnrollmentQuery')) {
+    /** Current-session enrollments for active (non–soft-deleted) students, with branch scope. */
+    function activeSessionEnrollmentQuery(?int $sessionId = null): \Illuminate\Database\Eloquent\Builder
+    {
+        $sessionId = $sessionId ?? (int) setting('session');
+
+        return \App\Models\StudentInfo\SessionClassStudent::query()
+            ->forStudentListing()
+            ->where('session_id', $sessionId);
+    }
+}
+
+if (! function_exists('activeSessionStudentCount')) {
+    function activeSessionStudentCount(?int $sessionId = null): int
+    {
+        return (int) activeSessionEnrollmentQuery($sessionId)->count();
+    }
+}
+
 if (! function_exists('htmlDateInputValue')) {
     /** Format a DB/date string for HTML date inputs (Y-m-d). */
     function htmlDateInputValue($value): string

@@ -3,6 +3,7 @@
 namespace App\Repositories;
 
 use App\Enums\AttendanceType;
+use App\Enums\RoleEnum;
 use App\Interfaces\DashboardInterface;
 use App\Models\Academic\Classes;
 use App\Models\Academic\ClassSetup;
@@ -11,7 +12,6 @@ use App\Models\Accounts\Income;
 use App\Models\Attendance\Attendance;
 use App\Models\Event;
 use App\Models\Fees\FeesCollect;
-use App\Models\Role;
 use App\Models\Session;
 use App\Models\Staff\Staff;
 use App\Models\StudentInfo\ParentGuardian;
@@ -23,9 +23,13 @@ class DashboardRepository implements DashboardInterface
 
     public function index()
     {
-        $data['student'] = SessionClassStudent::where('session_id', setting('session'))->count();
-        $data['parent']  = ParentGuardian::count();
-        $data['teacher'] = Staff::where('role_id',5)->count();
+        $data['student'] = activeSessionStudentCount();
+        $data['parent']  = ParentGuardian::query()
+            ->whereHas('children', function ($q) {
+                $q->whereIn('id', activeSessionEnrollmentQuery()->select('student_id'));
+            })
+            ->count();
+        $data['teacher'] = Staff::query()->active()->where('role_id', RoleEnum::TEACHER)->count();
         $data['session'] = Session::count();
 
         $data['events']  = Event::where('session_id', setting('session'))->active()->where('date', '>=', date('Y-m-d'))->orderBy('date')->take(5)->get();
